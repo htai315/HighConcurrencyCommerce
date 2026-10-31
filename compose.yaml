@@ -1,0 +1,76 @@
+name: high-concurrency-commerce
+
+services:
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-highcommerce}
+      POSTGRES_USER: ${POSTGRES_USER:-highcommerce}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres-data:/var/lib/postgresql
+      - ./database/001_create_schema.sql:/docker-entrypoint-initdb.d/001_create_schema.sql:ro
+      - ./database/002_auth_sessions.sql:/docker-entrypoint-initdb.d/002_auth_sessions.sql:ro
+      - ./database/003_flash_sale_cart_offer.sql:/docker-entrypoint-initdb.d/003_flash_sale_cart_offer.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks: [backend]
+
+  api:
+    build:
+      context: .
+      dockerfile: HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Dockerfile
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_HTTP_PORTS: 8080
+      ConnectionStrings__StoreDb: Host=db;Port=5432;Database=${POSTGRES_DB:-highcommerce};Username=${POSTGRES_USER:-highcommerce};Password=${POSTGRES_PASSWORD}
+      DataProtection__KeysPath: /var/lib/hcc/keys
+      Security__RequireHttps: "false"
+      AllowedHosts: "*"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - data-protection-keys:/var/lib/hcc/keys
+    tmpfs:
+      - /tmp
+    read_only: true
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1:8080/health/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    networks: [backend]
+
+  web:
+    build:
+      context: frontend
+      args:
+        VITE_API_BASE_URL: /api/v1
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+      - /tmp
+    read_only: true
+    networks: [backend]
+
+networks:
+  backend:
+    internal: false
+
+volumes:
+  postgres-data:
+  data-protection-keys:
+

@@ -1,0 +1,1222 @@
+[
+  {
+    "sourceId": "1057349468",
+    "sourceUrl": "https://lining.com.vn/products/giay-cau-long-li-ning-nam-aytt001-1",
+    "retrievedAt": "2026-10-31T02:56:04.892688+00:00",
+    "title": "Giày cầu lông Nam AYTT001-1",
+    "brand": "Li-Ning",
+    "category": "Giày cầu lông",
+    "categorySlug": "giay-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/2efb_6646451cb2824e3699d741dd31dc9f86_07e55fc63f3644bfbfa971b0a84d6c79_71aee0aa7b42437ea64d8fcab903b4a0.jpg",
+        "fileKey": "/images/lining-demo/0ea3919b89f7a1866bc3562b.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/e3bc_341a8bc8381748e6a9dd76757a246aec_aec683c1021048b2acea4373b95ed186_3a679ba1da72409388e65a471409c539.jpg",
+        "fileKey": "/images/lining-demo/1fb76d555f91b9b487177b8f.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/19ac_b036d454164e4c5d8fe57ccc4b030549_3d45c80f746d4141876c627a76fd76ba_5c20f575a5064ac78ca01e4c4311ceed.jpg",
+        "fileKey": "/images/lining-demo/8f8394f0716ce7c4f37ebead.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1131167453",
+        "sourceSku": "P-AYTT001-17",
+        "optionLabel": "Xanh Navy / Da tổng hợp + Dệt may / 7",
+        "referencePrice": "706909",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1131167454",
+        "sourceSku": "P-AYTT001-17.5",
+        "optionLabel": "Xanh Navy / Da tổng hợp + Dệt may / 7.5",
+        "referencePrice": "706909",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1131167455",
+        "sourceSku": "P-AYTT001-18",
+        "optionLabel": "Xanh Navy / Da tổng hợp + Dệt may / 8",
+        "referencePrice": "706909",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1131167456",
+        "sourceSku": "P-AYTT001-18.5",
+        "optionLabel": "Xanh Navy / Da tổng hợp + Dệt may / 8.5",
+        "referencePrice": "706909",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1131167457",
+        "sourceSku": "P-AYTT001-19",
+        "optionLabel": "Xanh Navy / Da tổng hợp + Dệt may / 9",
+        "referencePrice": "706909",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1131167458",
+        "sourceSku": "P-AYTT001-19.5",
+        "optionLabel": "Xanh Navy / Da tổng hợp + Dệt may / 9.5",
+        "referencePrice": "706909",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1131167459",
+        "sourceSku": "P-AYTT001-110",
+        "optionLabel": "Xanh Navy / Da tổng hợp + Dệt may / 10",
+        "referencePrice": "706909",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1131167460",
+        "sourceSku": "P-AYTT001-110.5",
+        "optionLabel": "Xanh Navy / Da tổng hợp + Dệt may / 10.5",
+        "referencePrice": "706909",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1057349469",
+    "sourceUrl": "https://lining.com.vn/products/giay-cau-long-li-ning-nam-aytt001-3",
+    "retrievedAt": "2026-10-31T02:56:12.048571+00:00",
+    "title": "Giày cầu lông Nam P-AYTT001-3V",
+    "brand": "Li-Ning",
+    "category": "Giày cầu lông",
+    "categorySlug": "giay-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/8dc3_3506fc6c8d1d46b1ae64757df29be0d2_fb65ffe9cd5e4514b1f150ae18d06c76_c2e2831f77d749b69bc060834c08c3af.jpg",
+        "fileKey": "/images/lining-demo/e02d44ec8a394cd514a3a8a7.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/faeb_7a579f3952af454bb4490d427b15c6aa_f7fb1cf119094a6da7a166d7403fbe9a_596734fdfbb24c8aa86e960d1f91cd1f.jpg",
+        "fileKey": "/images/lining-demo/24838c936d63382ba75adedc.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/298b_669e19c1ddff48918b95d828ac40f33d_b1a225bc246546e396e906c0bfe3e7ba_0c497a26de1e40ac9e68756d881e2f14.jpg",
+        "fileKey": "/images/lining-demo/9f9776c7cff662a534d16cb4.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1131167466",
+        "sourceSku": "P-AYTT001-3V7",
+        "optionLabel": "Trắng tiêu chuẩn / Da tổng hợp + Dệt may / 7",
+        "referencePrice": "1178182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1131167467",
+        "sourceSku": "P-AYTT001-3V7.5",
+        "optionLabel": "Trắng tiêu chuẩn / Da tổng hợp + Dệt may / 7.5",
+        "referencePrice": "1178182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1131167468",
+        "sourceSku": "P-AYTT001-3V8",
+        "optionLabel": "Trắng tiêu chuẩn / Da tổng hợp + Dệt may / 8",
+        "referencePrice": "1178182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1131167469",
+        "sourceSku": "P-AYTT001-3V8.5",
+        "optionLabel": "Trắng tiêu chuẩn / Da tổng hợp + Dệt may / 8.5",
+        "referencePrice": "1178182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1131167470",
+        "sourceSku": "P-AYTT001-3V9",
+        "optionLabel": "Trắng tiêu chuẩn / Da tổng hợp + Dệt may / 9",
+        "referencePrice": "1178182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1131167471",
+        "sourceSku": "P-AYTT001-3V9.5",
+        "optionLabel": "Trắng tiêu chuẩn / Da tổng hợp + Dệt may / 9.5",
+        "referencePrice": "1178182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1131167472",
+        "sourceSku": "P-AYTT001-3V10.5",
+        "optionLabel": "Trắng tiêu chuẩn / Da tổng hợp + Dệt may / 10.5",
+        "referencePrice": "1178182",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1071119015",
+    "sourceUrl": "https://lining.com.vn/products/quan-short-nam-p-aaps047-2v",
+    "retrievedAt": "2026-10-31T02:56:19.197626+00:00",
+    "title": "Quần short Nam P-AAPS047-2V",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0792_37abceed586d4c718d21df155d0df4e8_f82c2209786d4deb9b08435698d709a9_9d23522a475a4de5a2cb59642c1911be.jpg",
+        "fileKey": "/images/lining-demo/fc9f8d18930525f62efdeda9.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0798_070920f0b7f8485686de37bae1e600ee_684c4cc71ab84f1cbd9b87dbee75c3dc_d3b4a3cb1c374ec2b2f9f3047776bde4.jpg",
+        "fileKey": "/images/lining-demo/533704eb16a517a13c92debd.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/7ed3_19dc913dd1c44292a852e09de30ceea7_2cfa1ec80ae2407e86dee8305cb8a042_a7abb8029d0d4585befba93a32680135.jpg",
+        "fileKey": "/images/lining-demo/56c61573a30e13d31a1d600e.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1161123923",
+        "sourceSku": "P-AAPS047-2VL",
+        "optionLabel": "Black / Polyester86% Elastane14% / L",
+        "referencePrice": "392727",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1161123924",
+        "sourceSku": "P-AAPS047-2VM",
+        "optionLabel": "Black / Polyester86% Elastane14% / M",
+        "referencePrice": "392727",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1161123925",
+        "sourceSku": "P-AAPS047-2VS",
+        "optionLabel": "Black / Polyester86% Elastane14% / S",
+        "referencePrice": "392727",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1161123926",
+        "sourceSku": "P-AAPS047-2VXL",
+        "optionLabel": "Black / Polyester86% Elastane14% / XL",
+        "referencePrice": "392727",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1161123927",
+        "sourceSku": "P-AAPS047-2VXXL",
+        "optionLabel": "Black / Polyester86% Elastane14% / XXL",
+        "referencePrice": "392727",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1073342549",
+    "sourceUrl": "https://lining.com.vn/products/ao-polo-nam-p-aplr125-9v",
+    "retrievedAt": "2026-10-31T02:56:26.959338+00:00",
+    "title": "Áo Polo Nam P-APLR125-9V",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/_den_538897b224a94df7a6b75b5582f31474_c547941276204780828cdbdccf27de1c_d5e65ff3833c430db58fab7e1aa83bec.png",
+        "fileKey": "/images/lining-demo/c7028f458ac52ddb79143c1b.png"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0903_714844a8d0af49e396775acae2358e6c_bb7e54eaa90945ceb051c7b0537eba55_8905927fa31e4d04b581bb9f207ada33.jpg",
+        "fileKey": "/images/lining-demo/dc1df219afbda56f1b0d4c02.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0900_a44a4df28fd448cb8ad8e0b705887afd_f33f1553091b40bda22e93d3162f4a89_4a79362486c546e5bc276bbac7e09355.jpg",
+        "fileKey": "/images/lining-demo/7988175e8cd6286ea9addba9.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1166258630",
+        "sourceSku": "P-APLR125-9VM",
+        "optionLabel": "Black / Polyester90% Elastane10% / M",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258631",
+        "sourceSku": "P-APLR125-9VXXL",
+        "optionLabel": "Black / Polyester90% Elastane10% / XXL",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258632",
+        "sourceSku": "P-APLR125-9VXL",
+        "optionLabel": "Black / Polyester90% Elastane10% / XL",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258633",
+        "sourceSku": "P-APLR125-9VL",
+        "optionLabel": "Black / Polyester90% Elastane10% / L",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258634",
+        "sourceSku": "P-APLR125-9VS",
+        "optionLabel": "Black / Polyester90% Elastane10% / S",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1074261056",
+    "sourceUrl": "https://lining.com.vn/products/ao-co-co-nam-p-aplr125-10v",
+    "retrievedAt": "2026-10-31T02:56:34.176026+00:00",
+    "title": "Áo Polo Nam P-APLR125-10V",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/006c3569-35ea-411f-8441-e1af862914d6_7b8d693b5b3148069bc6731af48af8b0.png",
+        "fileKey": "/images/lining-demo/2dfcd825d26cbb1dd3b4cefb.png"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/p-aplr125-10v__1__af68eb06330c47a0963f4b53b993ba3f_fa1c3956deed46ddacc847fa5edb2fad.jpg",
+        "fileKey": "/images/lining-demo/1e84e59f40bffabba7b0ff28.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/p-aplr125-10v__2__699e6ed7de44480284dc0d68f371c788_0d37cb41267e49a695dc63b8b4556b09.jpg",
+        "fileKey": "/images/lining-demo/ef49d2410a2c4ec9a7da94e2.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1168524052",
+        "sourceSku": "P-APLR125-10VXL",
+        "optionLabel": "Ink Blue / Polyester90% Elastane10% / XL",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1168524053",
+        "sourceSku": "P-APLR125-10VL",
+        "optionLabel": "Ink Blue / Polyester90% Elastane10% / L",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1168524054",
+        "sourceSku": "P-APLR125-10VM",
+        "optionLabel": "Ink Blue / Polyester90% Elastane10% / M",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1168524055",
+        "sourceSku": "P-APLR125-10VXXL",
+        "optionLabel": "Ink Blue / Polyester90% Elastane10% / XXL",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1168524056",
+        "sourceSku": "P-APLR125-10VS",
+        "optionLabel": "Ink Blue / Polyester90% Elastane10% / S",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1073762652",
+    "sourceUrl": "https://lining.com.vn/products/quan-short-nam-p-aapw037-1v",
+    "retrievedAt": "2026-10-31T02:56:41.273238+00:00",
+    "title": "Quần short Nam P-AAPW037-1V",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/dsc00803_12f0af9ff033484ebb81b38068bf5c10_3cd5cd4bf2234ab58c61779edc7314a1.jpg",
+        "fileKey": "/images/lining-demo/9bfb57275aee413e4254bcd0.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/dsc00808_94efaed4c4924d8aa96c14fbdc44cfd4_704d29d03cf3406696d2945fb8259ab8.jpg",
+        "fileKey": "/images/lining-demo/195d22e91e92adbacdfdfc5b.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/dsc00804_91b4d97f912546ca9de0e0eb7de6ddf3_7f62b52762024791bf58a91afc6c1b1c.jpg",
+        "fileKey": "/images/lining-demo/41df9aa3d7a44d3212f46f3f.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1167311408",
+        "sourceSku": "P-AAPW037-1VL",
+        "optionLabel": "Black / Polyester86% Elastane14% / L",
+        "referencePrice": "451636",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167311409",
+        "sourceSku": "P-AAPW037-1VXXL",
+        "optionLabel": "Black / Polyester86% Elastane14% / XXL",
+        "referencePrice": "451636",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167311410",
+        "sourceSku": "P-AAPW037-1VM",
+        "optionLabel": "Black / Polyester86% Elastane14% / M",
+        "referencePrice": "451636",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167311412",
+        "sourceSku": "P-AAPW037-1V3XL",
+        "optionLabel": "Black / Polyester86% Elastane14% / 3XL",
+        "referencePrice": "451636",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167311413",
+        "sourceSku": "P-AAPW037-1VS",
+        "optionLabel": "Black / Polyester86% Elastane14% / S",
+        "referencePrice": "451636",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167311414",
+        "sourceSku": "P-AAPW037-1VXL",
+        "optionLabel": "Black / Polyester86% Elastane14% / XL",
+        "referencePrice": "451636",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1073762646",
+    "sourceUrl": "https://lining.com.vn/products/quan-short-nam-p-aapu133-1v",
+    "retrievedAt": "2026-10-31T02:56:48.381762+00:00",
+    "title": "Quần short Nam P-AAPU133-1V",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/dsc00847_b020ef3331aa45d486681c5ac41c072c_4b48baa6d71c46bcabee8b83d4d25a92.jpg",
+        "fileKey": "/images/lining-demo/709184b4077452b625c89dc0.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/dsc00853_4b033312d966465cae32403ea6556930_8feb16ca12844c74a9ca8db12e3a813d.jpg",
+        "fileKey": "/images/lining-demo/d35f1622c62e9c14c39cb04a.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/dsc00849_0c89db44d1874db18c922cec9847ba48_1219e95d8d104d3580f6810b4027003a.jpg",
+        "fileKey": "/images/lining-demo/041c257a087d97280b68ea6a.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1167311379",
+        "sourceSku": "P-AAPU133-1VL",
+        "optionLabel": "Black / Polyester100% / L",
+        "referencePrice": "392727",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167311380",
+        "sourceSku": "P-AAPU133-1VXL",
+        "optionLabel": "Black / Polyester100% / XL",
+        "referencePrice": "392727",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167311381",
+        "sourceSku": "P-AAPU133-1VM",
+        "optionLabel": "Black / Polyester100% / M",
+        "referencePrice": "392727",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167311382",
+        "sourceSku": "P-AAPU133-1VXXL",
+        "optionLabel": "Black / Polyester100% / XXL",
+        "referencePrice": "392727",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167311383",
+        "sourceSku": "P-AAPU133-1VS",
+        "optionLabel": "Black / Polyester100% / S",
+        "referencePrice": "392727",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1073762657",
+    "sourceUrl": "https://lining.com.vn/products/quan-short-nam-p-aapw037-4v",
+    "retrievedAt": "2026-10-31T02:56:55.455309+00:00",
+    "title": "Quần short Nam P-AAPW037-4V",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/dsc00814_701e89c73c564554bb35714b6609df40_c53e39d4175f4c2e91b94a4739491737.jpg",
+        "fileKey": "/images/lining-demo/03e1fc83bd8901a5acf784e7.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/dsc00819_9b6f4c69fcd948b0aad86b2b8da50b91_78e28655dcf746cfa09afb51ffc50224.jpg",
+        "fileKey": "/images/lining-demo/f8f42e7ba205409c11409938.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/dsc00816_d3d1ba41ed0148a6a1babde5d9f04f39_d28bd24c15c646d8b22201219020064d.jpg",
+        "fileKey": "/images/lining-demo/3ecbbbb772dbe1ec53b1efea.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1167311425",
+        "sourceSku": "P-AAPW037-4VS",
+        "optionLabel": "Maritime Blue / Polyester86% Elastane14% / S",
+        "referencePrice": "461454",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167311426",
+        "sourceSku": "P-AAPW037-4V3XL",
+        "optionLabel": "Maritime Blue / Polyester86% Elastane14% / 3XL",
+        "referencePrice": "461454",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167311427",
+        "sourceSku": "P-AAPW037-4VM",
+        "optionLabel": "Maritime Blue / Polyester86% Elastane14% / M",
+        "referencePrice": "461454",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167311428",
+        "sourceSku": "P-AAPW037-4VL",
+        "optionLabel": "Maritime Blue / Polyester86% Elastane14% / L",
+        "referencePrice": "461454",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167311429",
+        "sourceSku": "P-AAPW037-4VXXL",
+        "optionLabel": "Maritime Blue / Polyester86% Elastane14% / XXL",
+        "referencePrice": "461454",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167311430",
+        "sourceSku": "P-AAPW037-4VXL",
+        "optionLabel": "Maritime Blue / Polyester86% Elastane14% / XL",
+        "referencePrice": "461454",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1067246137",
+    "sourceUrl": "https://lining.com.vn/products/quan-short-nam-p-aapr079-3v",
+    "retrievedAt": "2026-10-31T02:57:02.958789+00:00",
+    "title": "Quần short Nam P-AAPR079-3V",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0845_63515b3318d349c2962d9e4b4aef387b_4e565f5658fe48129276a26ca6c5fb19_79d8238f1f044af798d07a7b9e8ff733.jpg",
+        "fileKey": "/images/lining-demo/824157ffa49ec1873ac07b99.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0847_521a66b63b1e4fc2ae6a8a1fccd136cd_40a28080efcf401598338bad5a6cd19d_be6f445a033e4692bc488922b03a8f37.jpg",
+        "fileKey": "/images/lining-demo/d771068439e632fce6ce5be0.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0851_cfed212b359045478622283ead7ba560_c2082c5cc81644e890dddf0dfd9cb598_5903aabcc58149aa94ba1b6197569c46.jpg",
+        "fileKey": "/images/lining-demo/2622f686543cac2299c75484.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1166259378",
+        "sourceSku": "P-AAPR079-3VS",
+        "optionLabel": "Black / Polyester90% Elastane10% / S",
+        "referencePrice": "363273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166259379",
+        "sourceSku": "P-AAPR079-3V3XL",
+        "optionLabel": "Black / Polyester90% Elastane10% / 3XL",
+        "referencePrice": "363273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166259380",
+        "sourceSku": "P-AAPR079-3VXXL",
+        "optionLabel": "Black / Polyester90% Elastane10% / XXL",
+        "referencePrice": "363273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166259381",
+        "sourceSku": "P-AAPR079-3VXL",
+        "optionLabel": "Black / Polyester90% Elastane10% / XL",
+        "referencePrice": "363273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166259382",
+        "sourceSku": "P-AAPR079-3VL",
+        "optionLabel": "Black / Polyester90% Elastane10% / L",
+        "referencePrice": "363273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166259383",
+        "sourceSku": "P-AAPR079-3VM",
+        "optionLabel": "Black / Polyester90% Elastane10% / M",
+        "referencePrice": "363273",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1069413856",
+    "sourceUrl": "https://lining.com.vn/products/ao-t-shirt-nam-p-ahst347-4",
+    "retrievedAt": "2026-10-31T02:57:10.115354+00:00",
+    "title": "Áo T-shirt Nam P-AHST347-4",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/p-ahst347-4__1__e38822d64e8d45118619883fa8b186e0.jpg",
+        "fileKey": "/images/lining-demo/47d6a776580e8a5898fbb1e1.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/p-ahst347-4__2__76229d5a06ab49f09582b21c1a7bf0c9.jpg",
+        "fileKey": "/images/lining-demo/69613c4531d4dc2b32b768ef.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/p-ahst347-4__3__26d33340f6c34444930a4546f8a39608.jpg",
+        "fileKey": "/images/lining-demo/d72fb8df56ab49545fa65658.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1157723273",
+        "sourceSku": "P-AHST347-4XL",
+        "optionLabel": "Polyester100% / Estate Blue / XL",
+        "referencePrice": "284727",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1157723274",
+        "sourceSku": "P-AHST347-4XXL",
+        "optionLabel": "Polyester100% / Estate Blue / XXL",
+        "referencePrice": "284727",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1157723275",
+        "sourceSku": "P-AHST347-4L",
+        "optionLabel": "Polyester100% / Estate Blue / L",
+        "referencePrice": "284727",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1157723276",
+        "sourceSku": "P-AHST347-4S",
+        "optionLabel": "Polyester100% / Estate Blue / S",
+        "referencePrice": "284727",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1157723277",
+        "sourceSku": "P-AHST347-4M",
+        "optionLabel": "Polyester100% / Estate Blue / M",
+        "referencePrice": "284727",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1157723278",
+        "sourceSku": "P-AHST347-4XS",
+        "optionLabel": "Polyester100% / Estate Blue / XS",
+        "referencePrice": "284727",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1073183631",
+    "sourceUrl": "https://lining.com.vn/products/ao-t-shirt-nam-p-atsu493-1",
+    "retrievedAt": "2026-10-31T02:57:18.195369+00:00",
+    "title": "Áo T-shirt Nam P-ATSU493-1",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/4979_a25d7666468f4b989cbd6c769cafc67c_ae9635ea43bb422da56377103119d3a1_edf0345bdb854eecabec8e05404dfb0e.jpg",
+        "fileKey": "/images/lining-demo/c61bbc42dbbf11aef7d3ecad.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/4977_79142c095132491ebab0f77300e7a2b8_96e6917dc8154ecdbacd972eb9a786a7_ccb73ed585eb4e49afae3f8671357c35.jpg",
+        "fileKey": "/images/lining-demo/1656cfe0eb97077b713f8e3f.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/copy_07745c8114424241af41fde61f5bc07a_1e547f03919f4b01940e3fe5510f01e7_838d469400f64d5ba445a54de278bf0e.jpg",
+        "fileKey": "/images/lining-demo/d4e3f2d61416cbfdd5c858bf.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1165948229",
+        "sourceSku": "P-ATSU493-1XXL",
+        "optionLabel": "Black / Polyester100% / XXL",
+        "referencePrice": "206182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1165948230",
+        "sourceSku": "P-ATSU493-1XL",
+        "optionLabel": "Black / Polyester100% / XL",
+        "referencePrice": "206182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1165948231",
+        "sourceSku": "P-ATSU493-1M",
+        "optionLabel": "Black / Polyester100% / M",
+        "referencePrice": "206182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1165948232",
+        "sourceSku": "P-ATSU493-1S",
+        "optionLabel": "Black / Polyester100% / S",
+        "referencePrice": "206182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1165948233",
+        "sourceSku": "P-ATSU493-1L",
+        "optionLabel": "Black / Polyester100% / L",
+        "referencePrice": "206182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1165948234",
+        "sourceSku": "P-ATSU493-1XS",
+        "optionLabel": "Black / Polyester100% / XS",
+        "referencePrice": "206182",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1073762495",
+    "sourceUrl": "https://lining.com.vn/products/ao-t-shirt-nam-p-aayw045-5v",
+    "retrievedAt": "2026-10-31T02:57:25.416315+00:00",
+    "title": "Áo T-shirt Nam P-AAYW045-5V",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/dsc00630_88c4d630795a4e4f93ed21d91d7885d2_b11b41329c384dae93abda5317e02353.jpg",
+        "fileKey": "/images/lining-demo/ee58eb17ed4a7397a6673593.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/dsc00626_0e7b5646bffa47e9b9065f9c7bf7315d_1e2b482ec8f8498b8667f359660dda0b.jpg",
+        "fileKey": "/images/lining-demo/87a89490f15643aa4e3b22c9.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/dsc00630_-_copy__2__8a236fcb5e074e869b227309b404fd3f_6ac453463c9949438814790a3e078c12.jpg",
+        "fileKey": "/images/lining-demo/497cc4e326e98de7d65d8551.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1167310720",
+        "sourceSku": "P-AAYW045-5VXL",
+        "optionLabel": "Vital Yellow / Polyester86% Elastane14% / XL",
+        "referencePrice": "384873",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167310721",
+        "sourceSku": "P-AAYW045-5VM",
+        "optionLabel": "Vital Yellow / Polyester86% Elastane14% / M",
+        "referencePrice": "384873",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167310722",
+        "sourceSku": "P-AAYW045-5VL",
+        "optionLabel": "Vital Yellow / Polyester86% Elastane14% / L",
+        "referencePrice": "384873",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167310723",
+        "sourceSku": "P-AAYW045-5VS",
+        "optionLabel": "Vital Yellow / Polyester86% Elastane14% / S",
+        "referencePrice": "384873",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1167310724",
+        "sourceSku": "P-AAYW045-5VXXL",
+        "optionLabel": "Vital Yellow / Polyester86% Elastane14% / XXL",
+        "referencePrice": "384873",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1073342546",
+    "sourceUrl": "https://lining.com.vn/products/ao-polo-nam-p-aplr125-11v",
+    "retrievedAt": "2026-10-31T02:57:32.616573+00:00",
+    "title": "Áo Polo Nam P-APLR125-11V",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/_nh__304124fe03c043ad8283ca82d661cf26_910403186a4046e0901f71f561acf89b_5413fe78673f4b09a2d47f57cea4edad.png",
+        "fileKey": "/images/lining-demo/71990fd5fc6a80cc9476f52d.png"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0893_b3912f5fa1084bd580e2e39d003cfea4_75084ab7cb094b2b9a3a5ed3cafdb90d_b1e16d6f638a4d9081126b4997a62ffd.jpg",
+        "fileKey": "/images/lining-demo/f990b0c892bfdbe2808bc40f.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0897_ea5aa16122d14467a994bd2cbbe18a2b_30b8bfe19ff54640a0a4af8f6cbc92a9_6cb4bb2b235841e9930b93a4a8cf5b67.jpg",
+        "fileKey": "/images/lining-demo/76eb480192b426e0d1addcbb.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1166258622",
+        "sourceSku": "P-APLR125-11VS",
+        "optionLabel": "Ice Water / Polyester90% Elastane10% / S",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258623",
+        "sourceSku": "P-APLR125-11VM",
+        "optionLabel": "Ice Water / Polyester90% Elastane10% / M",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258624",
+        "sourceSku": "P-APLR125-11VL",
+        "optionLabel": "Ice Water / Polyester90% Elastane10% / L",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258625",
+        "sourceSku": "P-APLR125-11VXL",
+        "optionLabel": "Ice Water / Polyester90% Elastane10% / XL",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258626",
+        "sourceSku": "P-APLR125-11VXXL",
+        "optionLabel": "Ice Water / Polyester90% Elastane10% / XXL",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1062826917",
+    "sourceUrl": "https://lining.com.vn/products/tat-the-thao-unisex-p-awss399-6",
+    "retrievedAt": "2026-10-31T02:57:39.947291+00:00",
+    "title": "Tất thể thao Unisex P-AWSS399-6V",
+    "brand": "Li-Ning",
+    "category": "Phụ kiện cầu lông",
+    "categorySlug": "phu-kien-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/gi_3_vn-11134201-7ra0g-m9b4xxly2nno04_bc2052f4685241fdbc2de243a55142c9_09428b0c03d847fda9f732dda2e8a80f.jpg",
+        "fileKey": "/images/lining-demo/03965337c1148227ea98996f.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/2473_99a1681c70da42fc8af24f63bb07cc74_23de2ab77c2340a4953881f4dd586a67_e3ad3fa14e7443a3bc89936cefa0714f.jpg",
+        "fileKey": "/images/lining-demo/e910cf95f0accd3bacbef2f3.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/2474_0e10a247e4694b7ab62679e697cd22ed_2a00dd44a0d44cb98a7c766395a894b5_d74eb7c02d75434e87002a8414fd9a25.jpg",
+        "fileKey": "/images/lining-demo/b85257322de14d840324ffb9.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1173889199",
+        "sourceSku": "P-AWSS399-6VL",
+        "optionLabel": "White/Blue / COTTON76.4% POLYESTER21.0% ELASTANE2.6% / L",
+        "referencePrice": "54982",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1073342755",
+    "sourceUrl": "https://lining.com.vn/products/quan-short-nu-p-aapr078-3v",
+    "retrievedAt": "2026-10-31T02:57:47.076949+00:00",
+    "title": "Quần short Nữ P-AAPR078-3V",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0833_4f7077f666cd44c58468b5fabf8fd206_31153d34517349d08398a4ae223ccec2_659b2b0c09544657af147e0760565f22.jpg",
+        "fileKey": "/images/lining-demo/fc7cb187a3dde1d1d4b19ce7.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0837_e04971be4cdc43639dd21cfafe067c7e_1cd3315903b14740b2fd1635340769da_257aa3e3bd7b4f979882f067b02962fe.jpg",
+        "fileKey": "/images/lining-demo/2b22c2b48cc097c86ec80a13.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0835_1b212865bb3e48cf8f829e36d647d522_006a10e0b86c4cfe928bfefad341c0cb_7f6f52f43b6045a197a63c8d728839b3.jpg",
+        "fileKey": "/images/lining-demo/f1acada57424bf8cd5537b93.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1166259435",
+        "sourceSku": "P-AAPR078-3VL",
+        "optionLabel": "Black / Polyester90% Elastane10% / L",
+        "referencePrice": "343636",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166259436",
+        "sourceSku": "P-AAPR078-3VM",
+        "optionLabel": "Black / Polyester90% Elastane10% / M",
+        "referencePrice": "343636",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166259437",
+        "sourceSku": "P-AAPR078-3VXL",
+        "optionLabel": "Black / Polyester90% Elastane10% / XL",
+        "referencePrice": "343636",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166259438",
+        "sourceSku": "P-AAPR078-3VXS",
+        "optionLabel": "Black / Polyester90% Elastane10% / XS",
+        "referencePrice": "343636",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166259439",
+        "sourceSku": "P-AAPR078-3VS",
+        "optionLabel": "Black / Polyester90% Elastane10% / S",
+        "referencePrice": "343636",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166259440",
+        "sourceSku": "P-AAPR078-3VXXL",
+        "optionLabel": "Black / Polyester90% Elastane10% / XXL",
+        "referencePrice": "343636",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1073342597",
+    "sourceUrl": "https://lining.com.vn/products/ao-t-shirt-nam-p-aayw063-1v",
+    "retrievedAt": "2026-10-31T02:57:54.233723+00:00",
+    "title": "Áo T-shirt Nam P-AAYW063-1V",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0886_39e1b067dc544aba9397e1d31af227d7_3a94b26d6e644f4c923dfba4bf2b3be9_d8891a62019b4fcc941b332e5845d492.jpg",
+        "fileKey": "/images/lining-demo/1ace9158bf7771a843454aa4.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0885_95dc065decb743d9a7c3cfdab7a98b03_f817991806c44fbcb88c53cc9867230e_8e98516a2c334106a03508b6ce23e1bb.jpg",
+        "fileKey": "/images/lining-demo/ffbc401cdc0057d5d8d3e210.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/copy_918ce57b76a34932b4a725f86ee56032_57c2ce5fcbbf45d5b915396582265d3a_10792dd883bb416c9ba0fa1b6b533efa.jpg",
+        "fileKey": "/images/lining-demo/7111b49521b0c8acc44fb76f.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1166258794",
+        "sourceSku": "P-AAYW063-1VL",
+        "optionLabel": "Black / Polyester100% / L",
+        "referencePrice": "309273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258795",
+        "sourceSku": "P-AAYW063-1VXL",
+        "optionLabel": "Black / Polyester100% / XL",
+        "referencePrice": "309273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258796",
+        "sourceSku": "P-AAYW063-1VS",
+        "optionLabel": "Black / Polyester100% / S",
+        "referencePrice": "309273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258797",
+        "sourceSku": "P-AAYW063-1VXXL",
+        "optionLabel": "Black / Polyester100% / XXL",
+        "referencePrice": "309273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258798",
+        "sourceSku": "P-AAYW063-1VM",
+        "optionLabel": "Black / Polyester100% / M",
+        "referencePrice": "309273",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1073342599",
+    "sourceUrl": "https://lining.com.vn/products/ao-t-shirt-nam-p-aayw063-2v",
+    "retrievedAt": "2026-10-31T02:58:04.421966+00:00",
+    "title": "Áo T-shirt Nam P-AAYW063-2V",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0877_695df6f98b324d6ca59326bf0ffce5a8_3ef4fa72c376413da898c31cb7f9519e_1455fa71b7b343eaaddbdb4779b8763b.jpg",
+        "fileKey": "/images/lining-demo/d30ef726eeae95c2a8acd7a3.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0880_4d5a504e68ac41b2a731b0deb58b0dab_cc5609358d8e4267911e53515554514e_ac7f86a751c64d7a86fc2bffc841d017.jpg",
+        "fileKey": "/images/lining-demo/d41b46fa45c3d385f6a44f6a.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/0875_e0e2d78841214848bee533787fc6dc5f_fa76bb4dc5cf4af0ae14dbf4d20c65bc_a71095f74b344cd2b2799288039a5673.jpg",
+        "fileKey": "/images/lining-demo/133f2533bd77f6d23a6c2639.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1166258800",
+        "sourceSku": "P-AAYW063-2VS",
+        "optionLabel": "White / Polyester100% / S",
+        "referencePrice": "309273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258801",
+        "sourceSku": "P-AAYW063-2VM",
+        "optionLabel": "White / Polyester100% / M",
+        "referencePrice": "309273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258802",
+        "sourceSku": "P-AAYW063-2VXL",
+        "optionLabel": "White / Polyester100% / XL",
+        "referencePrice": "309273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258803",
+        "sourceSku": "P-AAYW063-2VL",
+        "optionLabel": "White / Polyester100% / L",
+        "referencePrice": "309273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1166258804",
+        "sourceSku": "P-AAYW063-2VXXL",
+        "optionLabel": "White / Polyester100% / XXL",
+        "referencePrice": "309273",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1074261058",
+    "sourceUrl": "https://lining.com.vn/products/ao-co-co-nam-p-aplr125-7v",
+    "retrievedAt": "2026-10-31T02:58:11.930344+00:00",
+    "title": "Áo Polo Nam P-APLR125-7V",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/b0203f74-bc2a-4e4a-b3e9-42f9554edf67_7a8a7b31faec453b957a7689aaef133c.png",
+        "fileKey": "/images/lining-demo/8eb040897f5035bb8f0b5dde.png"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/851d1fdbddb4ea8912211b38624078f777ed3_76a88be88f484bd69102a81b9375a5ea_127eab71ae7b485eabb3761587b4104b.jpg",
+        "fileKey": "/images/lining-demo/f5ef2d8783ff25029bc87b8a.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/b5b7925ebef333d8ade54b38624078f777ed3_dcbbedbe079147e1bc0a396af4a0a035_a5ea6530d11f41fdb376d153f7678b34.jpg",
+        "fileKey": "/images/lining-demo/a4938b488de91c65ca2264e0.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1168524058",
+        "sourceSku": "P-APLR125-7VL",
+        "optionLabel": "Standard White / Polyester90% Elastane10% / L",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1168524059",
+        "sourceSku": "P-APLR125-7VS",
+        "optionLabel": "Standard White / Polyester90% Elastane10% / S",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1168524060",
+        "sourceSku": "P-APLR125-7VXL",
+        "optionLabel": "Standard White / Polyester90% Elastane10% / XL",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1168524061",
+        "sourceSku": "P-APLR125-7VM",
+        "optionLabel": "Standard White / Polyester90% Elastane10% / M",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1168524062",
+        "sourceSku": "P-APLR125-7VXXL",
+        "optionLabel": "Standard White / Polyester90% Elastane10% / XXL",
+        "referencePrice": "579273",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1065409287",
+    "sourceUrl": "https://lining.com.vn/products/vot-cau-long-li-ning-battle-halberd-2000-3u-cold-sandalwood-black-aypt377-3",
+    "retrievedAt": "2026-10-31T02:58:18.898816+00:00",
+    "title": "Vợt cầu lông Li-Ning Halbertec 2000 (3U) Cold Sandalwood Black AYPT377-3 (Khung vợt)",
+    "brand": "Li-Ning",
+    "category": "Vợt cầu lông",
+    "categorySlug": "vot-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/56c1_c8046e6a92ae49d1a004ea02b1ddaf7b_683f1f57a1ac47579fd82f29db661c88_1e05478df6ca4a64b33dd2b89512b12f.jpg",
+        "fileKey": "/images/lining-demo/feca74b216fc4ab19ec0c291.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/d6a7_4f3bf0f20cb14e8e8c9a8e8d12b363c5_4019306ee80743889f8322f725f08863_19f34d162e704491b7595b3c2faa7dcd.jpg",
+        "fileKey": "/images/lining-demo/31f96eaa195fcebe728e857e.jpg"
+      },
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/db2f_90e36c2424f5458fac857f16414a0326_a63bd51e87094704a8e648738701a737_552053523f2843e2b8d8657e79443e8e.jpg",
+        "fileKey": "/images/lining-demo/7d4641a3f2f143c685b60be5.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1173889645",
+        "sourceSku": "P-AYPT377-3NO",
+        "optionLabel": "Công thủ toàn diện / Carbon Fiber / Black / White",
+        "referencePrice": "790364",
+        "referenceCurrency": "VND"
+      }
+    ]
+  },
+  {
+    "sourceId": "1073183633",
+    "sourceUrl": "https://lining.com.vn/products/ao-t-shirt-nam-p-atsu493-7",
+    "retrievedAt": "2026-10-31T02:58:22.519536+00:00",
+    "title": "Áo T-shirt Nam P-ATSU493-7",
+    "brand": "Li-Ning",
+    "category": "Trang phục cầu lông",
+    "categorySlug": "trang-phuc-cau-long",
+    "images": [
+      {
+        "sourceUrl": "https://cdn.hstatic.net/products/1000312752/5150_0004a7809bc447acb73b8a5f4d7c27d5_6f8808f37d5e4f48946b2a63bc76ee03_9e83eb7220a242f39bc3297f82e39730.jpg",
+        "fileKey": "/images/lining-demo/0deb27329774f4f2333ca398.jpg"
+      }
+    ],
+    "variants": [
+      {
+        "sourceId": "1165948241",
+        "sourceSku": "P-ATSU493-7XS",
+        "optionLabel": "Blue / Polyester100% / XS",
+        "referencePrice": "206182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1165948242",
+        "sourceSku": "P-ATSU493-7S",
+        "optionLabel": "Blue / Polyester100% / S",
+        "referencePrice": "206182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1165948243",
+        "sourceSku": "P-ATSU493-7M",
+        "optionLabel": "Blue / Polyester100% / M",
+        "referencePrice": "206182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1165948244",
+        "sourceSku": "P-ATSU493-7XL",
+        "optionLabel": "Blue / Polyester100% / XL",
+        "referencePrice": "206182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1165948245",
+        "sourceSku": "P-ATSU493-7XXL",
+        "optionLabel": "Blue / Polyester100% / XXL",
+        "referencePrice": "206182",
+        "referenceCurrency": "VND"
+      },
+      {
+        "sourceId": "1165948246",
+        "sourceSku": "P-ATSU493-7L",
+        "optionLabel": "Blue / Polyester100% / L",
+        "referencePrice": "206182",
+        "referenceCurrency": "VND"
+      }
+    ]
+  }
+]

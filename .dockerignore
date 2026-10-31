@@ -1,0 +1,13 @@
+**/bin
+**/obj
+**/node_modules
+**/dist
+**/coverage
+**/TestResults
+**/.vs
+**/.git
+**/.env
+graphify-out
+docs
+.github
+

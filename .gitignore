@@ -1,0 +1,19 @@
+# Build outputs and local IDE state
+**/bin/
+**/obj/
+**/.vs/
+**/node_modules/
+**/dist/
+**/coverage/
+**/playwright-artifacts/
+**/TestResults/
+**/artifacts/
+**/*.csproj.user
+**/*.suo
+**/*.user
+**/*.tsbuildinfo
+**/.env
+**/.env.*
+!**/.env.example
+**/appsettings.Local.json
+*.log

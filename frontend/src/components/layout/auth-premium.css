@@ -1,0 +1,55 @@
+.court-auth.auth-premium { --court-blue: #245edb; --court-ink: #102b50; --court-muted: #62738a; background: #f3f6fa; color: var(--court-ink); padding: 24px; gap: 24px; grid-template-columns: 1fr 1fr; font-family: 'Be Vietnam Pro', 'Segoe UI', sans-serif; }
+.auth-premium .court-form-panel { grid-column: 1; grid-row: 1; background: #fff; border: 1px solid #e8edf4; border-radius: 24px; padding: 24px clamp(24px, 4vw, 72px); }
+.auth-premium .court-story { grid-column: 2; grid-row: 1; background: #102b50; border-radius: 24px; padding: 40px; min-height: calc(100svh - 48px); isolation: isolate; }
+.auth-sport-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% center; z-index: -2; }
+.auth-premium .court-story::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, #102b5080, #102b5010 32%, #102b50ed 80%); z-index: -1; }
+.auth-premium .court-brand { color: white; }
+.auth-premium .court-brand-symbol { border-color: #ffffff50; color: #d8edab; background: #102b5040; }
+.auth-premium .court-brand small { color: #dce7f5; }
+.auth-premium .court-story-copy { margin-top: auto; padding-top: 330px; }
+.auth-premium .court-story-copy h2 { color: white; font-size: clamp(36px, 3.7vw, 60px); line-height: 1.16; letter-spacing: -1.8px; margin: 24px 0 18px; }
+.auth-premium .court-story-copy p { color: #e1e9f3; line-height: 1.8; }
+.auth-sport-tag { display: inline-block; background: #d8edab; color: #203e23; padding: 9px 14px; border-radius: 24px; font-size: 12px; font-weight: 600; }
+.auth-premium .court-story-footer { margin-top: 32px; border-color: #ffffff30; color: #e1e9f3; }
+.auth-premium .court-story-footer span + span::before { color: #a5bedc; }
+.auth-premium .court-form-content { max-width: 440px; padding: 36px 0; }
+.auth-premium .auth-tabs { display: flex; gap: 4px; padding: 5px; border: 0; border-radius: 12px; background: #f1f5fa; margin-bottom: 30px; }
+.auth-premium .auth-tabs a { flex: 1; text-align: center; padding: 11px; border: 0; margin: 0; border-radius: 8px; color: #62738a; }
+.auth-premium .auth-tabs a[aria-current='page'] { background: white; color: #102b50; box-shadow: 0 2px 6px #102b5010; }
+.auth-premium .court-form h1 { color: #102b50; font-size: clamp(28px, 2.6vw, 36px); letter-spacing: -1px; margin: 0 0 12px; }
+.auth-premium .court-form-intro { margin: 0 0 28px; line-height: 1.7; }
+.auth-premium .form-field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; min-width: 0; }
+.auth-premium .court-form .form-field label { text-transform: none; letter-spacing: 0; }
+.auth-premium .court-form .form-field input { width: 100%; min-width: 0; height: 50px; border-radius: 10px; background: #fff; border: 1px solid #cbd6e3; color: #102b50; font: inherit; font-size: 16px; }
+.auth-premium .form-field input:focus { outline: 0; border-color: #245edb; box-shadow: 0 0 0 4px #245edb12; }
+.auth-premium .form-field input:disabled { background: #f4f6f9; color: #6a788b; cursor: not-allowed; }
+.auth-premium .password-control { width: 100%; }
+.auth-premium .password-control button { top: 3px; right: 4px; padding: 0; color: #62738a; }
+.auth-premium .auth-field-error { color: #ac303b; font-size: 12px; }
+.auth-premium .auth-field-hint { color: #62738a; font-size: 11px; line-height: 1.5; }
+.auth-premium .form-field input[aria-invalid='true'] { border-color: #bc3a47; }
+.auth-premium .court-submit { background: #245edb; color: white; border-radius: 10px; box-shadow: 0 5px 12px #245edb20; font-size: 15px; transition: background .18s, transform .18s; }
+.auth-premium .court-submit:hover { background: #184cbd; transform: translateY(-1px); }
+.auth-premium .court-submit:disabled { opacity: .6; cursor: wait; transform: none; }
+.auth-premium .court-switch a, .auth-premium .court-back:hover { color: #245edb; }
+.auth-options { display: flex; align-items: start; justify-content: space-between; gap: 16px; margin: 0 0 24px; font-size: 12px; }
+.auth-options label { display: flex; align-items: center; gap: 7px; color: #62738a; flex-wrap: wrap; }
+.auth-options input, .auth-consent input { width: 17px; height: 17px; flex-shrink: 0; accent-color: #245edb; }
+.auth-recovery { text-align: right; max-width: 50%; }
+.auth-recovery summary { cursor: pointer; color: #245edb; font-weight: 600; }
+.auth-recovery p { line-height: 1.7; color: #62738a; }
+.auth-social { margin-top: 28px; text-align: center; }
+.auth-social p { color: #62738a; font-size: 12px; }
+.auth-social p span { font-size: 11px; }
+.auth-social > div { display: flex; gap: 12px; }
+.auth-social button { flex: 1; min-height: 46px; border: 1px solid #dce3ed; border-radius: 10px; color: #62738a; background: #f8fafc; cursor: not-allowed; }
+.auth-social b { margin-right: 10px; font-size: 18px; }
+.auth-premium .court-member-note { margin-top: 26px; padding-top: 22px; }
+.auth-premium .password-guide { background: #f1f5fa; padding: 14px; }
+.auth-consent { display: flex; gap: 10px; align-items: start; font-size: 12px; line-height: 1.7; margin: 4px 0 22px; color: #526680; }
+.auth-consent input { margin-top: 2px; }
+.auth-premium :focus-visible { outline: 3px solid #245edb; outline-offset: 3px; }
+@media (min-width: 1600px) { .court-auth.auth-premium { padding-inline: max(24px, calc((100vw - 1600px) / 2)); } }
+@media (max-width: 1050px) { .court-auth.auth-premium { grid-template-columns: 1.1fr .9fr; gap: 16px; padding: 16px; } .auth-premium .court-story { padding: 28px; } .auth-premium .court-form-panel { padding: 24px; } .auth-premium .court-story-copy h2 { font-size: 38px; } }
+@media (max-width: 780px) { .court-auth.auth-premium { display: flex; flex-direction: column; padding: 0; gap: 0; background: white; } .auth-premium .court-story { min-height: 0; height: auto; border-radius: 0; padding: 20px 24px; } .auth-premium .court-story-copy, .auth-premium .court-story-footer, .auth-sport-photo { display: none; } .auth-premium .court-form-panel { border: 0; border-radius: 0; padding: 24px; flex: 1; } .auth-premium .court-form-content { padding: 28px 0; } .auth-premium .court-form h1 { font-size: 29px; } .auth-premium .form-field input { font-size: 16px; } .auth-premium .court-form-footer { font-size: 10px; } }
+@media (prefers-reduced-motion: reduce) { .auth-premium .court-submit { transition: none; transform: none; } }

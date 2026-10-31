@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="HighConcurrencyCommerce.Api/HighConcurrencyCommerce.Api.csproj" />
+  <Project Path="HighConcurrencyCommerce.Application/HighConcurrencyCommerce.Application.csproj" />
+  <Project Path="HighConcurrencyCommerce.Domain/HighConcurrencyCommerce.Domain.csproj" />
+  <Project Path="HighConcurrencyCommerce.Infrastructure/HighConcurrencyCommerce.Infrastructure.csproj" />
+  <Project Path="HighConcurrencyCommerce.IntegrationTests/HighConcurrencyCommerce.IntegrationTests.csproj" />
+</Solution>

@@ -1,0 +1,6 @@
+@HighConcurrencyCommerce.Api_HostAddress = http://localhost:5291
+
+GET {{HighConcurrencyCommerce.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
