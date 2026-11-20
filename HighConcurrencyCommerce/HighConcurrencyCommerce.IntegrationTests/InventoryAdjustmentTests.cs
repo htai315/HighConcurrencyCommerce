@@ -37,8 +37,8 @@ public sealed class InventoryAdjustmentTests(CatalogFixture fixture) : IClassFix
         var roleId = (Guid)(await roleCmd.ExecuteScalarAsync())!;
         var hash = new PasswordHasher<object>().HashPassword(new object(), Password);
         await using var insert = new NpgsqlCommand(
-            "INSERT INTO store.user_accounts (id, role_id, email, password_hash, full_name, account_status) " +
-            "VALUES (@id, @roleId, @email, @hash, @name, 'ACTIVE')", db);
+            "INSERT INTO store.user_accounts (id, role_id, email, password_hash, full_name, account_status, email_verified_at) " +
+            "VALUES (@id, @roleId, @email, @hash, @name, 'ACTIVE', now())", db);
         insert.Parameters.AddWithValue("id", userId);
         insert.Parameters.AddWithValue("roleId", roleId);
         insert.Parameters.AddWithValue("email", email);

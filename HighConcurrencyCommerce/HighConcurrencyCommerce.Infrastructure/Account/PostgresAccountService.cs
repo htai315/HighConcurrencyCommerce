@@ -196,6 +196,17 @@ public sealed class PostgresAccountService(StoreDbContext db) : IAccountService
 
     public async Task DeleteAddressAsync(Guid customerId, Guid addressId, CancellationToken ct = default)
     {
+        await using var tx = await db.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, ct);
+
+        var customerExists = await db.Database.SqlQueryRaw<Guid>(
+            "SELECT id AS \"Value\" FROM store.user_accounts WHERE id = {0} FOR UPDATE", customerId)
+            .FirstOrDefaultAsync(ct);
+
+        if (customerExists == Guid.Empty)
+        {
+            throw new AccountFailure("NOT_FOUND", "Không tìm thấy tài khoản.");
+        }
+
         var address = await db.CustomerAddresses
             .FirstOrDefaultAsync(a => a.Id == addressId && a.CustomerId == customerId, ct);
 
@@ -214,6 +225,7 @@ public sealed class PostgresAccountService(StoreDbContext db) : IAccountService
         {
             db.CustomerAddresses.Remove(address);
             await db.SaveChangesAsync(ct);
+            await tx.CommitAsync(ct);
         }
         catch (DbUpdateException ex) when (ex.InnerException is PostgresException { SqlState: PostgresErrorCodes.ForeignKeyViolation })
         {

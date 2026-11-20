@@ -1,14 +1,19 @@
 using System.Data;
 using System.Text.Json;
-using HighConcurrencyCommerce.Application.Orders;
 using HighConcurrencyCommerce.Application.Notifications;
+using HighConcurrencyCommerce.Application.Orders;
+using HighConcurrencyCommerce.Application.Vouchers;
 using HighConcurrencyCommerce.Infrastructure.Persistence;
 using HighConcurrencyCommerce.Infrastructure.Persistence.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HighConcurrencyCommerce.Infrastructure.Orders;
 
-public sealed class PostgresCodOrderService(StoreDbContext db, TimeProvider timeProvider, INotificationService notifications) : ICodOrderService
+public sealed class PostgresCodOrderService(
+    StoreDbContext db,
+    TimeProvider timeProvider,
+    INotificationService notifications,
+    IVoucherLifecycleManager voucherLifecycle) : ICodOrderService
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
@@ -94,8 +99,8 @@ public sealed class PostgresCodOrderService(StoreDbContext db, TimeProvider time
         order.ConfirmedAt = now;
         order.UpdatedAt = now;
         db.AuditLogs.Add(Audit(staffId, "USER", "COD_ORDER_CONFIRMED", orderId,
-            new { orderStatus = "PENDING_COD_CONFIRMATION", reservationStatus = "HELD" },
-            new { orderStatus = "CONFIRMED", reservationStatus = "ALLOCATED" }, correlationId, now));
+            new { orderStatus = "PENDING_COD_CONFIRMATION", reservationStatus = "HELD", voucherCode = order.VoucherCodeSnapshot, voucherDiscountAmount = order.VoucherDiscountAmount },
+            new { orderStatus = "CONFIRMED", reservationStatus = "ALLOCATED", voucherCode = order.VoucherCodeSnapshot, voucherDiscountAmount = order.VoucherDiscountAmount }, correlationId, now));
         await notifications.EnsureAsync(order.CustomerId, $"order:{order.Id:N}:cod-confirmed", "ORDER_CONFIRMED",
             "Đơn hàng đã được xác nhận", $"Đơn {order.OrderNumber} đã được xác nhận và đang chờ đóng gói.", ct);
 
@@ -139,6 +144,8 @@ public sealed class PostgresCodOrderService(StoreDbContext db, TimeProvider time
         var payment = await db.Payments.FirstOrDefaultAsync(x => x.OrderId == orderId, ct);
         if (reservation is null || reservation.ReservationStatus != "HELD" || payment is null || payment.PaymentStatus != "COD_PENDING")
             throw new CodOrderFailure("INVENTORY_INVARIANT", "Không thể expiry đơn COD do state liên bảng không nhất quán.");
+
+        await voucherLifecycle.ReleaseForClosedOrderAsync(orderId, "COD_CONFIRMATION_EXPIRED", now, ct);
 
         await LockFlashSaleOffersForOrderAsync(orderId, ct);
         var skuIds = reservation.StockReservationLines.Select(x => x.ProductSkuId).OrderBy(x => x).ToArray();
@@ -189,8 +196,8 @@ public sealed class PostgresCodOrderService(StoreDbContext db, TimeProvider time
         order.ClosedReason = "COD_CONFIRMATION_EXPIRED";
         order.UpdatedAt = now;
         db.AuditLogs.Add(Audit(null, "WORKER", "COD_ORDER_EXPIRED", orderId,
-            new { orderStatus = "PENDING_COD_CONFIRMATION", paymentStatus = "COD_PENDING", reservationStatus = "HELD" },
-            new { orderStatus = "EXPIRED", paymentStatus = "VOID", reservationStatus = "RELEASED" }, null, now));
+            new { orderStatus = "PENDING_COD_CONFIRMATION", paymentStatus = "COD_PENDING", reservationStatus = "HELD", voucherCode = order.VoucherCodeSnapshot, voucherDiscountAmount = order.VoucherDiscountAmount },
+            new { orderStatus = "EXPIRED", paymentStatus = "VOID", reservationStatus = "RELEASED", voucherCode = order.VoucherCodeSnapshot, voucherDiscountAmount = order.VoucherDiscountAmount }, null, now));
         await notifications.EnsureAsync(order.CustomerId, $"order:{order.Id:N}:cod-expired", "ORDER_EXPIRED",
             "Đơn COD đã hết hạn", $"Đơn {order.OrderNumber} đã hết thời hạn xác nhận và phần hàng giữ chỗ đã được trả lại.", ct);
         await db.SaveChangesAsync(ct);
@@ -234,7 +241,10 @@ public sealed class PostgresCodOrderService(StoreDbContext db, TimeProvider time
             string.Join(", ", new[] { address.AddressLine, address.Ward, address.Province }.Where(x => !string.IsNullOrWhiteSpace(x))),
             order.SalesOrderItems.OrderBy(x => x.ProductSkuId).Select(x => new CodOrderItemDto(
                 x.ProductSkuId, x.ProductTitleSnapshot, x.SkuCodeSnapshot, x.SkuOptionLabelSnapshot,
-                x.Quantity, x.UnitPrice, x.Quantity * x.UnitPrice)).ToList());
+                x.Quantity, x.UnitPrice, x.Quantity * x.UnitPrice)).ToList(),
+            order.SubtotalAmount, order.VoucherDiscountAmount, order.VoucherCodeSnapshot,
+            order.ShippingFee, order.ShippingMethodCodeSnapshot, order.ShippingMethodNameSnapshot,
+            order.ShippingEstimatedMinDays, order.ShippingEstimatedMaxDays);
     }
 
     private static AuditLog Audit(Guid? actorId, string actorType, string action, Guid orderId,

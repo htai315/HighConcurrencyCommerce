@@ -3,10 +3,12 @@ import { ApiError, apiRequest, isRecord } from '../../lib/api/client'
 export type StaffTasks = {
   pendingCodCount: number; shipmentsToPackCount: number; shipmentsToHandoverCount: number
   deliveryFailuresCount: number; lowStockSkuCount: number; notificationsUnreadCount: number
+  approvedReturnsCount: number
 }
 export type RevenueReport = {
   from: string; to: string; revenue: number; completedOrderCount: number; averageOrderValue: number
-  days: { date: string; revenue: number; completedOrderCount: number }[]
+  grossRevenue: number; refundAmount: number; netRevenue: number
+  days: { date: string; revenue: number; completedOrderCount: number; grossRevenue: number; refundAmount: number; netRevenue: number }[]
   paymentMethods: { paymentMethod: string; revenue: number; completedOrderCount: number }[]
 }
 export type LowStockItem = {
@@ -24,7 +26,8 @@ export type AuditPage = { items: AuditLogItem[]; page: number; pageSize: number;
 function invalid(): never { throw new ApiError(502, { code: 'INVALID_RESPONSE' }) }
 function text(value: unknown): string { return typeof value === 'string' ? value : invalid() }
 function nullableText(value: unknown): string | null { return value === null ? null : text(value) }
-function number(value: unknown): number { return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : invalid() }
+function money(value: unknown): number { return typeof value === 'number' && Number.isFinite(value) ? value : invalid() }
+function number(value: unknown): number { const parsed = money(value); return parsed >= 0 ? parsed : invalid() }
 function integer(value: unknown): number { const parsed = number(value); return Number.isSafeInteger(parsed) ? parsed : invalid() }
 function record(value: unknown): Record<string, unknown> { return isRecord(value) ? value : invalid() }
 
@@ -32,15 +35,20 @@ export async function getStaffTasks(): Promise<StaffTasks> {
   const value = record(await apiRequest('/staff/dashboard/tasks', { cache: 'no-store' }))
   return { pendingCodCount: integer(value.pendingCodCount), shipmentsToPackCount: integer(value.shipmentsToPackCount),
     shipmentsToHandoverCount: integer(value.shipmentsToHandoverCount), deliveryFailuresCount: integer(value.deliveryFailuresCount),
-    lowStockSkuCount: integer(value.lowStockSkuCount), notificationsUnreadCount: integer(value.notificationsUnreadCount) }
+    lowStockSkuCount: integer(value.lowStockSkuCount), notificationsUnreadCount: integer(value.notificationsUnreadCount),
+    approvedReturnsCount: integer(value.approvedReturnsCount) }
 }
 
-export async function getRevenue(): Promise<RevenueReport> {
-  const value = record(await apiRequest('/admin/reports/revenue', { cache: 'no-store' }))
+export async function getRevenue(from = '', to = ''): Promise<RevenueReport> {
+  const query = new URLSearchParams()
+  if (from) query.set('from', from)
+  if (to) query.set('to', to)
+  const value = record(await apiRequest(`/admin/reports/revenue${query.size ? `?${query}` : ''}`, { cache: 'no-store' }))
   if (!Array.isArray(value.days) || !Array.isArray(value.paymentMethods)) return invalid()
-  return { from: text(value.from), to: text(value.to), revenue: number(value.revenue), completedOrderCount: integer(value.completedOrderCount),
-    averageOrderValue: number(value.averageOrderValue),
-    days: value.days.map(raw => { const item = record(raw); return { date: text(item.date), revenue: number(item.revenue), completedOrderCount: integer(item.completedOrderCount) } }),
+  return { from: text(value.from), to: text(value.to), revenue: money(value.revenue), completedOrderCount: integer(value.completedOrderCount),
+    averageOrderValue: money(value.averageOrderValue), grossRevenue: number(value.grossRevenue), refundAmount: number(value.refundAmount), netRevenue: money(value.netRevenue),
+    days: value.days.map(raw => { const item = record(raw); return { date: text(item.date), revenue: money(item.revenue), completedOrderCount: integer(item.completedOrderCount),
+      grossRevenue: number(item.grossRevenue), refundAmount: number(item.refundAmount), netRevenue: money(item.netRevenue) } }),
     paymentMethods: value.paymentMethods.map(raw => { const item = record(raw); return { paymentMethod: text(item.paymentMethod), revenue: number(item.revenue), completedOrderCount: integer(item.completedOrderCount) } }) }
 }
 
@@ -53,8 +61,8 @@ export async function getLowStock(): Promise<LowStockReport> {
   } }) }
 }
 
-export async function getAuditLogs(action = ''): Promise<AuditPage> {
-  const query = new URLSearchParams({ page: '1', pageSize: '30' })
+export async function getAuditLogs(action = '', page = 1): Promise<AuditPage> {
+  const query = new URLSearchParams({ page: String(page), pageSize: '30' })
   if (action.trim()) query.set('action', action.trim())
   const value = record(await apiRequest(`/admin/audit-logs?${query}`, { cache: 'no-store' }))
   if (!Array.isArray(value.items)) return invalid()

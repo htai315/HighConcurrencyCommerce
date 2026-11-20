@@ -43,6 +43,7 @@ public sealed class CatalogTests(CatalogFixture fixture) : IClassFixture<Catalog
     [Theory]
     [InlineData("alpha", "Alpha Monitor")]
     [InlineData("ALPHA", "Alpha Monitor")]
+    [InlineData("ÁLPHÁ", "Alpha Monitor")]
     [InlineData("  alpha  ", "Alpha Monitor")]
     [InlineData("%", "Cable 100%_Pro")]
     [InlineData("_", "Cable 100%_Pro")]
@@ -51,6 +52,24 @@ public sealed class CatalogTests(CatalogFixture fixture) : IClassFixture<Catalog
         var body = await GetAsync("products?q=" + Uri.EscapeDataString(query));
         Assert.Equal(1, body.GetProperty("totalCount").GetInt32());
         Assert.Equal(expected, body.GetProperty("items")[0].GetProperty("title").GetString());
+        Assert.Equal("relevance", body.GetProperty("query").GetProperty("effectiveSort").GetString());
+    }
+
+    [Fact]
+    public async Task Browse_contract_exposes_effective_sort_and_accepts_new_filters()
+    {
+        var body = await GetAsync("products?inStock=true&minRating=1&sort=rating-desc");
+        var bestSelling = await GetAsync("products?sort=best-selling&pageSize=2");
+
+        Assert.Equal("rating-desc", body.GetProperty("query").GetProperty("effectiveSort").GetString());
+        Assert.Equal(JsonValueKind.Null, body.GetProperty("query").GetProperty("normalizedText").ValueKind);
+        Assert.All(body.GetProperty("items").EnumerateArray(), item =>
+        {
+            Assert.True(item.GetProperty("inStock").GetBoolean());
+            Assert.True(item.GetProperty("averageRating").GetDecimal() >= 1m);
+        });
+        Assert.Equal("best-selling", bestSelling.GetProperty("query").GetProperty("effectiveSort").GetString());
+        Assert.Equal(2, bestSelling.GetProperty("items").GetArrayLength());
     }
 
     [Fact]
@@ -78,11 +97,16 @@ public sealed class CatalogTests(CatalogFixture fixture) : IClassFixture<Catalog
     [InlineData("page=2147483647")]
     [InlineData("pageSize=0")]
     [InlineData("pageSize=101")]
+    [InlineData("pageSize=49")]
     [InlineData("page=invalid")]
     [InlineData("categoryId=invalid")]
     [InlineData("minPrice=-1")]
     [InlineData("minPrice=200&maxPrice=100")]
     [InlineData("sort=random")]
+    [InlineData("sort=relevance")]
+    [InlineData("minRating=0")]
+    [InlineData("minRating=6")]
+    [InlineData("inStock=maybe")]
     [InlineData("q=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")]
     public async Task Invalid_queries_return_validation_problem(string query)
     {

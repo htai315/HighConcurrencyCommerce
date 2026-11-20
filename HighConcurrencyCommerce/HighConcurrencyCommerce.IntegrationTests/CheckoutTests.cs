@@ -36,6 +36,7 @@ public sealed class CheckoutTests(CatalogFixture fixture) : IClassFixture<Catalo
         using var register = await Send(client, "auth/register",
             new { email, password = Password, confirmPassword = Password, fullName = "Checkout Customer" });
         Assert.Equal(HttpStatusCode.Accepted, register.StatusCode);
+        await fixture.VerifyUserAsync(email);
         using var login = await Send(client, "auth/login", new { email, password = Password });
         Assert.Equal(HttpStatusCode.OK, login.StatusCode);
         using var addressResponse = await Send(client, "account/addresses", new
@@ -60,8 +61,8 @@ public sealed class CheckoutTests(CatalogFixture fixture) : IClassFixture<Catalo
         var roleId = (Guid)(await role.ExecuteScalarAsync())!;
         var hash = new PasswordHasher<object>().HashPassword(new object(), Password);
         await using var insert = new NpgsqlCommand(
-            "INSERT INTO store.user_accounts (id, role_id, email, password_hash, full_name, account_status) " +
-            "VALUES (gen_random_uuid(), @role, @email, @hash, 'Checkout role', 'ACTIVE')", db);
+            "INSERT INTO store.user_accounts (id, role_id, email, password_hash, full_name, account_status, email_verified_at) " +
+            "VALUES (gen_random_uuid(), @role, @email, @hash, 'Checkout role', 'ACTIVE', now())", db);
         insert.Parameters.AddWithValue("role", roleId);
         insert.Parameters.AddWithValue("email", email);
         insert.Parameters.AddWithValue("hash", hash);
@@ -98,6 +99,9 @@ public sealed class CheckoutTests(CatalogFixture fixture) : IClassFixture<Catalo
     private static object Payload(Guid addressId, string paymentMethod, params (Guid SkuId, int Quantity)[] lines) => new
     {
         shippingAddressId = addressId,
+        shippingMethodId = ShippingCheckoutTestDefaults.MethodId,
+        shippingMethodRevision = ShippingCheckoutTestDefaults.Revision,
+        quotedShippingFee = ShippingCheckoutTestDefaults.Fee,
         paymentMethod,
         lines = lines.Select(x => new { productSkuId = x.SkuId, quantity = x.Quantity, flashSaleOfferId = (Guid?)null }).ToArray()
     };

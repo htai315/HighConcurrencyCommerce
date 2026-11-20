@@ -9,13 +9,22 @@ public sealed record CustomerOrderItemDto(
     string OptionLabel,
     int Quantity,
     decimal UnitPrice,
-    decimal LineTotal);
+    decimal LineTotal,
+    Guid ProductId = default);
 
 public sealed record CustomerDeliveryAttemptDto(
     short AttemptNo,
     string Result,
     string? Note,
     DateTime? FinishedAt);
+
+public sealed record CustomerOrderTrackingSummaryDto(
+    Guid ConsignmentId,
+    string CarrierCode,
+    string CarrierName,
+    string TrackingNumber,
+    string? TrackingUrl,
+    string ConsignmentStatus);
 
 public sealed record CustomerOrderDto(
     Guid Id,
@@ -40,7 +49,16 @@ public sealed record CustomerOrderDto(
     bool CanCancel,
     string? CancellationReason,
     IReadOnlyList<CustomerOrderItemDto> Items,
-    IReadOnlyList<CustomerDeliveryAttemptDto> DeliveryAttempts);
+    IReadOnlyList<CustomerDeliveryAttemptDto> DeliveryAttempts,
+    decimal SubtotalAmount = 0m,
+    decimal VoucherDiscountAmount = 0m,
+    string? VoucherCode = null,
+    decimal ShippingFee = 0m,
+    string ShippingMethodCode = "LEGACY_FREE",
+    string ShippingMethodName = "Miễn phí (đơn lịch sử)",
+    short? ShippingEstimatedMinDays = null,
+    short? ShippingEstimatedMaxDays = null,
+    CustomerOrderTrackingSummaryDto? Tracking = null);
 
 public sealed record CustomerOrderPageDto(
     IReadOnlyList<CustomerOrderDto> Items,

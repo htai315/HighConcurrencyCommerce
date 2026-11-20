@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Apis.Auth" Version="1.78.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.14">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -17,6 +18,7 @@
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.14" />
+    <PackageReference Include="payOS" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,7 +29,30 @@
 
   <ItemGroup>
     <Folder Include="Persistence\" />
-    <EmbeddedResource Include="../../database/002_auth_sessions.sql" LogicalName="AuthSchema.sql" />
+    <EmbeddedResource Include="../../database/001_create_schema.sql" LogicalName="Database.Migrations.001_create_schema.sql" />
+    <EmbeddedResource Include="../../database/002_auth_sessions.sql" LogicalName="Database.Migrations.002_auth_sessions.sql" />
+    <EmbeddedResource Include="../../database/003_flash_sale_cart_offer.sql" LogicalName="Database.Migrations.003_flash_sale_cart_offer.sql" />
+    <EmbeddedResource Include="../../database/004_google_auth.sql" LogicalName="Database.Migrations.004_google_auth.sql" />
+    <EmbeddedResource Include="../../database/005_auth_email_recovery.sql" LogicalName="Database.Migrations.005_auth_email_recovery.sql" />
+    <EmbeddedResource Include="../../database/006_internal_staff_invites.sql" LogicalName="Database.Migrations.006_internal_staff_invites.sql" />
+    <EmbeddedResource Include="../../database/007_demo_seed.sql" LogicalName="DemoSeed.sql" />
+    <EmbeddedResource Include="../../database/008_product_reviews.sql" LogicalName="Database.Migrations.008_product_reviews.sql" />
+    <EmbeddedResource Include="../../database/009_customer_wishlist.sql" LogicalName="Database.Migrations.009_customer_wishlist.sql" />
+    <EmbeddedResource Include="../../database/010_basic_vouchers.sql" LogicalName="Database.Migrations.010_basic_vouchers.sql" />
+    <EmbeddedResource Include="../../database/011_cod_returns_refunds.sql" LogicalName="Database.Migrations.011_cod_returns_refunds.sql" />
+    <EmbeddedResource Include="../../database/012_return_quality_inspection.sql" LogicalName="Database.Migrations.012_return_quality_inspection.sql" />
+    <EmbeddedResource Include="../../database/013_direct_product_exchange.sql" LogicalName="Database.Migrations.013_direct_product_exchange.sql" />
+    <EmbeddedResource Include="../../database/014_brand_product_specifications.sql" LogicalName="Database.Migrations.014_brand_product_specifications.sql" />
+    <EmbeddedResource Include="../../database/015_product_revisions.sql" LogicalName="Database.Migrations.015_product_revisions.sql" />
+    <EmbeddedResource Include="../../database/016_product_lifecycle.sql" LogicalName="Database.Migrations.016_product_lifecycle.sql" />
+    <EmbeddedResource Include="../../database/017_product_revision_hardening.sql" LogicalName="Database.Migrations.017_product_revision_hardening.sql" />
+    <EmbeddedResource Include="../../database/018_shipping_methods_fees.sql" LogicalName="Database.Migrations.018_shipping_methods_fees.sql" />
+    <EmbeddedResource Include="../../database/019_carrier_consignments_tracking.sql" LogicalName="Database.Migrations.019_carrier_consignments_tracking.sql" />
+    <EmbeddedResource Include="../../database/020_advanced_product_search.sql" LogicalName="Database.Migrations.020_advanced_product_search.sql" />
+    <EmbeddedResource Include="../../database/021_wishlist_product_alerts.sql" LogicalName="Database.Migrations.021_wishlist_product_alerts.sql" />
+    <EmbeddedResource Include="../../database/022_payos_integration_hardening.sql" LogicalName="Database.Migrations.022_payos_integration_hardening.sql" />
+    <EmbeddedResource Include="../../database/023_payos_reconciliation_workflow.sql" LogicalName="Database.Migrations.023_payos_reconciliation_workflow.sql" />
+    <EmbeddedResource Include="../../database/024_payos_reconciliation_hardening.sql" LogicalName="Database.Migrations.024_payos_reconciliation_hardening.sql" />
   </ItemGroup>
 
 </Project>

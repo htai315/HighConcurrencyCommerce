@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace HighConcurrencyCommerce.Infrastructure.Persistence.Models;
@@ -34,4 +34,8 @@ public partial class SalesOrderItem
     public virtual ProductSku ProductSku { get; set; } = null!;
 
     public virtual StockReservationLine? StockReservationLine { get; set; }
+
+    public virtual ICollection<ProductReview> ProductReviews { get; set; } = new List<ProductReview>();
+
+    public virtual ICollection<OrderReturnRequestLine> ReturnRequestLines { get; set; } = new List<OrderReturnRequestLine>();
 }

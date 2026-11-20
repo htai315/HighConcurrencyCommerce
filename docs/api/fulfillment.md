@@ -1,6 +1,6 @@
-# COD Fulfillment API — Tasks T25–T26
+# COD và PayOS Fulfillment API — Tasks T25–T26/T21
 
-Quyết định nền: [ADR 0003](../adr/0003-defer-payos-complete-cod-first.md). T25 chỉ xử lý đơn `COD` đã được Staff xác nhận; PayOS không đi vào hàng đợi này.
+Hàng đợi nhận đơn `COD` đã xác nhận và đơn `PAYOS` có Payment `SUCCESS`. Cả hai dùng chung state machine kho/vận chuyển; nhánh PayOS prepaid tuyệt đối không ghi nhận khoản thu COD.
 
 ## State flow và invariant
 
@@ -9,7 +9,8 @@ Order CONFIRMED
   → start: Order FULFILLING + Shipment PENDING_PACKING
   → pack: Shipment PACKED
   → handover: Shipment SHIPPING + Reservation/Lines CONSUMED + STOCK_OUT
-  → delivered: Shipment DELIVERED + Payment COD_COLLECTED + Order COMPLETED
+  → delivered COD: Shipment DELIVERED + Payment COD_COLLECTED + Order COMPLETED
+  → delivered PayOS: Shipment DELIVERED + Payment giữ SUCCESS + Order COMPLETED
   → failed: Shipment DELIVERY_FAILED
       → retry: Shipment SHIPPING (tối đa hai lần, attempts 2–3)
       → return-stock: RETURN_IN + Payment VOID + Order CANCELLED
@@ -19,20 +20,21 @@ Order CONFIRMED
 - Mỗi Order chỉ có một Shipment. Mỗi bước chỉ nhận đúng trạng thái nguồn; retry/race sau khi bước đã commit trả `409 INVALID_STATE`, không lặp side effect.
 - Thứ tự khóa luôn là Order → Shipment → SKU theo UUID → InventoryBalance theo UUID để các flow cạnh tranh dùng cùng lock order.
 - Đóng gói không thay đổi tồn. Bàn giao mới là thời điểm hàng rời kho: `PhysicalQty -= quantity`, `AllocatedQty -= quantity`, revision tăng; Reservation/Lines thành `CONSUMED`; mỗi SKU có một movement `STOCK_OUT` âm.
-- Giao COD chỉ hoàn tất nếu số tiền thực thu bằng chính xác `Order.TotalAmount` và mã biên nhận chưa được dùng. DeliveryAttempt, PaymentTransaction, Shipment, Payment và Order đổi trạng thái trong một transaction.
+- Giao COD chỉ hoàn tất nếu số tiền thực thu bằng chính xác `Order.TotalAmount` và mã biên nhận chưa được dùng. Đơn PayOS chỉ hoàn tất khi Payment đang `SUCCESS` và request không chứa trường thu COD.
+- `Order.TotalAmount` đã gồm phí vận chuyển snapshot. Giao lại không phát sinh hoặc cộng thêm phí vận chuyển mới.
 - Mỗi lần giao có một DeliveryAttempt. Lần đầu là attempt 1; `redeliveryCount` đếm số lần giao lại và không vượt 2, tương ứng tối đa attempt 3.
 - `DELIVERY_FAILED` chỉ được chuyển sang một trong hai nhánh: retry hoặc hoàn kho. Hai command tranh chấp cùng Order/Shipment lock nên không thể cùng commit.
 - Hoàn kho chỉ sau khi Staff cung cấp bằng chứng thực nhận. Hệ thống tăng `PhysicalQty/AvailableQty`, ghi `RETURN_IN` đúng một lần và không release Reservation đã `CONSUMED`.
 
 ## DTO hàng đợi
 
-`FulfillmentOrderDto` gồm `orderId`, `orderNumber`, `orderStatus`, `shipmentId`, `shipmentStatus`, `paymentStatus`, `customerName`, `totalAmount`, shipping snapshot, timestamps, `redeliveryCount`, `returnStockCompleted` và item snapshots. API không đọc lại địa chỉ/sản phẩm hiện tại để thay nội dung lịch sử đơn.
+`FulfillmentOrderDto` gồm `orderId`, `orderNumber`, `orderStatus`, `shipmentId`, `shipmentStatus`, `paymentStatus`, `customerName`, `totalAmount`, địa chỉ và snapshot vận chuyển (`shippingFee`, code/name, ETA min/max), timestamps, `redeliveryCount`, `returnStockCompleted` và item snapshots. API không đọc lại địa chỉ/sản phẩm/phương thức vận chuyển hiện tại để thay nội dung lịch sử đơn.
 
 ## Endpoints
 
 ### `GET /api/v1/staff/shipments`
 
-Trả các đơn COD ở `CONFIRMED` hoặc `FULFILLING`, theo thời gian tạo tăng dần. Đơn chưa bắt đầu có `shipmentId/shipmentStatus = null`.
+Trả các đơn COD hoặc PayOS hợp lệ ở `CONFIRMED`/`FULFILLING`, theo thời gian tạo tăng dần. Đơn chưa bắt đầu có `shipmentId/shipmentStatus = null`.
 
 ### `POST /api/v1/staff/orders/{orderId}/start-fulfillment`
 
@@ -59,6 +61,8 @@ T25 chỉ nhận kết quả thành công:
 ```
 
 `collectionReference` dài 3–100 ký tự, chỉ gồm chữ, số và `._:-`. Thành công tạo PaymentTransaction `provider=COD`, `VERIFIED`, đánh dấu attempt/Shipment `DELIVERED`, Payment `COD_COLLECTED`, Order `COMPLETED`; audit `COD_DELIVERY_COMPLETED`.
+
+Đơn PayOS prepaid gửi `{ "result": "DELIVERED" }` và không được gửi `codCollectedAmount`/`collectionReference`. Backend giữ Payment `SUCCESS`, hoàn tất Shipment/Order và ghi audit `PAYOS_DELIVERY_COMPLETED`.
 
 Kết quả thất bại không được gửi số tiền/mã biên nhận và bắt buộc có lý do:
 

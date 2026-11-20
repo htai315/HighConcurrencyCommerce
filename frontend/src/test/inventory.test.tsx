@@ -43,6 +43,8 @@ test('Staff: xem bảng tồn kho, nhập kho bổ sung hàng và xem lịch s�
       availableQty: 18,
       reservedQty: 2,
       allocatedQty: 0,
+      quarantinedQty: 0,
+      damagedQty: 0,
     },
     {
       skuId: '30000000-0000-0000-0000-000000000002',
@@ -56,6 +58,8 @@ test('Staff: xem bảng tồn kho, nhập kho bổ sung hàng và xem lịch s�
       availableQty: 0,
       reservedQty: 0,
       allocatedQty: 0,
+      quarantinedQty: 0,
+      damagedQty: 0,
     },
   ]
 
@@ -122,6 +126,8 @@ test('Staff: xem bảng tồn kho, nhập kho bổ sung hàng và xem lịch s�
         availableQty: newAvailable,
         reservedQty: target?.reservedQty ?? 0,
         allocatedQty: target?.allocatedQty ?? 0,
+        quarantinedQty: target?.quarantinedQty ?? 0,
+        damagedQty: target?.damagedQty ?? 0,
         revision: 1,
         movementId: newMov.id,
       }
@@ -145,6 +151,7 @@ test('Staff: xem bảng tồn kho, nhập kho bổ sung hàng và xem lịch s�
   expect(screen.getByText('Vợt Cầu Lông Yonex Astrox 100ZZ')).toBeVisible()
 
   // 3. Thực hiện nhập kho cho NF1000Z-4UG5
+  await user.click(screen.getByText('Nhập hàng vào kho', { selector: 'summary' }))
   const skuSelect = screen.getByLabelText(/Chọn biến thể SKU \*/i)
   fireEvent.change(skuSelect, { target: { value: '30000000-0000-0000-0000-000000000002' } })
 

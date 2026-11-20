@@ -74,6 +74,8 @@ Content-Type: application/json
 }
 ```
 
+`sourceId` là UUID bắt buộc, khác `00000000-0000-0000-0000-000000000000`. Client phải giữ nguyên giá trị này khi retry cùng một phiếu nhập; backend không tự sinh khóa thay caller.
+
 ### Response 200 OK
 ```json
 {
@@ -89,9 +91,9 @@ Content-Type: application/json
 ```
 
 ### Error Responses
-- `400 Bad Request`: `VALIDATION_ERROR` (lỗi định dạng dữ liệu đầu vào) hoặc `INVALID_ARGUMENT` (số lượng nhập kho <= 0).
+- `400 Bad Request`: `VALIDATION_ERROR` (lỗi định dạng dữ liệu đầu vào) hoặc `INVALID_ARGUMENT` (số lượng nhập kho <= 0, thiếu/rỗng `sourceId`).
 - `401 Unauthorized`: Chưa đăng nhập (Guest).
 - `403 Forbidden`: Người dùng không có role `STAFF` (Customer hoặc Admin đều nhận 403; module kho là không gian độc quyền của Staff).
 - `404 Not Found`: `NOT_FOUND` (SKU không tồn tại).
-- `409 Conflict`: `CONFLICT` (tranh chấp race condition / unique constraint) hoặc `IDEMPOTENCY_CONFLICT` (gửi lại cùng `sourceId` nhưng thay đổi số lượng hoặc ghi chú so với giao dịch trước).
+- `409 Conflict`: `CONFLICT` (tranh chấp race condition / unique constraint), `IDEMPOTENCY_CONFLICT` (gửi lại cùng `sourceId` nhưng thay đổi số lượng hoặc ghi chú so với giao dịch trước), hoặc `INVENTORY_LIMIT_EXCEEDED` (phép nhập làm số lượng vượt giới hạn số nguyên lưu trữ).
 

@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
+import { ConfirmDialog } from '../../components/layout/ConfirmDialog'
 import type { ManagedProduct } from '../product-management/product-management.api'
 import {
   type FlashSaleCampaignSummary,
@@ -283,7 +284,7 @@ export function AdminFlashSalePanel({ products }: AdminFlashSalePanelProps) {
       )}
 
       {/* Header & Create Button */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="campaign-toolbar">
         <div>
           <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600 }}>Quản trị Chiến dịch Flash Sale</h2>
           <p style={{ margin: '0.25rem 0 0', color: '#64748b', fontSize: '0.875rem' }}>
@@ -322,9 +323,11 @@ export function AdminFlashSalePanel({ products }: AdminFlashSalePanelProps) {
           }}
         >
           <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Tạo mới chiến dịch Flash Sale</h3>
+          <p>Thời gian theo múi giờ trình duyệt: {Intl.DateTimeFormat().resolvedOptions().timeZone}.</p>
           <div>
-            <label style={{ display: 'block', fontWeight: 500, marginBottom: '0.25rem' }}>Tên chiến dịch *</label>
+            <label htmlFor="campaign-name" style={{ display: 'block', fontWeight: 500, marginBottom: '0.25rem' }}>Tên chiến dịch *</label>
             <input
+              id="campaign-name"
               type="text"
               value={newCampName}
               onChange={e => setNewCampName(e.target.value)}
@@ -335,8 +338,9 @@ export function AdminFlashSalePanel({ products }: AdminFlashSalePanelProps) {
           </div>
           <div className="campaign-date-fields">
             <div>
-              <label style={{ display: 'block', fontWeight: 500, marginBottom: '0.25rem' }}>Bắt đầu *</label>
+              <label htmlFor="campaign-start" style={{ display: 'block', fontWeight: 500, marginBottom: '0.25rem' }}>Bắt đầu *</label>
               <input
+                id="campaign-start"
                 type="datetime-local"
                 value={newStartsAt}
                 onChange={e => setNewStartsAt(e.target.value)}
@@ -345,8 +349,9 @@ export function AdminFlashSalePanel({ products }: AdminFlashSalePanelProps) {
               />
             </div>
             <div>
-              <label style={{ display: 'block', fontWeight: 500, marginBottom: '0.25rem' }}>Kết thúc *</label>
+              <label htmlFor="campaign-end" style={{ display: 'block', fontWeight: 500, marginBottom: '0.25rem' }}>Kết thúc *</label>
               <input
+                id="campaign-end"
                 type="datetime-local"
                 value={newEndsAt}
                 onChange={e => setNewEndsAt(e.target.value)}
@@ -368,7 +373,7 @@ export function AdminFlashSalePanel({ products }: AdminFlashSalePanelProps) {
               disabled={submitting}
               style={{
                 padding: '0.5rem 1rem',
-                backgroundColor: '#16a34a',
+                backgroundColor: 'var(--brand)',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '4px',
@@ -533,8 +538,9 @@ export function AdminFlashSalePanel({ products }: AdminFlashSalePanelProps) {
                   <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>+ Thêm sản phẩm biến thể (SKU) vào Flash Sale</div>
                   <div className="campaign-offer-fields">
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500, marginBottom: '0.25rem' }}>Chọn SKU *</label>
+                      <label htmlFor="offer-sku" style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500, marginBottom: '0.25rem' }}>Chọn SKU *</label>
                       <select
+                        id="offer-sku"
                         value={selectedSkuId}
                         onChange={e => {
                           setSelectedSkuId(e.target.value)
@@ -555,8 +561,9 @@ export function AdminFlashSalePanel({ products }: AdminFlashSalePanelProps) {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500, marginBottom: '0.25rem' }}>Giá Flash Sale *</label>
+                      <label htmlFor="offer-price" style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500, marginBottom: '0.25rem' }}>Giá Flash Sale *</label>
                       <input
+                        id="offer-price"
                         type="number"
                         min="1"
                         step="1"
@@ -569,8 +576,9 @@ export function AdminFlashSalePanel({ products }: AdminFlashSalePanelProps) {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500, marginBottom: '0.25rem' }}>Quota mở bán *</label>
+                      <label htmlFor="offer-quota" style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500, marginBottom: '0.25rem' }}>Quota mở bán *</label>
                       <input
+                        id="offer-quota"
                         type="number"
                         min="1"
                         value={quotaTotal}
@@ -581,8 +589,9 @@ export function AdminFlashSalePanel({ products }: AdminFlashSalePanelProps) {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500, marginBottom: '0.25rem' }}>Max/Khách</label>
+                      <label htmlFor="offer-limit" style={{ display: 'block', fontSize: '0.75rem', fontWeight: 500, marginBottom: '0.25rem' }}>Max/Khách</label>
                       <input
+                        id="offer-limit"
                         type="number"
                         min="1"
                         max="99"
@@ -676,82 +685,15 @@ export function AdminFlashSalePanel({ products }: AdminFlashSalePanelProps) {
           </div>
         ) : (
           <div style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8', border: '1px dashed #e2e8f0', borderRadius: '8px' }}>
-            Chọn một chiến dịch từ danh sách bên trái để xem và quản lý chi tiết.
+            Chọn một chiến dịch trong danh sách để xem và quản lý chi tiết.
           </div>
         )}
       </div>
 
-      {/* Cancel Confirmation Modal */}
-      {showCancelModal && (
-        <div
-          role="dialog"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: '#fff',
-              padding: '1.5rem',
-              borderRadius: '8px',
-              maxWidth: '480px',
-              width: '90%',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1rem',
-            }}
-          >
-            <h3 style={{ margin: 0, color: '#dc2626' }}>Xác nhận HỦY chiến dịch Flash Sale</h3>
-            <p style={{ margin: 0, color: '#475569', fontSize: '0.875rem' }}>
-              Hành động này sẽ chuyển trạng thái chiến dịch thành <strong>CANCELLED</strong> và dừng toàn bộ các lượt mua mới.
-              Theo nguyên tắc bất biến <strong>SM-Q02</strong>, các đơn hàng đã tạo hoặc thanh toán trước đó vẫn được bảo toàn nguyên vẹn.
-            </p>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.25rem' }}>
-                Lý do hủy (tùy chọn):
-              </label>
-              <textarea
-                value={cancelReason}
-                onChange={e => setCancelReason(e.target.value)}
-                placeholder="VD: Điều chỉnh lịch khuyến mãi..."
-                rows={3}
-                style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #cbd5e1' }}
-              />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-              <button
-                type="button"
-                onClick={() => setShowCancelModal(false)}
-                style={{ padding: '0.5rem 1rem', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer' }}
-              >
-                Đóng
-              </button>
-              <button
-                type="button"
-                onClick={handleCancel}
-                disabled={submitting}
-                style={{
-                  padding: '0.5rem 1rem',
-                  backgroundColor: '#dc2626',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontWeight: 500,
-                }}
-              >
-                {submitting ? 'Đang hủy...' : 'Xác nhận Hủy'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {showCancelModal && <ConfirmDialog title="Xác nhận hủy chiến dịch Flash Sale" description="Dừng lượt mua mới theo chiến dịch. Các đơn đã tạo trước đó được giữ nguyên." confirmLabel="Xác nhận Hủy" busy={submitting} onCancel={() => setShowCancelModal(false)} onConfirm={() => void handleCancel()}>
+        <label className="workspace-search" htmlFor="campaign-cancel-reason">Lý do hủy (tùy chọn)</label>
+        <textarea id="campaign-cancel-reason" value={cancelReason} onChange={event => setCancelReason(event.target.value)} placeholder="VD: Điều chỉnh lịch khuyến mãi..." rows={3} disabled={submitting} />
+      </ConfirmDialog>}
     </div>
   )
 }

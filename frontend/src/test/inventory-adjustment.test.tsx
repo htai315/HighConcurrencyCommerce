@@ -27,6 +27,8 @@ const inventorySku: SkuInventorySummary = {
   availableQty: 15,
   reservedQty: 3,
   allocatedQty: 2,
+  quarantinedQty: 0,
+  damagedQty: 0,
   skuStatus: 'ACTIVE',
   publicationStatus: 'PUBLISHED',
 }
@@ -63,6 +65,7 @@ test('Staff tạo đề nghị giảm tồn nhưng giao diện không tự giả
   const user = userEvent.setup()
   open('/staff')
   await user.click(await screen.findByRole('button', { name: /Vận hành Kho & Tồn kho/i }))
+  await user.click(await screen.findByText('Đề nghị giảm tồn kho', { selector: 'summary' }))
   await user.clear(screen.getByLabelText('Số lượng đề nghị giảm *'))
   await user.type(screen.getByLabelText('Số lượng đề nghị giảm *'), '4')
   await user.type(screen.getByLabelText('Lý do điều chỉnh *'), 'Hàng hỏng khi kiểm kê')
@@ -126,6 +129,7 @@ test('Admin xem và duyệt đề nghị, UI chuyển trạng thái sang APPLIED
   const row = reason.closest('tr')!
   expect(within(row).getByText('PENDING')).toBeVisible()
   await user.click(within(row).getByRole('button', { name: 'Duyệt' }))
+  await user.click(screen.getByRole('button', { name: 'Xác nhận' }))
 
   expect(await screen.findByText(/Đã duyệt và áp dụng giảm 5 sản phẩm/i)).toBeVisible()
   expect(decisionPayload).toEqual({ decision: 'APPROVE' })

@@ -4,6 +4,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { http, HttpResponse } from 'msw'
 import { afterEach, expect, test } from 'vitest'
 import { appRoutes } from '../App'
+import { getRevenue } from '../features/reporting/reporting.api'
 import { server } from './setup'
 
 const root = 'http://localhost:5173/api/v1'
@@ -16,7 +17,7 @@ test('Staff mở bảng tổng hợp tác vụ vận hành', async () => {
     http.get(`${root}/staff/products`, () => HttpResponse.json([])),
     http.get(`${root}/staff/dashboard/tasks`, () => HttpResponse.json({
       pendingCodCount: 3, shipmentsToPackCount: 2, shipmentsToHandoverCount: 1,
-      deliveryFailuresCount: 4, lowStockSkuCount: 5, notificationsUnreadCount: 6,
+      deliveryFailuresCount: 4, lowStockSkuCount: 5, notificationsUnreadCount: 6, approvedReturnsCount: 7,
     })),
   )
   router = createMemoryRouter(appRoutes, { initialEntries: ['/staff'] })
@@ -25,6 +26,7 @@ test('Staff mở bảng tổng hợp tác vụ vận hành', async () => {
   expect(await screen.findByRole('heading', { name: 'Tác vụ cần xử lý' })).toBeVisible()
   expect(screen.getByText('COD chờ xác nhận').nextElementSibling).toHaveTextContent('3')
   expect(screen.getByText('SKU tồn thấp').nextElementSibling).toHaveTextContent('5')
+  expect(screen.getByText('Hàng trả chờ nhận').nextElementSibling).toHaveTextContent('7')
 })
 
 test('Admin xem doanh thu xác minh, tồn thấp và Audit Log', async () => {
@@ -32,8 +34,9 @@ test('Admin xem doanh thu xác minh, tồn thấp và Audit Log', async () => {
     http.get(`${root}/auth/me`, () => HttpResponse.json({ id: 'admin-report', email: 'admin@example.invalid', fullName: 'Admin Report', role: 'ADMIN' })),
     http.get(`${root}/admin/products`, () => HttpResponse.json([])),
     http.get(`${root}/admin/reports/revenue`, () => HttpResponse.json({
-      from: '2026-10-01', to: '2026-10-30', revenue: 1500000, completedOrderCount: 2, averageOrderValue: 750000,
-      days: [{ date: '2026-10-30', revenue: 1500000, completedOrderCount: 2 }],
+      from: '2026-10-01', to: '2026-10-30', revenue: 1250000, grossRevenue: 1500000, refundAmount: 250000,
+      netRevenue: 1250000, completedOrderCount: 2, averageOrderValue: 625000,
+      days: [{ date: '2026-10-30', revenue: 1250000, grossRevenue: 1500000, refundAmount: 250000, netRevenue: 1250000, completedOrderCount: 2 }],
       paymentMethods: [{ paymentMethod: 'COD', revenue: 1500000, completedOrderCount: 2 }],
     })),
     http.get(`${root}/admin/reports/low-stock`, () => HttpResponse.json({ threshold: 5, items: [{
@@ -42,13 +45,32 @@ test('Admin xem doanh thu xác minh, tồn thấp và Audit Log', async () => {
     }] })),
     http.get(`${root}/admin/audit-logs`, () => HttpResponse.json({ page: 1, pageSize: 30, totalCount: 1, items: [{
       id: 'audit-1', actorId: 'admin-report', actorType: 'USER', actorName: 'Admin Report', action: 'PRODUCT_PUBLISHED',
-      entityType: 'Product', entityId: 'product-1', beforeData: '{}', afterData: '{}', correlationId: 'corr-1', occurredAt: '2026-10-30T08:00:00Z',
+      entityType: 'Product', entityId: 'product-1', beforeData: null, afterData: '{"status":"PUBLISHED"}', correlationId: 'corr-1', occurredAt: '2026-10-30T08:00:00Z',
     }] })),
   )
   router = createMemoryRouter(appRoutes, { initialEntries: ['/admin'] })
   render(<RouterProvider router={router} />)
   await userEvent.setup().click(await screen.findByRole('tab', { name: /Báo cáo & Audit/ }))
-  expect(await screen.findByText(/1\.500\.000/)).toBeVisible()
+  expect(await screen.findByText(/1\.500\.000/, { selector: 'strong' })).toBeVisible()
+  expect(screen.getByText('Tiền đã hoàn').nextElementSibling).toHaveTextContent(/250\.000/)
+  expect(screen.getByText('Doanh thu thuần', { selector: 'span' }).nextElementSibling).toHaveTextContent(/1\.250\.000/)
   expect(screen.getByText('HIGH-4U')).toBeVisible()
   expect(screen.getByText('PRODUCT_PUBLISHED')).toBeVisible()
+  await userEvent.setup().click(screen.getByText('Xem thay đổi', { selector: 'summary' }))
+  expect(screen.getByText('Không có dữ liệu được ghi nhận.')).toBeVisible()
+  expect(screen.getByText(/"status": "PUBLISHED"/)).toBeVisible()
+  expect(screen.getByText('corr-1')).toBeVisible()
+})
+
+test('Parser báo cáo chấp nhận doanh thu thuần âm trong kỳ chỉ phát sinh hoàn tiền', async () => {
+  server.use(http.get(`${root}/admin/reports/revenue`, () => HttpResponse.json({
+    from: '2020-02-02', to: '2020-02-02', revenue: -40000, grossRevenue: 0, refundAmount: 40000,
+    netRevenue: -40000, completedOrderCount: 0, averageOrderValue: 0,
+    days: [{ date: '2020-02-02', revenue: -40000, grossRevenue: 0, refundAmount: 40000, netRevenue: -40000, completedOrderCount: 0 }],
+    paymentMethods: [],
+  })))
+
+  const report = await getRevenue('2020-02-02', '2020-02-02')
+  expect(report.netRevenue).toBe(-40000)
+  expect(report.days[0]?.netRevenue).toBe(-40000)
 })

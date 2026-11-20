@@ -43,7 +43,7 @@ public sealed class FlashSaleCampaignTests(CatalogFixture fixture) : IClassFixtu
         var roleId = (Guid)(await role.ExecuteScalarAsync())!;
         var hash = new PasswordHasher<object>().HashPassword(new object(), Password);
         await using var insert = new NpgsqlCommand(
-            "INSERT INTO store.user_accounts(id,role_id,email,password_hash,full_name,account_status) VALUES(@id,@role,@email,@hash,@name,'ACTIVE')", db);
+            "INSERT INTO store.user_accounts(id,role_id,email,password_hash,full_name,account_status,email_verified_at) VALUES(@id,@role,@email,@hash,@name,'ACTIVE',now())", db);
         insert.Parameters.AddWithValue("id", id);
         insert.Parameters.AddWithValue("role", roleId);
         insert.Parameters.AddWithValue("email", email);
@@ -409,13 +409,13 @@ public sealed class FlashSaleCampaignTests(CatalogFixture fixture) : IClassFixtu
         var (admin, _) = await CreateRoleClient("ADMIN");
         using (admin)
         {
-            var now = DateTime.UtcNow;
             var (_, skuId, _) = await CreatePublishedProductWithStock(20, 300000m);
+            var now = DateTime.UtcNow;
             using var campaignResponse = await Send(admin, "admin/flash-sales", new
             {
                 name = "Lifecycle worker campaign",
-                startsAt = now.AddSeconds(3),
-                endsAt = now.AddSeconds(6)
+                startsAt = now.AddMinutes(5),
+                endsAt = now.AddMinutes(10)
             });
             var campaignId = (await campaignResponse.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("id").GetGuid();
             using var offer = await Send(admin, $"admin/flash-sales/{campaignId}/offers", new
@@ -442,8 +442,25 @@ public sealed class FlashSaleCampaignTests(CatalogFixture fixture) : IClassFixtu
                 Assert.Equal(expected, await Status());
             }
 
-            await WaitFor("ACTIVE", TimeSpan.FromSeconds(5));
-            await WaitFor("ENDED", TimeSpan.FromSeconds(5));
+            await using (var lifecycleDb = await fixture.OpenDatabaseAsync())
+            await using (var startNow = new NpgsqlCommand(
+                "UPDATE store.flash_sale_campaigns SET starts_at = now() - interval '1 second' WHERE id = @id",
+                lifecycleDb))
+            {
+                startNow.Parameters.AddWithValue("id", campaignId);
+                await startNow.ExecuteNonQueryAsync();
+            }
+            await WaitFor("ACTIVE", TimeSpan.FromSeconds(6));
+
+            await using (var lifecycleDb = await fixture.OpenDatabaseAsync())
+            await using (var endNow = new NpgsqlCommand(
+                "UPDATE store.flash_sale_campaigns SET ends_at = now() - interval '1 second' WHERE id = @id",
+                lifecycleDb))
+            {
+                endNow.Parameters.AddWithValue("id", campaignId);
+                await endNow.ExecuteNonQueryAsync();
+            }
+            await WaitFor("ENDED", TimeSpan.FromSeconds(6));
 
             await using var db = await fixture.OpenDatabaseAsync();
             await using var audit = new NpgsqlCommand(
@@ -454,6 +471,66 @@ public sealed class FlashSaleCampaignTests(CatalogFixture fixture) : IClassFixtu
             while (await reader.ReadAsync()) actions.Add(reader.GetString(0));
             Assert.Contains("FLASH_SALE_CAMPAIGN_ACTIVE", actions);
             Assert.Contains("FLASH_SALE_CAMPAIGN_ENDED", actions);
+        }
+    }
+
+    [Fact]
+    public async Task Publish_and_concurrent_sku_price_update_properly_serialize_and_prevent_invalid_sale_price()
+    {
+        var (admin1, _) = await CreateRoleClient("ADMIN");
+        var (admin2, _) = await CreateRoleClient("ADMIN");
+        using (admin1)
+        using (admin2)
+        {
+            var now = DateTime.UtcNow;
+            var (_, skuId, _) = await CreatePublishedProductWithStock(20, 200000m);
+            using var campaignResponse = await Send(admin1, "admin/flash-sales", new
+            {
+                name = "Race Price Publish campaign",
+                startsAt = now.AddMinutes(5),
+                endsAt = now.AddMinutes(30)
+            });
+            var campaignId = (await campaignResponse.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("id").GetGuid();
+            using var offer = await Send(admin1, $"admin/flash-sales/{campaignId}/offers", new
+            {
+                productSkuId = skuId, salePrice = 120000m, quotaTotal = 5, perCustomerLimit = 2
+            });
+            Assert.Equal(HttpStatusCode.Created, offer.StatusCode);
+
+            // Concurrently send Publish (expects sale 120k < regular 200k) and Price update to 100k (which would violate 120k < 100k)
+            var publishTask = Send(admin1, $"admin/flash-sales/{campaignId}/publish", null);
+            var updatePriceTask = Send(admin2, $"admin/skus/{skuId}/price", new { price = 100000m }, HttpMethod.Patch);
+
+            var responses = await Task.WhenAll(publishTask, updatePriceTask);
+            var publishRes = responses[0];
+            var priceRes = responses[1];
+
+            // Invariant verification in DB:
+            await using var db = await fixture.OpenDatabaseAsync();
+            await using var verifyCmd = new NpgsqlCommand(
+                "SELECT c.campaign_status, s.regular_price " +
+                "FROM store.flash_sale_campaigns c " +
+                "JOIN store.flash_sale_offers o ON o.campaign_id = c.id " +
+                "JOIN store.product_skus s ON s.id = o.product_sku_id " +
+                "WHERE c.id = @cId", db);
+            verifyCmd.Parameters.AddWithValue("cId", campaignId);
+            await using var reader = await verifyCmd.ExecuteReaderAsync();
+            Assert.True(await reader.ReadAsync());
+            var status = reader.GetString(0);
+            var regularPrice = reader.GetDecimal(1);
+
+            if (status == "SCHEDULED")
+            {
+                // If publish succeeded, regular price must NOT have been changed to 100,000 (must be 200,000)
+                Assert.Equal(200000m, regularPrice);
+                Assert.Equal(HttpStatusCode.Conflict, priceRes.StatusCode);
+            }
+            else
+            {
+                // If price update succeeded first (100,000), publish must have failed
+                Assert.Equal(100000m, regularPrice);
+                Assert.Equal(HttpStatusCode.BadRequest, publishRes.StatusCode);
+            }
         }
     }
 }

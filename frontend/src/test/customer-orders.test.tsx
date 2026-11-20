@@ -11,7 +11,9 @@ const customer = { id: 'customer-1', email: 'customer@example.invalid', fullName
 const order = {
   id: '11111111-1111-1111-1111-111111111111', orderNumber: 'ORD-20261030-001',
   orderStatus: 'PENDING_COD_CONFIRMATION', paymentMethod: 'COD', paymentStatus: 'COD_PENDING',
-  reservationStatus: 'HELD', totalAmount: 2500000, createdAt: '2026-10-30T02:00:00Z',
+  reservationStatus: 'HELD', totalAmount: 2530000, subtotalAmount: 2500000, voucherDiscountAmount: 0, voucherCode: null,
+  shippingFee: 30000, shippingMethodCode: 'STANDARD', shippingMethodName: 'Giao hàng tiêu chuẩn', shippingEstimatedMinDays: 2, shippingEstimatedMaxDays: 4,
+  createdAt: '2026-10-30T02:00:00Z',
   deadlineAt: '2026-10-30T03:00:00Z', confirmedAt: null, closedReason: null,
   recipientName: 'Nguyễn Văn A', recipientPhone: '0901234567',
   shippingAddress: '12 Nguyễn Trãi, Quận 1, TP.HCM', shipmentId: null, shipmentStatus: null,
@@ -27,6 +29,22 @@ function open() {
   router = createMemoryRouter(appRoutes, { initialEntries: ['/orders'] })
   render(<RouterProvider router={router} />)
 }
+
+test('phân trang lấy dữ liệu trang kế tiếp và thay danh sách cũ', async () => {
+  server.use(
+    http.get(`${root}/auth/me`, () => HttpResponse.json(customer)),
+    http.get(`${root}/orders`, ({ request }) => {
+      const page = Number(new URL(request.url).searchParams.get('page'))
+      return HttpResponse.json({ items: [{ ...order, id: `order-${page}`, orderNumber: `PAGE-${page}` }], page, pageSize: 50, totalCount: 51 })
+    }),
+  )
+  open()
+  expect(await screen.findByText('PAGE-1')).toBeVisible()
+  await userEvent.setup().click(screen.getByRole('link', { name: 'Trang sau' }))
+  expect(await screen.findByText('PAGE-2')).toBeVisible()
+  expect(screen.queryByText('PAGE-1')).toBeNull()
+  expect(router?.state.location.search).toBe('?page=2')
+})
 
 test('Customer xem danh sách, snapshot và chi tiết các trạng thái độc lập', async () => {
   server.use(
@@ -50,6 +68,8 @@ test('Customer xem danh sách, snapshot và chi tiết các trạng thái độc
   await user.click(screen.getByRole('button', { name: 'Xem chi tiết đơn' }))
   expect(screen.getByText('Nguyễn Văn A · 0901234567')).toBeVisible()
   expect(screen.getByText('12 Nguyễn Trãi, Quận 1, TP.HCM')).toBeVisible()
+  expect(screen.getByText('Giao hàng tiêu chuẩn · dự kiến 2–4 ngày')).toBeVisible()
+  expect(screen.getByText('30.000 ₫')).toBeVisible()
 })
 
 test('Customer hủy đơn COD bằng CSRF rồi giao diện phản ánh trạng thái hoàn kho', async () => {
@@ -70,8 +90,15 @@ test('Customer hủy đơn COD bằng CSRF rồi giao diện phản ánh trạng
   const user = userEvent.setup()
   open()
 
+  await user.click(await screen.findByText('Yêu cầu hủy đơn', { selector: 'summary' }))
   await user.type(await screen.findByLabelText('Lý do hủy đơn COD'), 'Đặt nhầm phiên bản vợt')
   await user.click(screen.getByRole('button', { name: 'Hủy đơn' }))
+  expect(body).toBeUndefined()
+  await user.click(screen.getByRole('button', { name: 'Quay lại' }))
+  expect(body).toBeUndefined()
+  expect(screen.getByRole('button', { name: 'Hủy đơn' })).toHaveFocus()
+  await user.click(screen.getByRole('button', { name: 'Hủy đơn' }))
+  await user.click(screen.getByRole('button', { name: 'Xác nhận hủy đơn' }))
 
   expect(await screen.findByRole('status')).toHaveTextContent('hàng giữ đã được hoàn lại kho')
   expect(body).toEqual({ reason: 'Đặt nhầm phiên bản vợt' })

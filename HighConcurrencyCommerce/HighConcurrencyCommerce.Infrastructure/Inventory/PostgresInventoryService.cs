@@ -51,6 +51,8 @@ public sealed class PostgresInventoryService(StoreDbContext db) : IInventoryServ
                 s.InventoryBalance != null ? s.InventoryBalance.AvailableQty : 0,
                 s.InventoryBalance != null ? s.InventoryBalance.ReservedQty : 0,
                 s.InventoryBalance != null ? s.InventoryBalance.AllocatedQty : 0,
+                s.InventoryBalance != null ? s.InventoryBalance.QuarantinedQty : 0,
+                s.InventoryBalance != null ? s.InventoryBalance.DamagedQty : 0,
                 s.SkuStatus,
                 s.Product.PublicationStatus))
             .ToListAsync(ct);
@@ -93,8 +95,13 @@ public sealed class PostgresInventoryService(StoreDbContext db) : IInventoryServ
             throw new InventoryFailure("INVALID_ARGUMENT", "Số lượng nhập kho phải lớn hơn 0.");
         }
 
+        if (request.SourceId is null || request.SourceId == Guid.Empty)
+        {
+            throw new InventoryFailure("INVALID_ARGUMENT", "Mã phiếu nhập là bắt buộc và phải là UUID hợp lệ.");
+        }
+
         var sourceType = string.IsNullOrWhiteSpace(request.SourceType) ? "MANUAL_STOCK_IN" : request.SourceType.Trim();
-        var sourceId = request.SourceId ?? Guid.NewGuid();
+        var sourceId = request.SourceId.Value;
 
         await using var tx = await db.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, ct);
 
@@ -133,6 +140,8 @@ public sealed class PostgresInventoryService(StoreDbContext db) : IInventoryServ
                     currentBalance.AvailableQty,
                     currentBalance.ReservedQty,
                     currentBalance.AllocatedQty,
+                    currentBalance.QuarantinedQty,
+                    currentBalance.DamagedQty,
                     currentBalance.Revision,
                     existingMovement.Id);
             }
@@ -162,6 +171,14 @@ public sealed class PostgresInventoryService(StoreDbContext db) : IInventoryServ
         }
         else
         {
+            if (balance.PhysicalQty > int.MaxValue - request.Quantity
+                || balance.AvailableQty > int.MaxValue - request.Quantity)
+            {
+                throw new InventoryFailure(
+                    "INVENTORY_LIMIT_EXCEEDED",
+                    "Số lượng nhập làm tồn kho vượt quá giới hạn lưu trữ của hệ thống.");
+            }
+
             balance.PhysicalQty += request.Quantity;
             balance.AvailableQty += request.Quantity;
             balance.Revision += 1;
@@ -200,6 +217,8 @@ public sealed class PostgresInventoryService(StoreDbContext db) : IInventoryServ
             balance.AvailableQty,
             balance.ReservedQty,
             balance.AllocatedQty,
+            balance.QuarantinedQty,
+            balance.DamagedQty,
             balance.Revision,
             movement.Id);
     }
@@ -371,6 +390,8 @@ public sealed class PostgresInventoryService(StoreDbContext db) : IInventoryServ
                 balance.AvailableQty,
                 balance.ReservedQty,
                 balance.AllocatedQty,
+                balance.QuarantinedQty,
+                balance.DamagedQty,
                 balance.Revision);
         }
 

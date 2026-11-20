@@ -25,7 +25,15 @@ public sealed record FulfillmentOrderDto(
     DateTime? DeliveredAt,
     short RedeliveryCount,
     bool ReturnStockCompleted,
-    IReadOnlyList<FulfillmentItemDto> Items);
+    IReadOnlyList<FulfillmentItemDto> Items,
+    decimal SubtotalAmount = 0m,
+    decimal VoucherDiscountAmount = 0m,
+    string? VoucherCode = null,
+    decimal ShippingFee = 0m,
+    string ShippingMethodCode = "LEGACY_FREE",
+    string ShippingMethodName = "Miễn phí (đơn lịch sử)",
+    short? ShippingEstimatedMinDays = null,
+    short? ShippingEstimatedMaxDays = null);
 
 public sealed class DeliveryResultRequest
 {
@@ -61,6 +69,7 @@ public interface IFulfillmentService
     Task<FulfillmentOrderDto> StartAsync(Guid staffId, Guid orderId, string correlationId, CancellationToken ct = default);
     Task<FulfillmentOrderDto> PackAsync(Guid staffId, Guid shipmentId, string correlationId, CancellationToken ct = default);
     Task<FulfillmentOrderDto> HandoverAsync(Guid staffId, Guid shipmentId, string correlationId, CancellationToken ct = default);
+    Task<FulfillmentOrderDto> HandoverWithConsignmentAsync(Guid staffId, Guid shipmentId, Guid consignmentId, long expectedRevision, string correlationId, CancellationToken ct = default);
     Task<FulfillmentOrderDto> RecordDeliveryAsync(Guid staffId, Guid shipmentId, DeliveryResultRequest request, string correlationId, CancellationToken ct = default);
     Task<FulfillmentOrderDto> RetryDeliveryAsync(Guid staffId, Guid shipmentId, string correlationId, CancellationToken ct = default);
     Task<FulfillmentOrderDto> ReturnStockAsync(Guid staffId, Guid shipmentId, ReturnStockRequest request, string correlationId, CancellationToken ct = default);

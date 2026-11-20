@@ -21,6 +21,10 @@ public partial class InventoryBalance
 
     public int AllocatedQty { get; set; }
 
+    public int QuarantinedQty { get; set; }
+
+    public int DamagedQty { get; set; }
+
     public long Revision { get; set; }
 
     public virtual ProductSku ProductSku { get; set; } = null!;

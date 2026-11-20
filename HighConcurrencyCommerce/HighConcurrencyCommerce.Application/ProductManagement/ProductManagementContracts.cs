@@ -11,6 +11,7 @@ public sealed class CreateProductDraftRequest
     public string? Description { get; set; }
 
     public Guid? CategoryId { get; set; }
+    public Guid? BrandId { get; set; }
 }
 
 public sealed class UpdateProductDraftRequest
@@ -22,6 +23,14 @@ public sealed class UpdateProductDraftRequest
     public string? Description { get; set; }
 
     public Guid? CategoryId { get; set; }
+    public Guid? BrandId { get; set; }
+}
+
+public sealed class UpsertProductSpecificationRequest
+{
+    [Required, StringLength(160, MinimumLength = 1)] public string DisplayName { get; set; } = string.Empty;
+    [Required, StringLength(500, MinimumLength = 1)] public string Value { get; set; } = string.Empty;
+    [Range(0, 10000)] public int DisplayOrder { get; set; }
 }
 
 public sealed class CreateSkuRequest
@@ -48,6 +57,21 @@ public sealed class AddProductImageRequest
     public int DisplayOrder { get; set; } = 0;
 }
 
+public sealed class UpdateProductImageRequest
+{
+    [StringLength(240, ErrorMessage = "Mô tả ảnh tối đa 240 ký tự.")]
+    public string? AltText { get; set; }
+
+    [Range(0, 10000, ErrorMessage = "Thứ tự hiển thị từ 0 đến 10000.")]
+    public int DisplayOrder { get; set; }
+}
+
+public sealed class ReorderProductImagesRequest
+{
+    [Required, MinLength(1), MaxLength(100)]
+    public IReadOnlyList<Guid> ImageIds { get; init; } = [];
+}
+
 public sealed class UpdateSkuPriceRequest
 {
     [Range(typeof(decimal), "0.01", "9999999999999999.99", ErrorMessage = "Giá sản phẩm phải lớn hơn 0.")]
@@ -70,16 +94,34 @@ public sealed record ProductImageItemDto(
     int DisplayOrder,
     string ImageStatus);
 
+public sealed record StoredProductMedia(string StorageKey, string PublicPath, string ContentType, long Length);
+public sealed record OpenProductMedia(Stream Content, string ContentType, long Length);
+
+public interface IProductMediaStorage
+{
+    Task<StoredProductMedia> StoreAsync(Guid productId, Stream content, string originalFileName, string declaredContentType, long length, CancellationToken ct = default);
+    Task<OpenProductMedia?> OpenReadAsync(string storageKey, CancellationToken ct = default);
+    Task DeleteAsync(string storageKey, CancellationToken ct = default);
+    bool TryGetStorageKey(string publicPath, out string storageKey);
+}
+
+public sealed record ProductSpecificationDto(Guid Id, Guid ProductId, string Key, string DisplayName, string Value, int DisplayOrder);
+
 public sealed record ProductDraftDto(
     Guid Id,
     string Title,
     string? Description,
     Guid? CategoryId,
+    Guid? BrandId,
     string PublicationStatus,
     DateTime CreatedAt,
     DateTime? PublishedAt,
+    DateTime StatusChangedAt,
+    Guid? StatusChangedBy,
+    string? StatusReason,
     IReadOnlyList<ProductSkuDto> Skus,
-    IReadOnlyList<ProductImageItemDto> Images);
+    IReadOnlyList<ProductImageItemDto> Images,
+    IReadOnlyList<ProductSpecificationDto> Specifications);
 
 public sealed record PublishProductResult(
     Guid Id,
@@ -99,7 +141,12 @@ public interface IProductManagementService
     Task<IReadOnlyList<ProductDraftDto>> GetAllProductsAsync(CancellationToken ct = default);
     Task<ProductSkuDto> AddSkuAsync(Guid staffId, Guid productId, CreateSkuRequest request, CancellationToken ct = default);
     Task<ProductImageItemDto> AddImageAsync(Guid staffId, Guid productId, AddProductImageRequest request, CancellationToken ct = default);
+    Task<ProductImageItemDto> UploadImageAsync(Guid staffId, Guid productId, Stream content, string originalFileName, string declaredContentType, long length, string? altText, int displayOrder, CancellationToken ct = default);
+    Task<ProductImageItemDto> UpdateImageAsync(Guid staffId, Guid productId, Guid imageId, UpdateProductImageRequest request, CancellationToken ct = default);
+    Task<IReadOnlyList<ProductImageItemDto>> ReorderImagesAsync(Guid staffId, Guid productId, ReorderProductImagesRequest request, CancellationToken ct = default);
     Task DeleteImageAsync(Guid staffId, Guid productId, Guid imageId, CancellationToken ct = default);
+    Task<ProductSpecificationDto> UpsertSpecificationAsync(Guid staffId, Guid productId, string key, UpsertProductSpecificationRequest request, string correlationId, CancellationToken ct = default);
+    Task DeleteSpecificationAsync(Guid staffId, Guid productId, string key, string correlationId, CancellationToken ct = default);
 
     Task<ProductSkuDto> UpdateSkuPriceAsync(Guid adminId, Guid skuId, UpdateSkuPriceRequest request, string correlationId, CancellationToken ct = default);
     Task<PublishProductResult> PublishProductAsync(Guid adminId, Guid productId, string correlationId, CancellationToken ct = default);

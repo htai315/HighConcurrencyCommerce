@@ -23,7 +23,15 @@ public sealed record CodOrderDto(
     string RecipientName,
     string RecipientPhone,
     string ShippingAddress,
-    IReadOnlyList<CodOrderItemDto> Items);
+    IReadOnlyList<CodOrderItemDto> Items,
+    decimal SubtotalAmount = 0m,
+    decimal VoucherDiscountAmount = 0m,
+    string? VoucherCode = null,
+    decimal ShippingFee = 0m,
+    string ShippingMethodCode = "LEGACY_FREE",
+    string ShippingMethodName = "Miễn phí (đơn lịch sử)",
+    short? ShippingEstimatedMinDays = null,
+    short? ShippingEstimatedMaxDays = null);
 
 public sealed class CodOrderFailure(string code, string message, int status = 409) : Exception(message)
 {

@@ -13,10 +13,34 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="../HighConcurrencyCommerce.Api/HighConcurrencyCommerce.Api.csproj" />
     <EmbeddedResource Include="../../database/001_create_schema.sql" LogicalName="Schema.sql" />
     <EmbeddedResource Include="../../database/002_auth_sessions.sql" LogicalName="AuthSchema.sql" />
     <EmbeddedResource Include="../../database/003_flash_sale_cart_offer.sql" LogicalName="FlashSaleCartSchema.sql" />
+    <EmbeddedResource Include="../../database/004_google_auth.sql" LogicalName="GoogleAuthSchema.sql" />
+    <EmbeddedResource Include="../../database/005_auth_email_recovery.sql" LogicalName="AuthEmailRecoverySchema.sql" />
+    <EmbeddedResource Include="../../database/006_internal_staff_invites.sql" LogicalName="InternalStaffInvitesSchema.sql" />
+    <EmbeddedResource Include="../../database/008_product_reviews.sql" LogicalName="ProductReviewsSchema.sql" />
+    <EmbeddedResource Include="../../database/009_customer_wishlist.sql" LogicalName="CustomerWishlistSchema.sql" />
+    <EmbeddedResource Include="../../database/010_basic_vouchers.sql" LogicalName="BasicVouchersSchema.sql" />
+    <EmbeddedResource Include="../../database/011_cod_returns_refunds.sql" LogicalName="CodReturnsRefundsSchema.sql" />
+    <EmbeddedResource Include="../../database/012_return_quality_inspection.sql" LogicalName="ReturnQualityInspectionSchema.sql" />
+    <EmbeddedResource Include="../../database/013_direct_product_exchange.sql" LogicalName="DirectProductExchangeSchema.sql" />
+    <EmbeddedResource Include="../../database/014_brand_product_specifications.sql" LogicalName="BrandProductSpecificationsSchema.sql" />
+    <EmbeddedResource Include="../../database/015_product_revisions.sql" LogicalName="ProductRevisionsSchema.sql" />
+    <EmbeddedResource Include="../../database/016_product_lifecycle.sql" LogicalName="ProductLifecycleSchema.sql" />
+    <EmbeddedResource Include="../../database/017_product_revision_hardening.sql" LogicalName="ProductRevisionHardeningSchema.sql" />
+    <EmbeddedResource Include="../../database/018_shipping_methods_fees.sql" LogicalName="ShippingMethodsFeesSchema.sql" />
+    <EmbeddedResource Include="../../database/019_carrier_consignments_tracking.sql" LogicalName="CarrierConsignmentsTrackingSchema.sql" />
+    <EmbeddedResource Include="../../database/020_advanced_product_search.sql" LogicalName="AdvancedProductSearchSchema.sql" />
+    <EmbeddedResource Include="../../database/021_wishlist_product_alerts.sql" LogicalName="WishlistProductAlertsSchema.sql" />
+    <EmbeddedResource Include="../../database/022_payos_integration_hardening.sql" LogicalName="PayOsIntegrationHardeningSchema.sql" />
+    <EmbeddedResource Include="../../database/023_payos_reconciliation_workflow.sql" LogicalName="PayOsReconciliationWorkflowSchema.sql" />
+    <EmbeddedResource Include="../../database/024_payos_reconciliation_hardening.sql" LogicalName="PayOsReconciliationHardeningSchema.sql" />
+    <EmbeddedResource Include="ShippingCheckoutSeed.sql" LogicalName="ShippingCheckoutSeed.sql" />
     <EmbeddedResource Include="CatalogSeed.sql" LogicalName="CatalogSeed.sql" />
     <Using Include="Xunit" />
   </ItemGroup>

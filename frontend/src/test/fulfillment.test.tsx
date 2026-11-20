@@ -122,3 +122,36 @@ test('Staff ghi giao thất bại, giao lại và hoàn kho với bằng chứng
   ])
   expect(receivedReturnPayload).toEqual({ receivedEvidence: 'Biên bản BB-RETURN-01' })
 })
+
+test('Staff giao đơn PayOS đã trả trước mà không gửi dữ liệu thu COD', async () => {
+  const prepaid = {
+    ...baseOrder,
+    orderStatus: 'FULFILLING',
+    shipmentId: 'shipment-payos-1',
+    shipmentStatus: 'SHIPPING',
+    paymentStatus: 'SUCCESS',
+  }
+  let receivedDeliveryPayload: unknown
+  server.use(
+    http.get(`${root}/auth/me`, () => HttpResponse.json(staff)),
+    http.get(`${root}/staff/products`, () => HttpResponse.json([])),
+    http.get(`${root}/staff/orders/cod-pending`, () => HttpResponse.json([])),
+    http.get(`${root}/staff/shipments`, () => HttpResponse.json([prepaid])),
+    http.post(`${root}/staff/shipments/:id/delivery-result`, async ({ request }) => {
+      receivedDeliveryPayload = await request.json()
+      return HttpResponse.json({ ...prepaid, orderStatus: 'COMPLETED', shipmentStatus: 'DELIVERED' })
+    }),
+  )
+
+  router = createMemoryRouter(appRoutes, { initialEntries: ['/staff'] })
+  render(<RouterProvider router={router} />)
+  const user = userEvent.setup()
+  await user.click(await screen.findByRole('button', { name: /Đơn COD chờ xác nhận/ }))
+
+  expect(await screen.findByText('Đã thanh toán PayOS')).toBeVisible()
+  expect(screen.queryByRole('textbox', { name: 'Mã biên nhận thu COD' })).toBeNull()
+  await user.click(screen.getByRole('button', { name: 'Xác nhận đã giao' }))
+
+  expect(await screen.findByRole('alert')).toHaveTextContent('đã thanh toán PayOS')
+  expect(receivedDeliveryPayload).toEqual({ result: 'DELIVERED' })
+})

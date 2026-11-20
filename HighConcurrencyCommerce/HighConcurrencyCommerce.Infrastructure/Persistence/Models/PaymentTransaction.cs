@@ -31,5 +31,7 @@ public partial class PaymentTransaction
 
     public virtual ManualRefund? ManualRefund { get; set; }
 
+    public virtual PaymentReconciliationCase? ReconciliationCase { get; set; }
+
     public virtual Payment Payment { get; set; } = null!;
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace HighConcurrencyCommerce.Infrastructure.Persistence.Models;
@@ -25,6 +25,28 @@ public partial class SalesOrder
 
     public decimal TotalAmount { get; set; }
 
+    public decimal SubtotalAmount { get; set; }
+
+    public decimal VoucherDiscountAmount { get; set; }
+
+    public Guid? ShippingMethodId { get; set; }
+
+    public string ShippingMethodCodeSnapshot { get; set; } = "LEGACY_FREE";
+
+    public string ShippingMethodNameSnapshot { get; set; } = "Miễn phí (đơn lịch sử)";
+
+    public decimal ShippingFee { get; set; }
+
+    public short? ShippingEstimatedMinDays { get; set; }
+
+    public short? ShippingEstimatedMaxDays { get; set; }
+
+    public string? ShippingDestinationProvinceKey { get; set; }
+
+    public long? ShippingMethodRevision { get; set; }
+
+    public string? VoucherCodeSnapshot { get; set; }
+
     public DateTime DeadlineAt { get; set; }
 
     public string? ClosedReason { get; set; }
@@ -45,5 +67,11 @@ public partial class SalesOrder
 
     public virtual CustomerAddress? ShippingAddress { get; set; }
 
+    public virtual ShippingMethod? ShippingMethod { get; set; }
+
     public virtual StockReservation? StockReservation { get; set; }
+
+    public virtual VoucherRedemption? VoucherRedemption { get; set; }
+
+    public virtual OrderReturnRequest? ReturnRequest { get; set; }
 }

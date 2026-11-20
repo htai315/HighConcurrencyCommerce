@@ -10,6 +10,8 @@ export type SkuInventorySummary = {
   availableQty: number
   reservedQty: number
   allocatedQty: number
+  quarantinedQty: number
+  damagedQty: number
   skuStatus: string
   publicationStatus: string
 }
@@ -34,6 +36,8 @@ export type StockInResult = {
   availableQty: number
   reservedQty: number
   allocatedQty: number
+  quarantinedQty: number
+  damagedQty: number
   revision: number
   movementId: string
 }
@@ -61,6 +65,8 @@ export type InventoryBalanceSnapshot = {
   availableQty: number
   reservedQty: number
   allocatedQty: number
+  quarantinedQty: number
+  damagedQty: number
   revision: number
 }
 
@@ -91,6 +97,8 @@ export function parseSkuInventorySummary(value: unknown): SkuInventorySummary {
     availableQty: integer(value.availableQty, 0),
     reservedQty: integer(value.reservedQty, 0),
     allocatedQty: integer(value.allocatedQty, 0),
+    quarantinedQty: value.quarantinedQty === undefined ? 0 : integer(value.quarantinedQty, 0),
+    damagedQty: value.damagedQty === undefined ? 0 : integer(value.damagedQty, 0),
     skuStatus: string(value.skuStatus),
     publicationStatus: string(value.publicationStatus),
   }
@@ -121,6 +129,8 @@ export function parseStockInResult(value: unknown): StockInResult {
     availableQty: integer(value.availableQty, 0),
     reservedQty: integer(value.reservedQty, 0),
     allocatedQty: integer(value.allocatedQty, 0),
+    quarantinedQty: value.quarantinedQty === undefined ? 0 : integer(value.quarantinedQty, 0),
+    damagedQty: value.damagedQty === undefined ? 0 : integer(value.damagedQty, 0),
     revision: integer(value.revision, 0),
     movementId: string(value.movementId),
   }
@@ -156,6 +166,8 @@ function parseBalanceSnapshot(value: unknown): InventoryBalanceSnapshot {
     availableQty: integer(value.availableQty, 0),
     reservedQty: integer(value.reservedQty, 0),
     allocatedQty: integer(value.allocatedQty, 0),
+    quarantinedQty: value.quarantinedQty === undefined ? 0 : integer(value.quarantinedQty, 0),
+    damagedQty: value.damagedQty === undefined ? 0 : integer(value.damagedQty, 0),
     revision: integer(value.revision, 0),
   }
 }
@@ -182,7 +194,7 @@ export async function getSkuMovements(skuId: string, signal?: AbortSignal): Prom
 }
 
 export async function stockIn(
-  data: { productSkuId: string; quantity: number; sourceType?: string; sourceId?: string; note?: string },
+  data: { productSkuId: string; quantity: number; sourceType?: string; sourceId: string; note?: string },
   signal?: AbortSignal
 ): Promise<StockInResult> {
   const res = await sendAuthorizedMutation('/staff/inventory/stock-in', 'POST', data, signal)

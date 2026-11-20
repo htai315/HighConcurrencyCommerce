@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Form, useActionData, useLoaderData, useNavigation } from 'react-router-dom'
+import { Form, useActionData, useLoaderData, useNavigation, useSubmit } from 'react-router-dom'
+import { ConfirmDialog } from '../components/layout/ConfirmDialog'
 import type { accountAction, accountLoader } from '../features/account/account.api'
 import { PageHeading } from '../components/layout/PageHeading'
 
@@ -7,6 +8,8 @@ export function AccountPage() {
   const { profile, addresses } = useLoaderData<typeof accountLoader>()
   const actionData = useActionData<typeof accountAction>()
   const navigation = useNavigation()
+  const submit = useSubmit()
+  const [deleteAddress, setDeleteAddress] = useState<{ id: string; address: string } | null>(null)
   const isSubmitting = navigation.state !== 'idle'
 
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null)
@@ -24,17 +27,18 @@ export function AccountPage() {
       <PageHeading title="Hồ sơ & Sổ địa chỉ" description="Thông tin của bạn, sẵn sàng cho mỗi lần mua sắm." />
 
       {actionData?.error && (
-        <div className="error-banner" role="alert" style={{ marginBottom: 24, padding: 16, background: '#fdf2f2', border: '1px solid #f8b4b4', borderRadius: 12, color: '#9b1c1c' }}>
+        <div className="alert error" role="alert" style={{ marginBottom: 24 }}>
           {actionData.error}
         </div>
       )}
 
       {actionData?.success && (
-        <div role="status" style={{ marginBottom: 24, padding: 16, background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 12, color: '#166534' }}>
+        <div className="alert success" role="status" style={{ marginBottom: 24 }}>
           {actionData.message}
         </div>
       )}
 
+      {deleteAddress && <ConfirmDialog title="Xóa địa chỉ giao hàng?" description={deleteAddress.address} confirmLabel="Xác nhận xóa" onCancel={() => setDeleteAddress(null)} onConfirm={() => { void submit({ intent: 'delete-address', id: deleteAddress.id }, { method: 'post' }); setDeleteAddress(null) }} />}
       <div className="account-layout">
         {/* Phần 1: Hồ sơ cá nhân */}
         <div className="info-panel">
@@ -82,15 +86,7 @@ export function AccountPage() {
                 {addresses.map((addr) => (
                   <div
                     key={addr.id}
-                    className="address-card"
-                    style={{
-                      border: `1px solid ${addr.isDefault ? 'var(--brand)' : 'var(--line)'}`,
-                      borderRadius: 14,
-                      padding: 18,
-                      background: addr.isDefault ? '#f7faff' : 'var(--paper)',
-                      display: 'grid',
-                      gap: 8,
-                    }}
+                    className={`address-card${addr.isDefault ? ' is-default' : ''}`}
                   >
                     {editingAddressId === addr.id ? (
                       /* Form sửa địa chỉ */
@@ -191,9 +187,8 @@ export function AccountPage() {
                           <Form
                             method="post"
                             onSubmit={(e) => {
-                              if (!confirm('Bạn có chắc chắn muốn xóa địa chỉ này?')) {
-                                e.preventDefault()
-                              }
+                              e.preventDefault()
+                              setDeleteAddress({ id: addr.id, address: addr.addressLine })
                             }}
                           >
                             <input type="hidden" name="intent" value="delete-address" />
@@ -225,9 +220,8 @@ export function AccountPage() {
           </div>
 
           {/* Form thêm địa chỉ mới */}
-          <div className="info-panel">
-            <span className="panel-kicker">Địa chỉ mới</span>
-            <h3>Thêm địa chỉ giao hàng</h3>
+          <details className="info-panel address-create">
+            <summary>Thêm địa chỉ giao hàng</summary>
 
             <Form method="post" style={{ marginTop: 16 }}>
               <input type="hidden" name="intent" value="create-address" />
@@ -272,7 +266,7 @@ export function AccountPage() {
                 {isSubmitting ? 'Đang lưu…' : 'Thêm địa chỉ'}
               </button>
             </Form>
-          </div>
+          </details>
         </div>
       </div>
     </section>

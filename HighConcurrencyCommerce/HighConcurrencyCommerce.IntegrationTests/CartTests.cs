@@ -36,6 +36,7 @@ public sealed class CartTests(CatalogFixture fixture) : IClassFixture<CatalogFix
         using var register = await Send(client, HttpMethod.Post, "auth/register",
             new { email, password = Password, confirmPassword = Password, fullName = "Cart Customer" });
         Assert.Equal(HttpStatusCode.Accepted, register.StatusCode);
+        await fixture.VerifyUserAsync(email);
         using var login = await Send(client, HttpMethod.Post, "auth/login", new { email, password = Password });
         Assert.Equal(HttpStatusCode.OK, login.StatusCode);
         return (client, email);
@@ -50,8 +51,8 @@ public sealed class CartTests(CatalogFixture fixture) : IClassFixture<CatalogFix
         var roleId = (Guid)(await role.ExecuteScalarAsync())!;
         var hash = new PasswordHasher<object>().HashPassword(new object(), Password);
         await using var insert = new NpgsqlCommand(
-            "INSERT INTO store.user_accounts (id, role_id, email, password_hash, full_name, account_status) " +
-            "VALUES (gen_random_uuid(), @role, @email, @hash, 'Cart role test', 'ACTIVE')", db);
+            "INSERT INTO store.user_accounts (id, role_id, email, password_hash, full_name, account_status, email_verified_at) " +
+            "VALUES (gen_random_uuid(), @role, @email, @hash, 'Cart role test', 'ACTIVE', now())", db);
         insert.Parameters.AddWithValue("role", roleId);
         insert.Parameters.AddWithValue("email", email);
         insert.Parameters.AddWithValue("hash", hash);
@@ -232,6 +233,75 @@ public sealed class CartTests(CatalogFixture fixture) : IClassFixture<CatalogFix
             var validation = await validate.Content.ReadFromJsonAsync<JsonElement>();
             Assert.False(validation.GetProperty("isValid").GetBoolean());
             Assert.Equal("FLASH_SALE_NOT_AVAILABLE", validation.GetProperty("issues")[0].GetProperty("code").GetString());
+        }
+    }
+
+    [Fact]
+    public async Task Cart_merge_with_same_batch_id_is_idempotent_and_does_not_double_quantity()
+    {
+        var (customer, _) = await CreateCustomer();
+        using (customer)
+        {
+            var batchId = "batch-" + Guid.NewGuid().ToString("N");
+            var payload = new
+            {
+                mergeBatchId = batchId,
+                items = new[] { new { productSkuId = InStockSku, quantity = 2 } }
+            };
+
+            // First merge
+            using var firstRes = await Send(customer, HttpMethod.Post, "cart/merge", payload);
+            Assert.Equal(HttpStatusCode.OK, firstRes.StatusCode);
+            var firstCart = await firstRes.Content.ReadFromJsonAsync<JsonElement>();
+            Assert.Equal(2, firstCart.GetProperty("cart").GetProperty("totalQuantity").GetInt32());
+
+            // Second merge replay with identical mergeBatchId (simulating response dropped)
+            using var secondRes = await Send(customer, HttpMethod.Post, "cart/merge", payload);
+            Assert.Equal(HttpStatusCode.OK, secondRes.StatusCode);
+            var secondCart = await secondRes.Content.ReadFromJsonAsync<JsonElement>();
+            Assert.Equal(2, secondCart.GetProperty("cart").GetProperty("totalQuantity").GetInt32());
+
+            // A different batch adds more
+            var newBatchId = "batch-" + Guid.NewGuid().ToString("N");
+            var newPayload = new
+            {
+                mergeBatchId = newBatchId,
+                items = new[] { new { productSkuId = InStockSku, quantity = 3 } }
+            };
+            using var thirdRes = await Send(customer, HttpMethod.Post, "cart/merge", newPayload);
+            Assert.Equal(HttpStatusCode.OK, thirdRes.StatusCode);
+            var thirdCart = await thirdRes.Content.ReadFromJsonAsync<JsonElement>();
+            Assert.Equal(5, thirdCart.GetProperty("cart").GetProperty("totalQuantity").GetInt32());
+        }
+    }
+
+    [Fact]
+    public async Task Cart_merge_with_same_batch_id_and_different_payload_returns_409_idempotency_key_reused()
+    {
+        var (customer, _) = await CreateCustomer();
+        using (customer)
+        {
+            var batchId = "batch-conflict-" + Guid.NewGuid().ToString("N");
+            var originalPayload = new
+            {
+                mergeBatchId = batchId,
+                items = new[] { new { productSkuId = InStockSku, quantity = 1 } }
+            };
+            var modifiedPayload = new
+            {
+                mergeBatchId = batchId,
+                items = new[] { new { productSkuId = InStockSku, quantity = 7 } }
+            };
+
+            // First merge succeeds
+            using var firstRes = await Send(customer, HttpMethod.Post, "cart/merge", originalPayload);
+            Assert.Equal(HttpStatusCode.OK, firstRes.StatusCode);
+
+            // Second merge with same batchId but changed quantity returns 409 Conflict
+            using var conflictRes = await Send(customer, HttpMethod.Post, "cart/merge", modifiedPayload);
+            Assert.Equal(HttpStatusCode.Conflict, conflictRes.StatusCode);
+            var problem = await conflictRes.Content.ReadFromJsonAsync<JsonElement>();
+            Assert.Equal("IDEMPOTENCY_KEY_REUSED", problem.GetProperty("code").GetString());
         }
     }
 }

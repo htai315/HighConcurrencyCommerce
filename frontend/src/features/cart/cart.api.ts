@@ -4,6 +4,7 @@ import { ApiError, apiRequest, isRecord } from '../../lib/api/client'
 import { readGuestCart } from './guest-cart'
 import type { GuestCartItem } from './guest-cart'
 import { parseAddress } from '../account/account.api'
+import { getPaymentProviders } from '../payments/payos.api'
 
 export type CartItem = {
   productSkuId: string
@@ -15,7 +16,7 @@ export type CartItem = {
   quantity: number
   lineTotal: number
   imageUrl: string | null
-  availabilityCode: 'AVAILABLE' | 'INSUFFICIENT_STOCK' | 'SKU_NOT_AVAILABLE' | 'FLASH_SALE_NOT_AVAILABLE' | 'LOCAL_ONLY'
+  availabilityCode: 'AVAILABLE' | 'INSUFFICIENT_STOCK' | 'SKU_NOT_AVAILABLE' | 'PRODUCT_SUSPENDED' | 'PRODUCT_ARCHIVED' | 'FLASH_SALE_NOT_AVAILABLE' | 'LOCAL_ONLY'
   flashSaleOfferId: string | null
 }
 export type Cart = {
@@ -36,7 +37,7 @@ function integer(value: unknown): number { const number = amount(value); return 
 function item(value: unknown): CartItem {
   if (!isRecord(value)) return invalid()
   const availability = text(value.availabilityCode)
-  if (!['AVAILABLE', 'INSUFFICIENT_STOCK', 'SKU_NOT_AVAILABLE', 'FLASH_SALE_NOT_AVAILABLE'].includes(availability)) return invalid()
+  if (!['AVAILABLE', 'INSUFFICIENT_STOCK', 'SKU_NOT_AVAILABLE', 'PRODUCT_SUSPENDED', 'PRODUCT_ARCHIVED', 'FLASH_SALE_NOT_AVAILABLE'].includes(availability)) return invalid()
   return {
     productSkuId: text(value.productSkuId), productId: text(value.productId), productTitle: text(value.productTitle),
     skuCode: text(value.skuCode), optionLabel: text(value.optionLabel), unitPrice: amount(value.unitPrice),
@@ -66,7 +67,9 @@ export function guestCart(items: GuestCartItem[] = readGuestCart()): Cart {
 async function csrfMutation(path: string, method: 'POST' | 'PUT' | 'DELETE', body?: unknown): Promise<unknown> {
   const csrf = await apiRequest('/auth/csrf', { cache: 'no-store' })
   if (!isRecord(csrf) || typeof csrf.requestToken !== 'string') return invalid()
-  return apiRequest(path, { method, body: body === undefined ? undefined : JSON.stringify(body), headers: { 'X-CSRF-TOKEN': csrf.requestToken } })
+  const result = await apiRequest(path, { method, body: body === undefined ? undefined : JSON.stringify(body), headers: { 'X-CSRF-TOKEN': csrf.requestToken } })
+  window.dispatchEvent(new Event('hcc:cart-changed'))
+  return result
 }
 
 export const getCustomerCart = () => apiRequest('/cart', { cache: 'no-store' }).then(cart)
@@ -87,12 +90,13 @@ export async function validateCustomerCart(): Promise<CartValidation> {
 export async function cartLoader(args: LoaderFunctionArgs) {
   const user = await sessionLoader(args)
   if (user?.role === 'CUSTOMER') {
-    const [customerCart, rawAddresses] = await Promise.all([
+    const [customerCart, rawAddresses, paymentProviders] = await Promise.all([
       getCustomerCart(),
       apiRequest('/account/addresses', { signal: args.request.signal, cache: 'no-store' }),
+      getPaymentProviders(args.request.signal),
     ])
     if (!Array.isArray(rawAddresses)) return invalid()
-    return { mode: 'customer' as const, cart: customerCart, addresses: rawAddresses.map(parseAddress) }
+    return { mode: 'customer' as const, cart: customerCart, addresses: rawAddresses.map(parseAddress), paymentProviders }
   }
-  return { mode: 'guest' as const, cart: guestCart(), addresses: [] }
+  return { mode: 'guest' as const, cart: guestCart(), addresses: [], paymentProviders: { payOs: { enabled: false } } }
 }

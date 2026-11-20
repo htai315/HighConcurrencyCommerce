@@ -8,6 +8,7 @@ public sealed class CsrfFilter(IAntiforgery antiforgery) : IAsyncAuthorizationFi
 {
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
+        if (context.Filters.Any(filter => filter is IgnoreAntiforgeryTokenAttribute)) return;
         var method = context.HttpContext.Request.Method;
         if (HttpMethods.IsGet(method) || HttpMethods.IsHead(method) || HttpMethods.IsOptions(method)) return;
         try { await antiforgery.ValidateRequestAsync(context.HttpContext); }

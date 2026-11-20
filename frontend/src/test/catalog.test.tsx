@@ -7,6 +7,7 @@ import { appRoutes } from '../App'
 import { server } from './setup'
 
 const category = { id: 'cat-1', name: 'Màn hình', slug: 'man-hinh' }
+const brand = { id: 'brand-1', name: 'AeroSport', slug: 'aerosport', country: 'VN', websiteUrl: null }
 const product = { id: 'product-1', title: 'Màn hình Alpha', category, minPrice: 2500000, inStock: true }
 const api = 'http://localhost:5173/api/v1/catalog'
 let router: ReturnType<typeof createMemoryRouter> | undefined
@@ -18,6 +19,7 @@ function open(path = '/') {
 beforeEach(() => {
   server.use(
     http.get(`${api}/categories`, () => HttpResponse.json([category])),
+    http.get(`${api}/brands`, () => HttpResponse.json([brand])),
     http.get(`${api}/products`, () => HttpResponse.json({ items: [product], totalCount: 1, page: 1, pageSize: 12 })),
     http.get(`${api}/products/product-1`, () => HttpResponse.json({
       id: product.id, title: product.title, category, description: '<script>alert(1)</script>',
@@ -41,7 +43,6 @@ test('hiển thị catalog từ API và mở chi tiết với tồn của SKU đ
   expect(screen.getByText('<script>alert(1)</script>')).toBeVisible()
   expect(document.querySelector('main script')).toBeNull()
 })
-
 test('bộ lọc được gửi lên API, lưu trong URL và phân trang giữ bộ lọc', async () => {
   const requests: URL[] = []
   server.use(http.get(`${api}/products`, ({ request }) => {
@@ -51,7 +52,7 @@ test('bộ lọc được gửi lên API, lưu trong URL và phân trang giữ b
   }))
   const user = userEvent.setup()
   const route = open('/?q=ban-dau')
-  const search = await screen.findByRole('searchbox', { name: 'Tìm sản phẩm' })
+  const search = await screen.findByRole('combobox', { name: 'Tìm sản phẩm' })
   expect(search).toHaveValue('ban-dau')
   await user.clear(search)
   await user.type(search, 'Alpha')
@@ -59,12 +60,21 @@ test('bộ lọc được gửi lên API, lưu trong URL và phân trang giữ b
   await user.type(screen.getByLabelText('Giá từ (₫)'), '1000000')
   await user.selectOptions(screen.getByLabelText('Sắp xếp'), 'price-asc')
   await user.click(screen.getByRole('button', { name: 'Áp dụng' }))
-  await waitFor(() => expect(new URLSearchParams(route.state.location.search).get('q')).toBe('Alpha'))
-  await user.click(await screen.findByRole('link', { name: 'Trang sau' }))
+  await waitFor(() => {
+    const params = new URLSearchParams(route.state.location.search)
+    expect(params.get('q')).toBe('Alpha')
+    expect(params.get('categoryId')).toBe('cat-1')
+  })
+  const nextPageLink = await screen.findByRole('link', { name: 'Trang sau' })
+  await waitFor(() => expect(nextPageLink).toHaveAttribute('href', expect.stringContaining('categoryId=cat-1')))
+  await user.click(nextPageLink)
   await waitFor(() => expect(new URLSearchParams(route.state.location.search).get('page')).toBe('2'))
-  expect(requests.at(-1)?.searchParams.get('categoryId')).toBe('cat-1')
-  expect(requests.at(-1)?.searchParams.get('minPrice')).toBe('1000000')
-  expect(requests.at(-1)?.searchParams.get('sort')).toBe('price-asc')
+  await waitFor(() => {
+    const pageTwoRequest = requests.findLast(request => request.searchParams.get('page') === '2')
+    expect(pageTwoRequest?.searchParams.get('categoryId')).toBe('cat-1')
+    expect(pageTwoRequest?.searchParams.get('minPrice')).toBe('1000000')
+    expect(pageTwoRequest?.searchParams.get('sort')).toBe('price-asc')
+  })
 })
 
 test('catalog rỗng không tự thay bằng dữ liệu mẫu', async () => {
@@ -165,4 +175,119 @@ test('hiển thị ảnh sản phẩm thật trên danh sách và thư viện �
   const updatedMainImg = screen.getByRole('img', { name: 'Mặt sau' })
   expect(updatedMainImg).toHaveAttribute('src', '/images/alpha-back.webp')
 })
+
+test('facet count, stock, rating và advanced sort được gửi bằng URL canonical', async () => {
+  const requests: URL[] = []
+  server.use(http.get(`${api}/products`, ({ request }) => {
+    const url = new URL(request.url)
+    requests.push(url)
+    return HttpResponse.json({
+      items: [product], totalCount: 7, page: 1, pageSize: 12,
+      query: { normalizedText: url.searchParams.get('q'), effectiveSort: url.searchParams.get('sort') ?? (url.searchParams.has('q') ? 'relevance' : 'newest') },
+      facets: {
+        categories: [{ id: category.id, name: category.name, count: 7 }],
+        brands: [{ id: brand.id, name: brand.name, count: 5 }],
+        inStockCount: 4,
+        priceMin: 900000,
+        priceMax: 5500000,
+      },
+    })
+  }))
+  const user = userEvent.setup()
+  const route = open('/?q=astrox&page=3')
+
+  expect(await screen.findByRole('option', { name: 'Màn hình (7)' })).toBeVisible()
+  expect(screen.getByRole('option', { name: 'AeroSport (5)' })).toBeVisible()
+  expect(screen.getByText(/Khoảng hiện có:/)).toHaveTextContent('900.000')
+  expect(screen.getByLabelText('Sắp xếp')).toHaveValue('relevance')
+
+  await user.selectOptions(screen.getByLabelText('Danh mục'), category.id)
+  await user.selectOptions(screen.getByLabelText('Thương hiệu'), brand.id)
+  await user.click(screen.getByRole('checkbox', { name: /Chỉ còn hàng/ }))
+  await user.selectOptions(screen.getByLabelText('Đánh giá'), '4')
+  await user.selectOptions(screen.getByLabelText('Sắp xếp'), 'best-selling')
+  await user.click(screen.getByRole('button', { name: 'Áp dụng' }))
+
+  await waitFor(() => {
+    expect(route.state.location.search).toBe('?q=astrox&categoryId=cat-1&brandId=brand-1&inStock=true&minRating=4&sort=best-selling')
+    expect(route.state.location.hash).toBe('#catalog')
+  })
+  await waitFor(() => {
+    const latest = requests.at(-1)
+    expect(latest?.searchParams.get('inStock')).toBe('true')
+    expect(latest?.searchParams.get('minRating')).toBe('4')
+    expect(latest?.searchParams.get('sort')).toBe('best-selling')
+    expect(latest?.searchParams.get('page')).toBeNull()
+  })
+})
+
+test('active chips xóa riêng, reset page và back khôi phục trạng thái URL', async () => {
+  const user = userEvent.setup()
+  const route = open('/?q=Astrox&categoryId=cat-1&brandId=brand-1&minPrice=1000000&maxPrice=5000000&inStock=true&minRating=4&page=3')
+
+  expect(await screen.findByRole('link', { name: 'Bỏ lọc Từ 4★' })).toBeVisible()
+  expect(screen.getByRole('link', { name: 'Bỏ lọc Chỉ còn hàng' })).toBeVisible()
+  expect(screen.getByRole('link', { name: /Bỏ lọc Giá từ/ })).toBeVisible()
+  await user.click(screen.getByRole('link', { name: 'Bỏ lọc Từ 4★' }))
+
+  await waitFor(() => {
+    const params = new URLSearchParams(route.state.location.search)
+    expect(params.get('minRating')).toBeNull()
+    expect(params.get('page')).toBeNull()
+  })
+  await route.navigate(-1)
+  await waitFor(() => expect(new URLSearchParams(route.state.location.search).get('minRating')).toBe('4'))
+  await waitFor(() => expect(screen.getByRole('link', { name: 'Bỏ lọc Từ 4★' })).toBeVisible())
+  await waitFor(() => expect(screen.getByLabelText('Đánh giá')).toHaveValue('4'))
+  await waitFor(() => expect(screen.getByRole('checkbox', { name: /Chỉ còn hàng/ })).toBeChecked())
+})
+
+test('mobile filter drawer quản lý focus, Escape và body scroll lock', async () => {
+  const user = userEvent.setup()
+  open()
+  const toggle = await screen.findByRole('button', { name: 'Bộ lọc' })
+  await user.click(toggle)
+
+  const close = screen.getAllByRole('button', { name: 'Đóng bộ lọc' }).find(button => button.hasAttribute('data-filter-close'))
+  expect(close).toBeDefined()
+  await waitFor(() => expect(close).toHaveFocus())
+  expect(document.body.style.overflow).toBe('hidden')
+  await user.keyboard('{Escape}')
+
+  expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  expect(toggle).toHaveFocus()
+  expect(document.body.style.overflow).toBe('')
+})
+
+test('facets sai contract được chuyển thành lỗi an toàn có thể thử lại', async () => {
+  server.use(http.get(`${api}/products`, () => HttpResponse.json({
+    items: [product], totalCount: 1, page: 1, pageSize: 12,
+    query: { normalizedText: null, effectiveSort: 'newest' },
+    facets: { categories: 'broken', brands: [], inStockCount: 1, priceMin: 1000, priceMax: 2000 },
+  })))
+  open()
+  expect(await screen.findByRole('alert')).toHaveTextContent('Không thể tải sản phẩm')
+  expect(screen.getByRole('button', { name: 'Thử lại' })).toBeVisible()
+})
+
+test('PDP khử mã độc trong websiteUrl của thương hiệu', async () => {
+  const user = userEvent.setup()
+  server.use(
+    http.get(`${api}/products/product-1`, () => HttpResponse.json({
+      id: product.id, title: product.title, category, description: 'Mô tả vợt',
+      brand: { id: 'brand-1', name: 'AeroSport', slug: 'aerosport', country: 'VN', websiteUrl: 'javascript:alert(1)' },
+      skus: [
+        { id: 'sku-1', skuCode: 'ALPHA-A', optionLabel: 'Tiêu chuẩn', price: 2500000, inStock: true },
+      ],
+      specifications: [],
+    }))
+  )
+  open('/products/product-1')
+  expect(await screen.findByRole('heading', { name: product.title, level: 1 })).toBeVisible()
+  await user.click(screen.getByRole('tab', { name: 'Thông số kỹ thuật' }))
+  const brandHeading = screen.getByRole('cell', { name: 'AeroSport' })
+  expect(brandHeading).toBeVisible()
+  expect(brandHeading.querySelector('a')).toBeNull()
+})
+
 

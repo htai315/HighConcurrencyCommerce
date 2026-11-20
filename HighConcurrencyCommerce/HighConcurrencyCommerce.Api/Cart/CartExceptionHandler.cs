@@ -12,7 +12,7 @@ public sealed class CartExceptionHandler : IExceptionHandler
         var status = failure.Code switch
         {
             "NOT_FOUND" or "SKU_NOT_AVAILABLE" => 404,
-            "CART_CLOSED" or "FLASH_SALE_NOT_AVAILABLE" => 409,
+            "CART_CLOSED" or "FLASH_SALE_NOT_AVAILABLE" or "IDEMPOTENCY_KEY_REUSED" => 409,
             _ => 400
         };
         await AuthProblems.Write(context, status, failure.Code,

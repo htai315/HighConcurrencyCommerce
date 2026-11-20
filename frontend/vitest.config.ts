@@ -7,6 +7,11 @@ export default defineConfig({
     environment: 'jsdom',
     environmentOptions: { jsdom: { url: 'http://localhost:5173' } },
     setupFiles: ['./src/test/setup.ts'],
+    testTimeout: 15_000,
+    pool: 'threads',
+    maxWorkers: 4,
     env: { VITE_API_BASE_URL: '/api/v1' },
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    exclude: ['e2e/**', 'node_modules/**', 'dist/**'],
   },
 })

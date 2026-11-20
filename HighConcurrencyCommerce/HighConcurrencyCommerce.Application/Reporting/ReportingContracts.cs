@@ -1,7 +1,15 @@
 namespace HighConcurrencyCommerce.Application.Reporting;
 
-public sealed record RevenueDayDto(DateOnly Date, decimal Revenue, int CompletedOrderCount);
+public sealed record RevenueDayDto(
+    DateOnly Date,
+    decimal Revenue,
+    int CompletedOrderCount,
+    decimal GrossRevenue = 0m,
+    decimal RefundAmount = 0m,
+    decimal NetRevenue = 0m);
+
 public sealed record RevenueMethodDto(string PaymentMethod, decimal Revenue, int CompletedOrderCount);
+
 public sealed record RevenueReportDto(
     DateOnly From,
     DateOnly To,
@@ -9,7 +17,11 @@ public sealed record RevenueReportDto(
     int CompletedOrderCount,
     decimal AverageOrderValue,
     IReadOnlyList<RevenueDayDto> Days,
-    IReadOnlyList<RevenueMethodDto> PaymentMethods);
+    IReadOnlyList<RevenueMethodDto> PaymentMethods,
+    decimal GrossRevenue = 0m,
+    decimal RefundAmount = 0m,
+    decimal NetRevenue = 0m,
+    decimal ShippingRevenue = 0m);
 
 public sealed record LowStockItemDto(
     Guid ProductSkuId,
@@ -29,7 +41,8 @@ public sealed record StaffTaskSummaryDto(
     int ShipmentsToHandoverCount,
     int DeliveryFailuresCount,
     int LowStockSkuCount,
-    int NotificationsUnreadCount);
+    int NotificationsUnreadCount,
+    int ApprovedReturnsCount = 0);
 
 public sealed record AuditLogDto(
     Guid Id,

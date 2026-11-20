@@ -18,7 +18,7 @@ Yêu cầu role `STAFF`; Customer/Admin nhận 403. Mutation yêu cầu CSRF. Re
 
 ### `GET /api/v1/staff/orders/cod-pending`
 
-Trả hàng đợi COD theo deadline tăng dần. DTO gồm thông tin Order, Customer, shipping snapshot và item snapshots cần thiết để Staff xác nhận.
+Trả hàng đợi COD theo deadline tăng dần. DTO gồm thông tin Order, Customer, địa chỉ và snapshot vận chuyển (`shippingFee`, `shippingMethodCode`, `shippingMethodName`, `shippingEstimatedMinDays`, `shippingEstimatedMaxDays`) cùng item snapshots cần thiết để Staff xác nhận. `totalAmount` và `Payment.expectedAmount` đã gồm phí vận chuyển.
 
 ### `POST /api/v1/staff/orders/{id}/confirm-cod`
 

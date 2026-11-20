@@ -19,6 +19,12 @@ public partial class PaymentAttempt
 
     public string? ProviderLink { get; set; }
 
+    public string? ProviderPaymentLinkId { get; set; }
+
+    public string? LastErrorCode { get; set; }
+
+    public DateTime? LastQueriedAt { get; set; }
+
     public DateTime ExpiresAt { get; set; }
 
     public string AttemptStatus { get; set; } = null!;

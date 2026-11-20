@@ -14,8 +14,10 @@ RUN dotnet publish HighConcurrencyCommerce/HighConcurrencyCommerce.Api/HighConcu
     --configuration Release --no-restore --output /app/publish /p:UseAppHost=false
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS runtime
-RUN apk add --no-cache curl \
+RUN apk add --no-cache curl krb5-libs \
     && mkdir -p /var/lib/hcc/keys \
+    && mkdir -p /var/lib/hcc/media \
+    && mkdir -p /var/lib/hcc/carrier-labels \
     && chown -R app:app /var/lib/hcc
 WORKDIR /app
 COPY --from=build --chown=app:app /app/publish .

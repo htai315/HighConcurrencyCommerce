@@ -26,7 +26,7 @@ Ngưỡng mặc định `5`, cấu hình bằng `Reporting:LowStockThreshold`. C
 
 Query tùy chọn: `from=YYYY-MM-DD`, `to=YYYY-MM-DD`.
 
-Response gồm `revenue`, `completedOrderCount`, `averageOrderValue`, breakdown `days` và `paymentMethods`.
+Response gồm `revenue`/`netRevenue`, `grossRevenue`, `refundAmount`, `shippingRevenue`, `completedOrderCount`, `averageOrderValue`, breakdown `days` và `paymentMethods`. `grossRevenue` đã gồm phí vận chuyển vì lấy từ `Payment.expectedAmount`; `shippingRevenue` chỉ là phần tách thông tin từ snapshot của các đơn hợp lệ, không cộng thêm lần nữa vào Gross/Net.
 
 ## `GET /api/v1/admin/reports/low-stock`
 

@@ -42,6 +42,9 @@ public sealed class MergeCartItemRequest
 
 public sealed class MergeCartRequest
 {
+    [MaxLength(100)]
+    public string? MergeBatchId { get; set; }
+
     [Required, MinLength(1), MaxLength(50)]
     public List<MergeCartItemRequest> Items { get; set; } = [];
 }

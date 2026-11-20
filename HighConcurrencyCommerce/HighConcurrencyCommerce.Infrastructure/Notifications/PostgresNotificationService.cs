@@ -20,16 +20,31 @@ public sealed class PostgresNotificationService(StoreDbContext db, TimeProvider 
     }
 
     public async Task<NotificationFeedDto> GetMineAsync(
-        Guid recipientId, bool unreadOnly, int limit, CancellationToken ct = default)
+        Guid recipientId, bool unreadOnly, int limit, DateTime? before = null, Guid? beforeId = null, CancellationToken ct = default)
     {
         var boundedLimit = Math.Clamp(limit, 1, 100);
         var mine = db.InAppNotifications.AsNoTracking().Where(x => x.RecipientId == recipientId);
         var unreadCount = await mine.CountAsync(x => x.ReadAt == null, ct);
         if (unreadOnly) mine = mine.Where(x => x.ReadAt == null);
-        var items = await mine.OrderByDescending(x => x.CreatedAt).ThenByDescending(x => x.Id)
-            .Take(boundedLimit).Select(x => new NotificationDto(
-                x.Id, x.NotificationType, x.Title, x.Body, x.CreatedAt, x.ReadAt)).ToListAsync(ct);
-        return new NotificationFeedDto(items, unreadCount);
+        if (before.HasValue != beforeId.HasValue)
+        {
+            throw new NotificationFailure("INVALID_CURSOR", "before và beforeId phải cùng được cung cấp hoặc cùng bỏ trống.", 400);
+        }
+
+        if (before.HasValue && beforeId.HasValue)
+        {
+            var beforeDate = before.Value;
+            var bId = beforeId.Value;
+            mine = mine.Where(x => x.CreatedAt < beforeDate || (x.CreatedAt == beforeDate && x.Id < bId));
+        }
+
+        var itemsPlusOne = await mine.OrderByDescending(x => x.CreatedAt).ThenByDescending(x => x.Id)
+            .Take(boundedLimit + 1).Select(x => new NotificationDto(
+                x.Id, x.NotificationType, x.Title, x.Body, x.CreatedAt, x.ReadAt, x.ActionUrl)).ToListAsync(ct);
+
+        var hasMore = itemsPlusOne.Count > boundedLimit;
+        var items = itemsPlusOne.Take(boundedLimit).ToList();
+        return new NotificationFeedDto(items, unreadCount, hasMore);
     }
 
     public async Task<NotificationDto> MarkReadAsync(
@@ -43,7 +58,7 @@ public sealed class PostgresNotificationService(StoreDbContext db, TimeProvider 
                 .SetProperty(x => x.UpdatedAt, now), ct);
         return await db.InAppNotifications.AsNoTracking()
             .Where(x => x.Id == notificationId && x.RecipientId == recipientId)
-            .Select(x => new NotificationDto(x.Id, x.NotificationType, x.Title, x.Body, x.CreatedAt, x.ReadAt))
+            .Select(x => new NotificationDto(x.Id, x.NotificationType, x.Title, x.Body, x.CreatedAt, x.ReadAt, x.ActionUrl))
             .SingleOrDefaultAsync(ct)
             ?? throw new NotificationFailure("NOT_FOUND", "Không tìm thấy thông báo.");
     }

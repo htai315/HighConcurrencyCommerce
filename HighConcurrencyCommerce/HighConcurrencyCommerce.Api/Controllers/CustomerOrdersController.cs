@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using HighConcurrencyCommerce.Application.CarrierTracking;
 using HighConcurrencyCommerce.Application.CustomerOrders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,10 @@ namespace HighConcurrencyCommerce.Api.Controllers;
 [ApiController]
 [Authorize(Policy = "Customer")]
 [Route("api/v1/orders")]
-public sealed class CustomerOrdersController(ICustomerOrderService orders) : ControllerBase
+[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+public sealed class CustomerOrdersController(
+    ICustomerOrderService orders,
+    ICustomerCarrierTrackingService tracking) : ControllerBase
 {
     private Guid CustomerId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
@@ -20,6 +24,10 @@ public sealed class CustomerOrdersController(ICustomerOrderService orders) : Con
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<CustomerOrderDto>> Detail(Guid id, CancellationToken ct) =>
         Ok(await orders.GetAsync(CustomerId, id, ct));
+
+    [HttpGet("{id:guid}/tracking")]
+    public async Task<ActionResult<CarrierConsignmentDto>> Tracking(Guid id, CancellationToken ct) =>
+        Ok(await tracking.GetForOrderAsync(CustomerId, id, ct));
 
     [HttpPost("{id:guid}/cancel")]
     public async Task<ActionResult<CustomerOrderDto>> Cancel(

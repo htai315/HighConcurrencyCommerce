@@ -15,8 +15,21 @@ public sealed class CheckoutLineRequest
 
 public sealed class CreateCheckoutRequest
 {
+    public string? VoucherCode { get; set; }
+
     [Required]
     public Guid ShippingAddressId { get; set; }
+
+    [Required]
+    public Guid ShippingMethodId { get; set; }
+
+    // Zero is accepted by model binding only so completed checkout-v1/v2 records can be replayed.
+    // Checkout service rejects zero for every new request.
+    [Range(0, long.MaxValue)]
+    public long ShippingMethodRevision { get; set; }
+
+    [Range(typeof(decimal), "0", "9999999999999999")]
+    public decimal QuotedShippingFee { get; set; }
 
     [Required, RegularExpression("^(COD|PAYOS)$")]
     public string PaymentMethod { get; set; } = "COD";
@@ -41,6 +54,15 @@ public sealed record CheckoutOrderItemDto(
     decimal UnitPrice,
     decimal LineTotal);
 
+public sealed record CheckoutShippingMethodSnapshotDto(
+    Guid ShippingMethodId,
+    string Code,
+    string Name,
+    short EstimatedMinDays,
+    short EstimatedMaxDays,
+    long Revision,
+    string DestinationProvinceKey);
+
 public sealed record CheckoutResultDto(
     Guid OrderId,
     string OrderNumber,
@@ -50,7 +72,12 @@ public sealed record CheckoutResultDto(
     decimal TotalAmount,
     DateTime DeadlineAt,
     CheckoutAddressSnapshotDto ShippingAddress,
-    IReadOnlyList<CheckoutOrderItemDto> Items);
+    IReadOnlyList<CheckoutOrderItemDto> Items,
+    decimal SubtotalAmount = 0m,
+    decimal VoucherDiscountAmount = 0m,
+    string? VoucherCode = null,
+    decimal ShippingFee = 0m,
+    CheckoutShippingMethodSnapshotDto? ShippingMethod = null);
 
 public sealed record CheckoutExecutionResult(CheckoutResultDto Result, bool IsReplay);
 

@@ -120,7 +120,7 @@ test('Admin mở tab Flash Sale, xem danh sách chiến dịch, chi tiết và h
 
   expect(await screen.findByRole('heading', { name: 'Quản trị Chiến dịch Flash Sale' })).toBeVisible()
   expect((await screen.findAllByText('Flash Sale Giờ Vàng 11.11')).length).toBeGreaterThanOrEqual(1)
-  expect(screen.getByText('Bàn phím cơ HCC Pro')).toBeVisible()
+  expect(await screen.findByText('Bàn phím cơ HCC Pro')).toBeVisible()
   expect(screen.getByText(/790\.000/)).toBeVisible()
   expect(screen.getByText('DOANH THU ĐÃ BÁN')).toBeVisible()
 })
@@ -294,7 +294,7 @@ test('Admin tạo chiến dịch DRAFT mới, thêm ưu đãi, công bố và h�
   expect((await screen.findAllByText('Flash Sale Black Friday')).length).toBeGreaterThanOrEqual(1)
 
   // Thêm offer
-  const selectSku = screen.getByRole('combobox')
+  const selectSku = await screen.findByRole('combobox')
   await user.selectOptions(selectSku, 'sku-2')
   await user.click(screen.getByRole('button', { name: 'Thêm' }))
 
@@ -310,10 +310,10 @@ test('Admin tạo chiến dịch DRAFT mới, thêm ưu đãi, công bố và h�
   const cancelBtn = screen.getByRole('button', { name: 'Hủy chiến dịch' })
   await user.click(cancelBtn)
 
-  // Modal xác nhận xuất hiện kèm cảnh báo SM-Q02
+  // Confirmation explains the effect without exposing internal business rule codes.
   const dialog = await screen.findByRole('dialog')
   expect(dialog).toBeVisible()
-  expect(within(dialog).getByText(/SM-Q02/)).toBeVisible()
+  expect(within(dialog).getByText(/Các đơn đã tạo trước đó được giữ nguyên/)).toBeVisible()
 
   // Xác nhận hủy
   await user.click(screen.getByRole('button', { name: 'Xác nhận Hủy' }))
@@ -383,10 +383,12 @@ test('Customer đi từ Flash Sale đến sản phẩm, giỏ và checkout giữ
   expect(screen.getByText(/2\.100\.000/)).toBeVisible()
   await user.click(screen.getByRole('button', { name: 'Thêm vào giỏ' }))
   await user.click(await screen.findByRole('link', { name: 'Xem giỏ' }))
-  await user.click(await screen.findByRole('button', { name: 'Đặt hàng và giữ tồn' }))
+  await screen.findByRole('radio', { name: /Giao hàng tiêu chuẩn/ })
+  await user.click(screen.getByRole('button', { name: 'Đặt hàng' }))
   expect(await screen.findByRole('heading', { name: 'HC-FLASH-001' })).toBeVisible()
   expect(checkoutBody).toEqual({
     shippingAddressId: address.id, paymentMethod: 'COD',
+    shippingMethodId: 'shipping-standard', shippingMethodRevision: 3, quotedShippingFee: 30000,
     lines: [{ productSkuId: offer.productSkuId, quantity: 1, flashSaleOfferId: offer.offerId }],
   })
 })

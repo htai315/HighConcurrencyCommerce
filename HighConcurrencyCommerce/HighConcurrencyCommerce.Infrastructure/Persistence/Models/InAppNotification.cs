@@ -21,6 +21,8 @@ public partial class InAppNotification
 
     public string Body { get; set; } = null!;
 
+    public string? ActionUrl { get; set; }
+
     public DateTime? ReadAt { get; set; }
 
     public virtual UserAccount Recipient { get; set; } = null!;

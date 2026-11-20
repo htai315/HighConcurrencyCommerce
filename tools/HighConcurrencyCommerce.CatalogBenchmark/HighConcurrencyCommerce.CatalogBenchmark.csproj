@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>3c567ea2-055d-4e2d-bba9-5d824fbf554c</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../../HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/HighConcurrencyCommerce.Infrastructure.csproj" />
+    <None Include="../../database/performance/catalog_search_benchmark_seed.sql" Link="catalog_search_benchmark_seed.sql" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

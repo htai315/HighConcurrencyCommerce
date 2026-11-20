@@ -1,12 +1,17 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useLoaderData, useRevalidator } from 'react-router-dom'
+import { ConfirmDialog } from '../components/layout/ConfirmDialog'
 import {
   type ManagedProduct,
-  addStaffImage,
   addStaffSku,
   createStaffDraft,
   deleteStaffImage,
+  deleteStaffSpecification,
+  upsertStaffSpecification,
   updateStaffDraft,
+  uploadStaffImage,
+  updateStaffImage,
+  reorderStaffImages,
   staffLoader,
 } from '../features/product-management/product-management.api'
 import {
@@ -21,30 +26,47 @@ import { formatPrice } from '../features/catalog/catalog.api'
 import { CodOrdersPanel } from '../features/orders/CodOrdersPanel'
 import { FulfillmentPanel } from '../features/fulfillment/FulfillmentPanel'
 import { StaffTaskSummaryPanel } from '../features/reporting/StaffTaskSummaryPanel'
+import { ReviewModerationPanel } from '../features/reviews/ReviewModerationPanel'
+import { StaffReturnsPanel } from '../features/returns/StaffReturnsPanel'
+import { ExchangeFulfillmentPanel } from '../features/returns/ExchangeFulfillmentPanel'
+import { useWorkspaceSection } from '../components/layout/useWorkspaceSection'
+import { StaffProductRevisionPanel } from '../features/product-revisions/StaffProductRevisionPanel'
+import { StaffCarrierTrackingPanel } from '../features/carrier-tracking/StaffCarrierTrackingPanel'
 
 export function StaffDashboardPage() {
-  const { products } = useLoaderData<typeof staffLoader>()
+  const { products, categories, brands } = useLoaderData<typeof staffLoader>()
   const revalidator = useRevalidator()
+  const [productSearch, setProductSearch] = useState('')
+  const [inventorySearch, setInventorySearch] = useState('')
 
-  const [activeTab, setActiveTab] = useState<'products' | 'inventory' | 'cod' | 'tasks'>('products')
+  const [activeTab, setActiveTab] = useWorkspaceSection(['products', 'inventory', 'cod', 'carriers', 'tasks', 'reviews', 'returns'] as const, 'products')
+  const [fulfillmentRefreshKey, setFulfillmentRefreshKey] = useState(0)
 
   // Product tab states
   const [selectedProductId, setSelectedProductId] = useState<string | null>(products[0]?.id ?? null)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [deletingImage, setDeletingImage] = useState<{ id: string; fileKey: string } | null>(null)
 
   // Form states for Draft creation
   const [newTitle, setNewTitle] = useState('')
   const [newDesc, setNewDesc] = useState('')
+  const [newCategoryId, setNewCategoryId] = useState('')
+  const [newBrandId, setNewBrandId] = useState('')
 
   // Form states for adding SKU
   const [skuCode, setSkuCode] = useState('')
   const [optionLabel, setOptionLabel] = useState('')
 
   // Form states for adding Image
-  const [fileKey, setFileKey] = useState('')
+  const [uploadFiles, setUploadFiles] = useState<File[]>([])
+  const [draggingMedia, setDraggingMedia] = useState(false)
   const [altText, setAltText] = useState('')
   const [displayOrder, setDisplayOrder] = useState('1')
+  const [specKey, setSpecKey] = useState('')
+  const [specName, setSpecName] = useState('')
+  const [specValue, setSpecValue] = useState('')
+  const [specOrder, setSpecOrder] = useState('1')
 
   // Inventory tab states
   const [inventoryList, setInventoryList] = useState<SkuInventorySummary[]>([])
@@ -61,6 +83,8 @@ export function StaffDashboardPage() {
   const [loadingMovements, setLoadingMovements] = useState(false)
 
   const selectedProduct = products.find(p => p.id === selectedProductId) ?? null
+  const visibleProducts = products.filter(p => `${p.title} ${p.skus.map(sku => sku.skuCode).join(' ')}`.toLocaleLowerCase('vi').includes(productSearch.trim().toLocaleLowerCase('vi')))
+  const visibleInventory = inventoryList.filter(item => `${item.skuCode} ${item.productTitle} ${item.optionLabel}`.toLocaleLowerCase('vi').includes(inventorySearch.trim().toLocaleLowerCase('vi')))
 
   const refreshInventory = useCallback(async () => {
     setLoadingInventory(true)
@@ -116,9 +140,13 @@ export function StaffDashboardPage() {
       const created = await createStaffDraft({
         title: newTitle.trim(),
         description: newDesc.trim() || undefined,
+        categoryId: newCategoryId || undefined,
+        brandId: newBrandId || undefined,
       })
       setNewTitle('')
       setNewDesc('')
+      setNewCategoryId('')
+      setNewBrandId('')
       setMessage({ type: 'success', text: `Tạo sản phẩm nháp "${created.title}" thành công.` })
       setSelectedProductId(created.id)
       revalidator.revalidate()
@@ -136,6 +164,8 @@ export function StaffDashboardPage() {
     const form = new FormData(e.currentTarget)
     const title = ((form.get('title') as string) || '').trim()
     const description = ((form.get('description') as string) || '').trim()
+    const categoryId = ((form.get('categoryId') as string) || '').trim()
+    const brandId = ((form.get('brandId') as string) || '').trim()
 
     if (!title) {
       setMessage({ type: 'error', text: 'Tiêu đề sản phẩm không được để trống.' })
@@ -148,6 +178,8 @@ export function StaffDashboardPage() {
       await updateStaffDraft(selectedProduct.id, {
         title,
         description: description || undefined,
+        categoryId: categoryId || undefined,
+        brandId: brandId || undefined,
       })
       setMessage({ type: 'success', text: 'Cập nhật bản nháp thành công.' })
       revalidator.revalidate()
@@ -185,29 +217,60 @@ export function StaffDashboardPage() {
 
   const handleAddImage = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!selectedProduct || !fileKey.trim()) {
-      setMessage({ type: 'error', text: 'Vui lòng nhập đường dẫn/file key của ảnh.' })
+    if (!selectedProduct || uploadFiles.length === 0) {
+      setMessage({ type: 'error', text: 'Vui lòng chọn ít nhất một ảnh JPEG, PNG hoặc WebP.' })
       return
     }
 
     setSubmitting(true)
     setMessage(null)
     try {
-      await addStaffImage(selectedProduct.id, {
-        fileKey: fileKey.trim(),
-        altText: altText.trim() || undefined,
-        displayOrder: parseInt(displayOrder, 10) || 0,
-      })
-      setFileKey('')
+      const baseOrder = parseInt(displayOrder, 10) || 0
+      for (const [index, file] of uploadFiles.entries()) {
+        await uploadStaffImage(selectedProduct.id, file, {
+          altText: altText.trim() ? `${altText.trim()}${uploadFiles.length > 1 ? ` — ${file.name}` : ''}` : undefined,
+          displayOrder: baseOrder + index,
+        })
+      }
+      setUploadFiles([])
       setAltText('')
       setDisplayOrder('1')
-      setMessage({ type: 'success', text: 'Thêm ảnh thành công.' })
+      setMessage({ type: 'success', text: `Đã upload ${uploadFiles.length} ảnh thành công.` })
       revalidator.revalidate()
     } catch (err: unknown) {
       setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Thêm ảnh thất bại.' })
     } finally {
       setSubmitting(false)
     }
+  }
+
+  const chooseUploadFiles = (files: File[]) => {
+    const accepted = files.filter(file => ['image/jpeg', 'image/png', 'image/webp'].includes(file.type) && file.size > 0 && file.size <= 8 * 1024 * 1024)
+    setUploadFiles(accepted)
+    setMessage(accepted.length === files.length ? null : { type: 'error', text: 'Một số tệp bị bỏ qua: chỉ nhận JPEG/PNG/WebP, tối đa 8 MiB mỗi ảnh.' })
+  }
+
+  const handleUpdateImage = async (imageId: string, form: HTMLFormElement) => {
+    if (!selectedProduct) return
+    const data = new FormData(form)
+    setSubmitting(true); setMessage(null)
+    try {
+      await updateStaffImage(selectedProduct.id, imageId, { altText: String(data.get('altText') ?? '').trim() || undefined, displayOrder: Number.parseInt(String(data.get('displayOrder') ?? '0'), 10) || 0 })
+      setMessage({ type: 'success', text: 'Đã cập nhật metadata ảnh.' }); revalidator.revalidate()
+    } catch (err) { setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Không thể cập nhật ảnh.' }) }
+    finally { setSubmitting(false) }
+  }
+
+  const handleMoveImage = async (imageId: string, direction: -1 | 1) => {
+    if (!selectedProduct) return
+    const ordered = [...selectedProduct.images].sort((a, b) => a.displayOrder - b.displayOrder || a.id.localeCompare(b.id))
+    const current = ordered.findIndex(image => image.id === imageId); const target = current + direction
+    if (current < 0 || target < 0 || target >= ordered.length) return
+    ;[ordered[current], ordered[target]] = [ordered[target]!, ordered[current]!]
+    setSubmitting(true); setMessage(null)
+    try { await reorderStaffImages(selectedProduct.id, ordered.map(image => image.id)); setMessage({ type: 'success', text: 'Đã sắp xếp lại gallery.' }); revalidator.revalidate() }
+    catch (err) { setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Không thể sắp xếp gallery.' }) }
+    finally { setSubmitting(false) }
   }
 
   const handleDeleteImage = async (imageId: string) => {
@@ -225,11 +288,33 @@ export function StaffDashboardPage() {
     }
   }
 
+  const handleUpsertSpecification = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!selectedProduct || !/^[a-z0-9]+(?:_[a-z0-9]+)*$/.test(specKey) || !specName.trim() || !specValue.trim()) {
+      setMessage({ type: 'error', text: 'Khóa thông số dùng snake_case; tên và giá trị không được trống.' }); return
+    }
+    setSubmitting(true); setMessage(null)
+    try {
+      await upsertStaffSpecification(selectedProduct.id, specKey, { displayName: specName.trim(), value: specValue.trim(), displayOrder: Number.parseInt(specOrder, 10) || 0 })
+      setSpecKey(''); setSpecName(''); setSpecValue(''); setSpecOrder('1'); setMessage({ type: 'success', text: 'Đã lưu thông số kỹ thuật.' }); revalidator.revalidate()
+    } catch (err) { setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Không thể lưu thông số.' }) }
+    finally { setSubmitting(false) }
+  }
+
+  const handleDeleteSpecification = async (key: string) => {
+    if (!selectedProduct) return
+    setSubmitting(true); setMessage(null)
+    try { await deleteStaffSpecification(selectedProduct.id, key); setMessage({ type: 'success', text: 'Đã xóa thông số.' }); revalidator.revalidate() }
+    catch (err) { setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Không thể xóa thông số.' }) }
+    finally { setSubmitting(false) }
+  }
+
   const handleStockInSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const qty = parseInt(stockInQty, 10)
-    if (!stockInSkuId || isNaN(qty) || qty <= 0) {
-      setMessage({ type: 'error', text: 'Vui lòng chọn biến thể SKU và số lượng nhập lớn hơn 0.' })
+    const sourceId = stockInSourceId.trim()
+    if (!stockInSkuId || isNaN(qty) || qty <= 0 || !sourceId) {
+      setMessage({ type: 'error', text: 'Vui lòng chọn SKU, nhập số lượng lớn hơn 0 và cung cấp mã phiếu nhập.' })
       return
     }
 
@@ -240,7 +325,7 @@ export function StaffDashboardPage() {
         productSkuId: stockInSkuId,
         quantity: qty,
         sourceType: 'PURCHASE_RECEIPT',
-        sourceId: stockInSourceId.trim() || undefined,
+        sourceId,
         note: stockInNote.trim() || undefined,
       })
       setMessage({
@@ -301,17 +386,39 @@ export function StaffDashboardPage() {
 
   return (
     <section className="content-page workspace-page">
+      {deletingImage && (
+        <ConfirmDialog
+          title="Xóa ảnh sản phẩm?"
+          description={`Bạn có chắc chắn muốn xóa ảnh "${deletingImage.fileKey}"? Thao tác này không thể hoàn tác.`}
+          confirmLabel="Xác nhận xóa"
+          busy={submitting}
+          onCancel={() => setDeletingImage(null)}
+          onConfirm={async () => {
+            await handleDeleteImage(deletingImage.id)
+            setDeletingImage(null)
+          }}
+        />
+      )}
       <p className="eyebrow">Back Office · Staff</p>
       {activeTab === 'products' ? <h1>Quản trị Sản phẩm & Media</h1>
         : activeTab === 'inventory' ? <h1>Vận hành Kho & Tồn kho</h1>
-        : activeTab === 'cod' ? <h1>Xác nhận đơn COD</h1> : <h1>Tổng hợp tác vụ vận hành</h1>}
+        : activeTab === 'cod' ? <h1>Xác nhận đơn COD</h1>
+        : activeTab === 'carriers' ? <h1>Vận đơn & Tracking</h1>
+        : activeTab === 'reviews' ? <h1>Kiểm duyệt Đánh giá</h1>
+        : activeTab === 'returns' ? <h1>Tiếp nhận Hàng đổi/trả</h1>
+        : <h1>Tổng hợp tác vụ vận hành</h1>}
       <p className="page-intro">
         {activeTab === 'products'
           ? 'Nhân viên có thể tạo bản nháp sản phẩm (DRAFT), chỉnh sửa thông tin ban đầu, thêm biến thể SKU và quản lý hình ảnh.'
           : activeTab === 'inventory'
             ? 'Xem số lượng tồn kho khả dụng/vật lý của từng SKU, nhập kho bổ sung hàng và tra cứu lịch sử dịch chuyển (Movements).'
             : activeTab === 'cod' ? 'Duyệt hàng đợi COD trong hạn 24 giờ. Hệ thống tự nhả tồn và VOID payment khi quá hạn.'
-              : 'Theo dõi nhanh các hàng đợi cần xử lý và cảnh báo tồn thấp.'}
+            : activeTab === 'carriers' ? 'Tạo vận đơn từ shipment, tải nhãn, bàn giao hãng và cập nhật hành trình giao nhận.'
+              : activeTab === 'reviews'
+                ? 'Kiểm duyệt nhận xét của khách hàng, ẩn các nội dung vi phạm tiêu chuẩn và khôi phục khi cần thiết.'
+                : activeTab === 'returns'
+                  ? 'Kiểm tra hàng trả và hoàn kho đúng một lần.'
+                  : 'Theo dõi nhanh các hàng đợi cần xử lý và cảnh báo tồn thấp.'}
       </p>
 
       <div className="dashboard-tabs" role="group" aria-label="Khu vực vận hành Staff">
@@ -324,7 +431,7 @@ export function StaffDashboardPage() {
             setMessage(null)
           }}
         >
-          01 · Sản phẩm & Media
+          Sản phẩm & Media
         </button>
         <button
           type="button"
@@ -336,15 +443,37 @@ export function StaffDashboardPage() {
             setMessage(null)
           }}
         >
-          02 · Vận hành Kho & Tồn kho
+          Vận hành Kho & Tồn kho
         </button>
         <button
           type="button"
+          id="staff-tab-cod"
+          data-testid="staff-tab-cod"
           aria-pressed={activeTab === 'cod'}
           className={activeTab === 'cod' ? 'active' : ''}
           onClick={() => { setActiveTab('cod'); setMessage(null) }}
         >
-          03 · Đơn COD chờ xác nhận
+          Đơn COD chờ xác nhận
+        </button>
+        <button
+          type="button"
+          id="staff-tab-returns"
+          data-testid="staff-tab-returns"
+          aria-pressed={activeTab === 'returns'}
+          className={activeTab === 'returns' ? 'active' : ''}
+          onClick={() => { setActiveTab('returns'); setMessage(null) }}
+        >
+          Nhận hàng trả
+        </button>
+        <button
+          type="button"
+          id="staff-tab-carriers"
+          data-testid="staff-tab-carriers"
+          aria-pressed={activeTab === 'carriers'}
+          className={activeTab === 'carriers' ? 'active' : ''}
+          onClick={() => { setActiveTab('carriers'); setMessage(null) }}
+        >
+          Vận đơn &amp; Tracking
         </button>
         <button
           type="button"
@@ -352,21 +481,25 @@ export function StaffDashboardPage() {
           className={activeTab === 'tasks' ? 'active' : ''}
           onClick={() => { setActiveTab('tasks'); setMessage(null) }}
         >
-          04 · Tác vụ cần xử lý
+          Tác vụ cần xử lý
+        </button>
+        <button
+          type="button"
+          id="staff-tab-reviews"
+          data-testid="staff-tab-reviews"
+          aria-pressed={activeTab === 'reviews'}
+          className={activeTab === 'reviews' ? 'active' : ''}
+          onClick={() => { setActiveTab('reviews'); setMessage(null) }}
+        >
+          Kiểm duyệt Đánh giá
         </button>
       </div>
 
       {message && (
         <div
           role="alert"
-          style={{
-            padding: '12px 18px',
-            borderRadius: '12px',
-            margin: '20px 0',
-            backgroundColor: message.type === 'success' ? '#ecfdf5' : '#fef2f2',
-            color: message.type === 'success' ? '#065f46' : '#991b1b',
-            border: `1px solid ${message.type === 'success' ? '#a7f3d0' : '#fecaca'}`,
-          }}
+          className={`alert ${message.type === 'success' ? 'success' : 'error'}`}
+          style={{ margin: '20px 0' }}
         >
           {message.text}
         </div>
@@ -392,6 +525,13 @@ export function StaffDashboardPage() {
                   />
                 </div>
                 <div className="form-field">
+                  <label htmlFor="draft-brand">Thương hiệu</label>
+                  <select id="draft-brand" value={newBrandId} onChange={event => setNewBrandId(event.target.value)} disabled={submitting}>
+                    <option value="">Chưa chọn thương hiệu</option>
+                    {brands.filter(brand => brand.isActive).map(brand => <option key={brand.id} value={brand.id}>{brand.name}</option>)}
+                  </select>
+                </div>
+                <div className="form-field">
                   <label htmlFor="draft-desc">Mô tả tóm tắt</label>
                   <textarea
                     id="draft-desc"
@@ -403,6 +543,13 @@ export function StaffDashboardPage() {
                     disabled={submitting}
                   />
                 </div>
+                <div className="form-field">
+                  <label htmlFor="draft-category">Danh mục</label>
+                  <select id="draft-category" value={newCategoryId} onChange={event => setNewCategoryId(event.target.value)} disabled={submitting}>
+                    <option value="">Chưa phân loại</option>
+                    {categories.filter(category => category.isVisible).map(category => <option key={category.id} value={category.id}>{category.name}</option>)}
+                  </select>
+                </div>
                 <button type="submit" className="button-primary" style={{ width: '100%' }} disabled={submitting}>
                   {submitting ? 'Đang tạo...' : 'Tạo bản nháp'}
                 </button>
@@ -411,11 +558,13 @@ export function StaffDashboardPage() {
 
             <div className="management-card">
               <h2>Danh sách sản phẩm ({products.length})</h2>
+              <label className="workspace-search">Tìm sản phẩm<input type="search" value={productSearch} onChange={event => setProductSearch(event.target.value)} placeholder="Tên sản phẩm hoặc mã SKU" /></label>
+              {products.length > 0 && visibleProducts.length === 0 && <p role="status">Không có sản phẩm phù hợp. Hãy thử tên hoặc mã SKU khác.</p>}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '14px' }}>
                 {products.length === 0 ? (
                   <p style={{ color: 'var(--muted)' }}>Chưa có sản phẩm nào. Hãy tạo bản nháp đầu tiên ở trên.</p>
                 ) : (
-                  products.map((p: ManagedProduct) => {
+                  visibleProducts.map((p: ManagedProduct) => {
                     const isSelected = p.id === selectedProductId
                     return (
                       <button
@@ -468,11 +617,11 @@ export function StaffDashboardPage() {
                   </p>
                 </div>
 
-                {selectedProduct.publicationStatus === 'PUBLISHED' ? (
-                  <div style={{ padding: '14px 18px', borderRadius: '12px', backgroundColor: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0' }}>
-                    ✓ Sản phẩm này đã được Admin công bố (PUBLISHED) lên Catalog công khai. Nhân viên không thể sửa đổi nội dung bản nháp.
-                  </div>
-                ) : (
+                {selectedProduct.publicationStatus === 'PUBLISHED' || selectedProduct.publicationStatus === 'SUSPENDED' ? (
+                  <><div style={{ padding: '14px 18px', borderRadius: '12px', backgroundColor: selectedProduct.publicationStatus === 'SUSPENDED' ? '#fff7ed' : '#ecfdf5', color: selectedProduct.publicationStatus === 'SUSPENDED' ? '#9a3412' : '#065f46', border: `1px solid ${selectedProduct.publicationStatus === 'SUSPENDED' ? '#fed7aa' : '#a7f3d0'}` }}>
+                    {selectedProduct.publicationStatus === 'SUSPENDED' ? 'Sản phẩm đang tạm ngừng bán. Bạn vẫn có thể soạn revision; Admin duyệt sẽ không tự mở bán.' : '✓ Sản phẩm đã công bố. Mọi thay đổi mới phải đi qua revision và Admin duyệt.'}
+                  </div><StaffProductRevisionPanel product={selectedProduct} categories={categories} brands={brands} /></>
+                ) : selectedProduct.publicationStatus === 'DRAFT' ? (
                   <form key={selectedProduct.id} onSubmit={handleUpdateDraft} style={{ borderBottom: '1px solid var(--line)', paddingBottom: '24px' }}>
                     <h3>Chỉnh sửa nội dung bản nháp</h3>
                     <div className="form-field">
@@ -487,6 +636,14 @@ export function StaffDashboardPage() {
                       />
                     </div>
                     <div className="form-field">
+                      <label htmlFor="edit-brand">Thương hiệu</label>
+                      <select id="edit-brand" name="brandId" defaultValue={selectedProduct.brandId ?? ''} disabled={submitting}>
+                        <option value="">Chưa chọn thương hiệu</option>
+                        {selectedProduct.brandId && !brands.some(brand => brand.id === selectedProduct.brandId) && <option value={selectedProduct.brandId}>Thương hiệu hiện tại (không còn khả dụng)</option>}
+                        {brands.filter(brand => brand.isActive || brand.id === selectedProduct.brandId).map(brand => <option key={brand.id} value={brand.id}>{brand.name}{brand.isActive ? '' : ' (ngừng dùng)'}</option>)}
+                      </select>
+                    </div>
+                    <div className="form-field">
                       <label htmlFor="edit-desc">Mô tả sản phẩm</label>
                       <textarea
                         id="edit-desc"
@@ -497,10 +654,20 @@ export function StaffDashboardPage() {
                         disabled={submitting}
                       />
                     </div>
+                    <div className="form-field">
+                      <label htmlFor="edit-category">Danh mục</label>
+                      <select id="edit-category" name="categoryId" defaultValue={selectedProduct.categoryId ?? ''} disabled={submitting}>
+                        <option value="">Chưa phân loại</option>
+                        {selectedProduct.categoryId && !categories.some(category => category.id === selectedProduct.categoryId) && <option value={selectedProduct.categoryId}>Danh mục hiện tại (không còn khả dụng)</option>}
+                        {categories.filter(category => category.isVisible || category.id === selectedProduct.categoryId).map(category => <option key={category.id} value={category.id}>{category.name}{category.isVisible ? '' : ' (đang ẩn)'}</option>)}
+                      </select>
+                    </div>
                     <button type="submit" className="button-secondary" disabled={submitting}>
                       {submitting ? 'Đang lưu...' : 'Lưu thông tin nháp'}
                     </button>
                   </form>
+                ) : (
+                  <div className="cart-warning" role="status">Sản phẩm đã lưu trữ. Nội dung, SKU và media chỉ còn ở chế độ xem lịch sử.</div>
                 )}
 
                 {/* SKU Section */}
@@ -577,11 +744,27 @@ export function StaffDashboardPage() {
                   )}
                 </div>
 
+                <div style={{ borderBottom: '1px solid var(--line)', paddingBottom: '24px' }}>
+                  <h3>Thông số kỹ thuật ({selectedProduct.specifications.length})</h3>
+                  <div className="table-responsive"><table className="admin-table"><thead><tr><th>Thông số</th><th>Giá trị</th><th>Thứ tự</th><th></th></tr></thead><tbody>
+                    {selectedProduct.specifications.map(spec => <tr key={spec.id}><td><strong>{spec.displayName}</strong><br/><small>{spec.key}</small></td><td>{spec.value}</td><td>{spec.displayOrder}</td><td>{selectedProduct.publicationStatus === 'DRAFT' && <button type="button" className="text-button danger" disabled={submitting} onClick={() => void handleDeleteSpecification(spec.key)}>Xóa</button>}</td></tr>)}
+                    {selectedProduct.specifications.length === 0 && <tr><td colSpan={4}>Chưa có thông số kỹ thuật.</td></tr>}
+                  </tbody></table></div>
+                  {selectedProduct.publicationStatus === 'DRAFT' && <form onSubmit={handleUpsertSpecification} style={{ marginTop: '20px', padding: '16px', borderRadius: '14px', backgroundColor: 'var(--paper-deep)' }}>
+                    <h4 style={{ margin: '0 0 12px' }}>Thêm hoặc cập nhật thông số</h4><div className="form-row">
+                      <label className="form-field">Khóa kỹ thuật<input required pattern="[a-z0-9]+(?:_[a-z0-9]+)*" value={specKey} onChange={e => setSpecKey(e.target.value.toLowerCase())} placeholder="trong_luong" /></label>
+                      <label className="form-field">Tên hiển thị<input required value={specName} onChange={e => setSpecName(e.target.value)} placeholder="Trọng lượng" /></label>
+                      <label className="form-field">Giá trị<input required value={specValue} onChange={e => setSpecValue(e.target.value)} placeholder="4U (80–84g)" /></label>
+                      <label className="form-field">Thứ tự<input type="number" min="0" value={specOrder} onChange={e => setSpecOrder(e.target.value)} /></label>
+                    </div><button type="submit" className="button-secondary" disabled={submitting}>Lưu thông số</button>
+                  </form>}
+                </div>
+
                 {/* Media Section */}
                 <div>
                   <h3>Hình ảnh sản phẩm Media ({selectedProduct.images.length})</h3>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '16px', marginTop: '16px' }}>
-                    {selectedProduct.images.map(img => (
+                    {selectedProduct.images.map((img, index) => (
                       <div
                         key={img.id}
                         style={{
@@ -603,55 +786,48 @@ export function StaffDashboardPage() {
                             }}
                           />
                         </div>
-                        <div style={{ padding: '8px 10px', fontSize: '11px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div style={{ padding: '10px', fontSize: '11px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '8px' }}>
                           <div>
                             <strong style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                               {img.fileKey}
                             </strong>
                             <span style={{ color: 'var(--muted)' }}>Thứ tự: {img.displayOrder}</span>
                           </div>
-                          {selectedProduct.publicationStatus === 'DRAFT' && (
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteImage(img.id)}
-                              style={{
-                                marginTop: '8px',
-                                padding: '4px 8px',
-                                border: '1px solid #fecaca',
-                                borderRadius: '6px',
-                                backgroundColor: '#fff1f2',
-                                color: '#b91c1c',
-                                fontSize: '11px',
-                                cursor: 'pointer',
-                              }}
-                              disabled={submitting}
-                            >
-                              Xóa ảnh
-                            </button>
-                          )}
+                          {selectedProduct.publicationStatus === 'DRAFT' && <>
+                            <form onSubmit={event => { event.preventDefault(); void handleUpdateImage(img.id, event.currentTarget) }} className="media-metadata-form">
+                              <label>Alt text<input name="altText" defaultValue={img.altText ?? ''} maxLength={240} aria-label={`Alt text ảnh ${index + 1}`} /></label>
+                              <label>Thứ tự<input name="displayOrder" type="number" min="0" max="10000" defaultValue={img.displayOrder} aria-label={`Thứ tự ảnh ${index + 1}`} /></label>
+                              <button type="submit" className="button-secondary" disabled={submitting}>Lưu metadata</button>
+                            </form>
+                            <div className="media-card-actions">
+                              <button type="button" className="button-secondary" aria-label={`Đưa ảnh ${index + 1} lên trước`} disabled={submitting || index === 0} onClick={() => void handleMoveImage(img.id, -1)}>←</button>
+                              <button type="button" className="button-secondary" aria-label={`Đưa ảnh ${index + 1} xuống sau`} disabled={submitting || index === selectedProduct.images.length - 1} onClick={() => void handleMoveImage(img.id, 1)}>→</button>
+                              <button type="button" className="text-button danger" onClick={() => setDeletingImage({ id: img.id, fileKey: img.fileKey })} disabled={submitting}>Xóa ảnh</button>
+                            </div>
+                          </>}
                         </div>
                       </div>
                     ))}
                   </div>
 
                   {selectedProduct.publicationStatus === 'DRAFT' && (
-                    <form onSubmit={handleAddImage} style={{ marginTop: '20px', padding: '16px', borderRadius: '14px', backgroundColor: 'var(--paper-deep)' }}>
-                      <h4 style={{ margin: '0 0 12px' }}>Thêm hình ảnh cho sản phẩm</h4>
+                    <form onSubmit={handleAddImage} className="media-upload-form">
+                      <h4>Upload ảnh sản phẩm</h4>
+                      <label
+                        className={`media-drop-zone${draggingMedia ? ' dragging' : ''}`}
+                        onDragEnter={event => { event.preventDefault(); setDraggingMedia(true) }}
+                        onDragOver={event => event.preventDefault()}
+                        onDragLeave={() => setDraggingMedia(false)}
+                        onDrop={event => { event.preventDefault(); setDraggingMedia(false); chooseUploadFiles(Array.from(event.dataTransfer.files)) }}
+                      >
+                        <span><strong>Kéo ảnh vào đây</strong> hoặc chọn từ máy</span>
+                        <small>JPEG, PNG, WebP · tối đa 8 MiB/ảnh · có thể chọn nhiều ảnh</small>
+                        <input id="new-img-files" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={event => chooseUploadFiles(Array.from(event.target.files ?? []))} disabled={submitting} />
+                      </label>
+                      {uploadFiles.length > 0 && <ul className="media-file-queue" aria-live="polite">{uploadFiles.map(file => <li key={`${file.name}-${file.lastModified}`}><span>{file.name}</span><small>{(file.size / 1024 / 1024).toFixed(2)} MiB</small></li>)}</ul>}
                       <div className="form-row">
                         <div className="form-field">
-                          <label htmlFor="new-img-key">File Key / Đường dẫn ảnh *</label>
-                          <input
-                            id="new-img-key"
-                            type="text"
-                            placeholder="VD: images/astrox88d-front.webp"
-                            value={fileKey}
-                            onChange={e => setFileKey(e.target.value)}
-                            disabled={submitting}
-                            required
-                          />
-                        </div>
-                        <div className="form-field">
-                          <label htmlFor="new-img-alt">Mô tả ảnh (Alt text)</label>
+                          <label htmlFor="new-img-alt">Alt text chung</label>
                           <input
                             id="new-img-alt"
                             type="text"
@@ -673,8 +849,8 @@ export function StaffDashboardPage() {
                           disabled={submitting}
                         />
                       </div>
-                      <button type="submit" className="button-secondary" disabled={submitting}>
-                        {submitting ? 'Đang thêm...' : '+ Thêm ảnh'}
+                      <button type="submit" className="button-primary" disabled={submitting || uploadFiles.length === 0}>
+                        {submitting ? 'Đang upload...' : `Upload ${uploadFiles.length || ''} ảnh`}
                       </button>
                     </form>
                   )}
@@ -692,10 +868,10 @@ export function StaffDashboardPage() {
         /* Inventory Management Tab (M03) */
         <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
           {/* Stock In Form Card */}
-          <div className="management-card">
-            <h2>Nhập tăng tồn kho (Stock-in)</h2>
+          <details className="management-card inventory-action" id="stock-in-form">
+            <summary>Nhập hàng vào kho</summary>
             <p style={{ color: 'var(--muted)', fontSize: '13px', margin: '4px 0 16px' }}>
-              Quy tắc bất biến: Tồn vật lý = Khả dụng + Đang giữ + Đã phân bổ. Thao tác nhập kho sẽ tăng đồng thời Tồn vật lý và Tồn khả dụng.
+              Chọn phiên bản sản phẩm và số lượng thực nhận. Tồn khả dụng sẽ tăng sau khi xác nhận.
             </p>
             <form onSubmit={handleStockInSubmit}>
               <div className="form-row">
@@ -756,7 +932,7 @@ export function StaffDashboardPage() {
                   required
                 />
                 <span style={{ fontSize: '11px', color: 'var(--muted)', marginTop: '4px', display: 'block' }}>
-                  Khóa Idempotency chống cộng dồn trùng lặp khi mạng gián đoạn hoặc thử lại.
+                  Giữ nguyên mã phiếu khi thử lại để tránh ghi nhận cùng một lần nhập hàng hai lần.
                 </span>
               </div>
               <div className="form-field">
@@ -774,12 +950,12 @@ export function StaffDashboardPage() {
                 {submitting ? 'Đang xử lý nhập kho...' : '📥 Xác nhận nhập kho'}
               </button>
             </form>
-          </div>
+          </details>
 
-          <div className="management-card">
-            <h2>Đề nghị giảm tồn kho</h2>
+          <details className="management-card inventory-action">
+            <summary>Đề nghị giảm tồn kho</summary>
             <p style={{ color: 'var(--muted)', fontSize: '13px', margin: '4px 0 16px' }}>
-              Staff chỉ tạo đề nghị. Tồn kho chưa thay đổi cho đến khi Admin duyệt; hệ thống không giảm phần Reserved hoặc Allocated.
+              Gửi số lượng và lý do để quản trị viên duyệt. Hàng đang giữ cho đơn mua không bị ảnh hưởng.
             </p>
             <form onSubmit={handleAdjustmentSubmit}>
               <div className="form-row">
@@ -831,15 +1007,17 @@ export function StaffDashboardPage() {
                 {submitting ? 'Đang gửi đề nghị...' : '📋 Gửi đề nghị chờ Admin duyệt'}
               </button>
             </form>
-          </div>
+          </details>
 
           {/* Inventory Table Card */}
           <div className="management-card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
               <div>
                 <h2 style={{ margin: 0 }}>Bảng theo dõi Tồn kho ({inventoryList.length} SKU)</h2>
+                <label className="workspace-search">Tìm trong danh sách tồn kho<input type="search" value={inventorySearch} onChange={event => setInventorySearch(event.target.value)} placeholder="Tên sản phẩm, phiên bản hoặc mã SKU" /></label>
+                {!loadingInventory && inventoryList.length > 0 && visibleInventory.length === 0 && <p role="status">Không tìm thấy SKU phù hợp. Hãy thử từ khóa khác.</p>}
                 <p style={{ color: 'var(--muted)', fontSize: '13px', margin: '4px 0 0' }}>
-                  Đẳng thức phân vùng: <strong>Vật lý = Khả dụng + Đang giữ + Đã phân bổ</strong>
+                  Đẳng thức phân vùng: <strong>Vật lý = Khả dụng + Đang giữ + Đã phân bổ + Cách ly + Hư hỏng</strong>
                 </p>
               </div>
               <button
@@ -863,6 +1041,8 @@ export function StaffDashboardPage() {
                     <th style={{ textAlign: 'right' }}>Khả dụng (Available)</th>
                     <th style={{ textAlign: 'right' }}>Đang giữ (Reserved)</th>
                     <th style={{ textAlign: 'right' }}>Đã phân bổ (Allocated)</th>
+                    <th style={{ textAlign: 'right' }}>Cách ly</th>
+                    <th style={{ textAlign: 'right' }}>Hư hỏng</th>
                     <th>Trạng thái</th>
                     <th style={{ textAlign: 'center' }}>Thao tác</th>
                   </tr>
@@ -870,12 +1050,12 @@ export function StaffDashboardPage() {
                 <tbody>
                   {inventoryList.length === 0 ? (
                     <tr>
-                      <td colSpan={8} style={{ textAlign: 'center', padding: '30px', color: 'var(--muted)' }}>
+                      <td colSpan={10} style={{ textAlign: 'center', padding: '30px', color: 'var(--muted)' }}>
                         {loadingInventory ? 'Đang tải dữ liệu kho...' : 'Chưa có biến thể SKU nào trong hệ thống.'}
                       </td>
                     </tr>
                   ) : (
-                    inventoryList.map(item => (
+                    visibleInventory.map(item => (
                       <tr key={item.skuId}>
                         <td><strong>{item.skuCode}</strong></td>
                         <td>
@@ -886,6 +1066,8 @@ export function StaffDashboardPage() {
                         <td style={{ textAlign: 'right', color: '#065f46', fontWeight: 700 }}>{item.availableQty}</td>
                         <td style={{ textAlign: 'right', color: '#b45309' }}>{item.reservedQty}</td>
                         <td style={{ textAlign: 'right', color: '#1d4ed8' }}>{item.allocatedQty}</td>
+                        <td style={{ textAlign: 'right', color: '#9a3412', fontWeight: 700 }}>{item.quarantinedQty}</td>
+                        <td style={{ textAlign: 'right', color: '#b91c1c', fontWeight: 700 }}>{item.damagedQty}</td>
                         <td>
                           <span className={`badge badge-${item.publicationStatus.toLowerCase()}`}>
                             {item.publicationStatus}
@@ -898,7 +1080,9 @@ export function StaffDashboardPage() {
                               className="button-secondary"
                               onClick={() => {
                                 setStockInSkuId(item.skuId)
-                                window.scrollTo({ top: 0, behavior: 'smooth' })
+                                const form = document.getElementById('stock-in-form') as HTMLDetailsElement | null
+                                if (form) form.open = true
+                                document.getElementById('stock-qty-input')?.focus()
                               }}
                               style={{ padding: '4px 10px', minHeight: 'unset', fontSize: '12px' }}
                             >
@@ -990,7 +1174,19 @@ export function StaffDashboardPage() {
           )}
         </div>
       ) : activeTab === 'cod' ? (
-        <div style={{ display: 'grid', gap: '24px' }}><CodOrdersPanel /><FulfillmentPanel /></div>
+        <div style={{ display: 'grid', gap: '24px' }}>
+          <CodOrdersPanel onConfirmed={() => setFulfillmentRefreshKey(k => k + 1)} />
+          <FulfillmentPanel refreshKey={fulfillmentRefreshKey} />
+        </div>
+      ) : activeTab === 'carriers' ? (
+        <StaffCarrierTrackingPanel />
+      ) : activeTab === 'reviews' ? (
+        <ReviewModerationPanel />
+      ) : activeTab === 'returns' ? (
+        <div style={{ display: 'grid', gap: 24 }}>
+          <StaffReturnsPanel />
+          <ExchangeFulfillmentPanel />
+        </div>
       ) : <StaffTaskSummaryPanel />}
     </section>
   )

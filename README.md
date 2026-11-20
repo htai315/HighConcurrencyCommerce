@@ -42,8 +42,8 @@ README này trả lời bốn câu hỏi:
 | Frontend mục tiêu | React |
 | Backend | ASP.NET Core / C# |
 | Database | PostgreSQL, nguồn sự thật cho nghiệp vụ |
-| Thanh toán | PayOS và COD |
-| Giao hàng | Mô phỏng trạng thái, không tích hợp hãng vận chuyển thật |
+| Thanh toán | COD đã triển khai; PayOS T19–T22 đã có attempts/webhook/lifecycle, Customer return UI, prepaid fulfillment và Admin reconciliation/manual refund đã harden theo đúng case/transaction; feature vẫn mặc định tắt cho tới khi sandbox E2E callback thật và provider paid-query contract đạt release gate |
+| Giao hàng | Vận đơn, nhãn và tracking nội bộ provider-neutral; chưa gọi API/webhook hãng thật |
 | Thông báo | In-app trong MVP |
 | Kiến trúc backend mục tiêu | Modular Monolith |
 
@@ -51,11 +51,11 @@ README này trả lời bốn câu hỏi:
 
 - Marketplace nhiều người bán, chia hoa hồng hoặc chia tiền.
 - Nhiều kho và luân chuyển hàng giữa kho.
-- Tích hợp hãng vận chuyển thật, tracking và SLA vận chuyển.
+- Tích hợp API/webhook hãng vận chuyển thật, mua nhãn tự động, multi-package và SLA đối tác.
 - Tự động refund qua API PayOS.
 - Livestream, đấu giá, trả góp, loyalty và cá nhân hóa.
-- Review sản phẩm, voucher phức tạp và đổi/trả sau giao hàng.
-- Email/SMS.
+- Voucher phức tạp; đổi/trả sau giao hàng COD đã được đưa vào kế hoạch T39, còn refund tự động qua PayOS vẫn ngoài phạm vi.
+- Email/SMS marketing và thông báo đại trà; email bảo mật tài khoản được đưa vào phạm vi T33.
 - BI nâng cao.
 - Cam kết uptime, p95/p99, RPS và benchmark load/stress/soak hoàn chỉnh.
 
@@ -101,33 +101,112 @@ D:\Personal_Project\
 - DTO công khai chỉ có dữ liệu cần hiển thị; không trả EF entity, tài khoản hoặc số lượng reserved/allocated.
 - React validate response lúc chạy; có loading/empty/error/retry, bộ lọc trong URL và request cancellation. TypeScript bật strict.
 - Schema nguồn 31 bảng ở `database/001_create_schema.sql`; fixture test tạo/xóa database PostgreSQL riêng.
-- Auth đã triển khai theo [ADR 0001](docs/adr/0001-auth-sessions.md): session PostgreSQL, cookie HttpOnly, CSRF, register/login/logout/me/password và Admin lock/unlock account có audit.
-- React có đăng ký/đăng nhập/đăng xuất/đổi mật khẩu thật, header theo session và route guard Customer/Staff/Admin.
-- SQL upgrade auth `database/002_auth_sessions.sql`, lệnh migrate local và bootstrap Admin đầu tiên (không có default credential).
+- Auth đã triển khai theo [ADR 0001](docs/adr/0001-auth-sessions.md) và [ADR 0002](docs/adr/0002-google-authentication.md): session PostgreSQL, cookie HttpOnly, CSRF, register/login/logout/me/password, đăng nhập Google Identity Services (GIS) qua challenge nonce bảo vệ, quản lý liên kết Google, và Admin lock/unlock account có audit.
+- React có đăng ký/đăng nhập/đăng xuất/đổi mật khẩu thật, nút Google Sign-In chính thức trên Login & Register, trang `/account/security` quản lý phương thức đăng nhập (Password & Google), header theo session và route guard Customer/Staff/Admin.
+- SQL upgrade auth `database/002_auth_sessions.sql` và `database/004_google_auth.sql`, lệnh migrate local và bootstrap Admin đầu tiên (không có default credential).
 - Hồ sơ và sổ địa chỉ Customer (T11): GET/PATCH profile, GET/POST/PATCH/DELETE addresses có phân quyền Customer, owner isolation tuyệt đối, transaction khóa row UserAccount để đảm bảo chỉ có tối đa 1 địa chỉ mặc định dưới concurrency, và chặn xóa địa chỉ đã gắn với đơn hàng.
 - React có trang `/account` cho khách hàng quản lý hồ sơ và sổ địa chỉ, đồng bộ styling sân cầu lông.
-- Product/Media T12, Inventory T13–T14, Cart T15, Checkout T17, COD T18, Fulfillment T25–T26, Notification T27, Reporting T28, deployment hardening T30 và Customer Order Center T31 đã triển khai. T30 bổ sung liveness/readiness, correlation + JSON logs, persistent Data Protection keys, Docker/Compose và backup/restore runbook. T16 là ADR nền cho checkout/COD; ADR 0003 hoãn PayOS để hoàn thiện COD trước.
-- Kiểm chứng hiện tại: 116 BE integration tests + 48 FE tests pass; AC-20a 100 buyer/10 tồn đã pass; .NET/React build và lint pass. Browser smoke Edge cho login/register ở desktop/mobile đã pass; chưa có E2E toàn bộ commerce hoặc benchmark load/stress/soak.
+- Product/Media T12, Inventory T13–T14, Cart T15, Checkout T17, COD T18, Fulfillment T25–T26, Notification T27, Reporting T28, deployment hardening T30, Customer Order Center T31, Google Sign-In T32, Password Reset / Email Verification T33, Quản trị tài khoản nội bộ / Staff T34, E2E Testing & Release Gate T35 và Đánh giá & nhận xét sản phẩm T36 đã triển khai. T30 bổ sung liveness/readiness, correlation + JSON logs, persistent Data Protection keys, Docker/Compose và backup/restore runbook. ADR 0003 từng hoãn PayOS để hoàn thiện COD; T19–T20 đã được mở lại có kiểm soát theo ADR 0017 (Proposed), còn feature flag vẫn tắt cho tới khi T21 đạt release gate.
+- Kiểm chứng hiện tại (04/11/2026): **226 BE integration tests + 89 FE tests pass** (22 FE test files); AC-20a 100 buyer/10 tồn đã pass; .NET/React build và lint pass (0 warnings, 0 errors). E2E Playwright đạt 100% pass trên Docker demo stack phủ toàn bộ các luồng cốt lõi tích hợp Mailpit API thật. Quản trị nhân sự hỗ trợ mời Staff qua token một lần, Staff tự đặt mật khẩu, gửi lại lời mời, khóa/mở tài khoản, thu hồi toàn bộ session nhân sự nghỉ việc, bảo đảm cấm tạo Admin qua API và cấm chuyển đổi vai trò tùy tiện. Đánh giá sản phẩm bảo đảm Verified Purchase Guard, concurrency partial unique index, che tên reviewer, tính điểm trung bình chính xác từ SQL source-of-truth và kiểm duyệt Staff/Admin đầy đủ Audit Log. Thứ tự khóa User -> Token đồng nhất trên toàn bộ các luồng auth action token loại trừ deadlock PostgreSQL. Hỗ trợ tài khoản Google-only đặt mật khẩu an toàn và chặn Customer chưa verify bypass qua reset password. Seed demo chuẩn hóa idempotent và script 1-click `demo-up.ps1` sẵn sàng. Release gate E2E hoàn toàn xanh.
 
 ### Chưa có
 
-- Password reset qua email, email verification, quản lý Staff/role và production auth deployment.
 - Domain aggregate, state transition guard và business invariant trong project Domain.
-- EF migrations/versioned upgrade strategy và seed dữ liệu vận hành. Seed hiện có chỉ phục vụ test.
-- Transactional Outbox, broker và notification delivery/push worker; notification trong app hiện commit trực tiếp cùng transaction PostgreSQL.
-- PayOS client và webhook verification.
-- Redis, RabbitMQ hoặc Outbox.
-- Payment provider/webhook; concurrency hiện đã bao phủ product publish, inventory, cart merge, checkout giữ tồn, Customer cancel-vs-Staff-confirm, COD confirm/expiry, giao thành công/thu tiền, retry-vs-return và hoàn kho exactly-once.
-- CI/CD pipeline theo nhà cung cấp, production ingress manifest và hạ tầng HA/managed PostgreSQL cụ thể.
-- Giá Flash Sale trên catalog, checkout/order/payment và dashboard nghiệp vụ các module tiếp theo.
+- Seed hiện có chỉ phục vụ test và demo (`007_demo_seed.sql`). Seed dữ liệu vận hành production vẫn cần quy trình provisioning riêng.
+- Transactional Outbox, broker và notification delivery/push worker cho nghiệp vụ commerce nói chung; notification trong app hiện commit trực tiếp cùng transaction PostgreSQL (riêng auth email đã có transactional outbox T33/T34).
+- PayOS sandbox E2E callback thật và provider GET `PAID` fixture có transaction reference; runtime return UI, transition, expiry/cancel race và fulfillment prepaid đã có nhưng feature vẫn mặc định tắt.
+- Redis hoặc RabbitMQ.
+- Production ingress manifest và hạ tầng HA/managed PostgreSQL cụ thể (CI pipeline đã có qua GitHub Actions `.github/workflows/ci.yml`).
 
 ### Ý nghĩa của trạng thái hiện tại
 
-`StoreDbContext` và 31 model chứng minh lớp persistence đã được scaffold, nhưng **không đồng nghĩa nghiệp vụ đã được triển khai**. Nhiều invariant liên bảng không thể chỉ dựa vào model/FK và phải được thực hiện bằng application transaction, guarded SQL và integration test.
+`StoreDbContext` và 32 model chứng minh lớp persistence đã được scaffold, nhưng **không đồng nghĩa nghiệp vụ đã được triển khai**. Nhiều invariant liên bảng không thể chỉ dựa vào model/FK và phải được thực hiện bằng application transaction, guarded SQL và integration test.
 
 `Class1.cs` trong Domain vẫn là placeholder; public catalog chỉ đọc nên chưa tạo domain aggregate. Application và Infrastructure đã có module Catalog.
 
-Tiến độ theo task nằm tại [docs/TASKS.md](docs/TASKS.md). T01–T18, T23–T28 và T30–T31 đã hoàn tất; T29 AC-20a pass, AC-20b/c deferred cùng T19–T22 theo ADR 0003. Contract chạy thật: [catalog](docs/api/catalog.md), [auth](docs/api/auth.md), [account](docs/api/account.md), [cart](docs/api/cart.md), [checkout](docs/api/checkout.md), [Customer orders](docs/api/customer-orders.md), [COD confirmation](docs/api/cod-orders.md), [fulfillment](docs/api/fulfillment.md), [notifications](docs/api/notifications.md), [reporting](docs/api/reporting.md), [flash sale](docs/api/flash-sale.md); vận hành: [deployment](docs/operations/deployment.md), [backup/recovery](docs/operations/backup-recovery.md); quyết định: [ADR 0002](docs/adr/0002-checkout-idempotency-and-cod-void.md), [ADR 0003](docs/adr/0003-defer-payos-complete-cod-first.md).
+Tiến độ theo task nằm tại [docs/TASKS.md](docs/TASKS.md). T01–T18, T23–T28, T30–T51 đã hoàn tất; T29 AC-20a pass, AC-20b/c deferred cùng T19–T22 theo ADR 0003. Contract chạy thật: [catalog](docs/api/catalog.md), [catalog search](docs/api/catalog-search.md), [category management](docs/api/categories.md), [brand & specifications](docs/api/brands-product-specifications.md), [product media](docs/api/product-media.md), [product lifecycle](docs/api/product-lifecycle.md), [shipping](docs/api/shipping.md), [reviews](docs/api/reviews.md), [wishlist](docs/api/wishlist.md), [wishlist alerts](docs/api/wishlist-alerts.md), [vouchers](docs/api/vouchers.md), [returns](docs/api/returns.md), [direct exchanges](docs/api/exchanges.md), [auth](docs/api/auth.md), [account](docs/api/account.md), [cart](docs/api/cart.md), [checkout](docs/api/checkout.md), [Customer orders](docs/api/customer-orders.md), [COD confirmation](docs/api/cod-orders.md), [fulfillment](docs/api/fulfillment.md), [notifications](docs/api/notifications.md), [reporting](docs/api/reporting.md), [flash sale](docs/api/flash-sale.md); vận hành: [deployment](docs/operations/deployment.md), [backup/recovery](docs/operations/backup-recovery.md), [release-checklist](docs/operations/release-checklist.md), [e2e-testing-guide](docs/operations/e2e-testing-guide.md), [wishlist-alerts runbook](docs/operations/wishlist-product-alerts.md); quyết định: [ADR 0006](docs/adr/0006-cod-returns-and-manual-refunds.md), [ADR 0007](docs/adr/0007-versioned-database-migration-runner.md), [ADR 0008](docs/adr/0008-returned-goods-inspection-and-quarantine.md), [ADR 0009](docs/adr/0009-direct-product-exchange-and-replacement-shipment.md), [ADR 0011](docs/adr/0011-product-lifecycle-management.md), [ADR 0013](docs/adr/0013-shipping-methods-and-fee-snapshots.md), [ADR 0015](docs/adr/0015-postgresql-native-catalog-search.md), [ADR 0016](docs/adr/0016-wishlist-product-alert-outbox.md).
+
+T40 đã hoàn tất: schema được quản lý bằng CLI one-shot `--migrate-database`, bảng `public.schema_migrations`, SHA-256 checksum, PostgreSQL advisory lock và startup validation fail-fast. Docker Compose chạy migrator trước API cho cả database mới và volume legacy; seed demo 007 tiếp tục tách khỏi lịch sử schema. [Kế hoạch T40](docs/superpowers/plans/2026-11-05-versioned-database-migrations.md).
+
+T41 đã hoàn tất: hàng trả `RECEIVED` đi vào cách ly, Staff phân loại `RESTOCK/QUARANTINE/DAMAGED/SCRAPPED` trước khi chuyển `INSPECTED`, và Admin chỉ hoàn tiền sau kiểm định. Invariant kho là `Physical = Available + Reserved + Allocated + Quarantined + Damaged`. [ADR 0008](docs/adr/0008-returned-goods-inspection-and-quarantine.md).
+
+T42/T42.1 đã hoàn tất: Customer có thể chọn đổi sang SKU khác của cùng Product; Admin giữ tồn thay thế nguyên tử trong 7 ngày; worker nhả tồn hết hạn; hàng cũ vẫn qua kiểm định T41; Staff đóng gói, bàn giao, ghi nhận giao/giao lại và nhận kiện thất bại về quarantine qua luồng replacement shipment riêng. V1 không thu/hoàn chênh lệch giá và không viết ngược Payment/Voucher/Flash Sale. Concurrency/idempotency đã được kiểm chứng trên PostgreSQL thật và Playwright flow 08 chạy trọn vòng đời trên Docker demo stack. [ADR 0009](docs/adr/0009-direct-product-exchange-and-replacement-shipment.md), [API](docs/api/exchanges.md), [kế hoạch hardening](docs/superpowers/plans/2026-11-06-direct-exchange-hardening.md).
+
+T43 đã hoàn tất: Admin quản trị taxonomy danh mục với slug duy nhất, visibility Storefront, Audit Log và guard không xóa danh mục đang có sản phẩm; Staff có thể chọn taxonomy khi tạo/sửa Product Draft. Playwright flow 09 kiểm chứng create → public visibility → hide → delete trên Docker thật. [Kế hoạch](docs/superpowers/plans/2026-11-06-category-management.md), [API](docs/api/categories.md).
+
+T44 đã hoàn tất: Admin quản trị master data thương hiệu; Staff gắn hãng và thông số kỹ thuật có cấu trúc khi sản phẩm còn Draft; Catalog hỗ trợ lọc hãng và PDP hiển thị bảng thông số. Product row lock bảo vệ invariant với Publish. [Kế hoạch](docs/superpowers/plans/2026-11-06-brand-and-product-specifications.md), [API](docs/api/brands-product-specifications.md).
+
+T45 đã hoàn tất triển khai: Staff upload ảnh sản phẩm thật qua multipart, server xác minh chữ ký file và lưu bằng key UUID bất biến trên Docker volume; gallery hỗ trợ alt text, thứ tự và xóa an toàn; public media endpoint tối ưu cache. Storage được tách qua `IProductMediaStorage` để có thể chuyển sang S3/R2. [Kế hoạch](docs/superpowers/plans/2026-11-06-product-media-upload.md), [API](docs/api/product-media.md).
+
+T47/T47.1 đã hoàn tất Product Revision Workflow và hardening: Product Published/Suspended có snapshot riêng để Staff soạn mà không đổi Storefront; Admin review diff content/gallery/specifications theo ba tab rồi approve nguyên tử bằng `content_version`. Migration 017 bổ sung durable media cleanup queue có short lease/retry; bốn checkpoint fault-injection chứng minh rollback toàn transaction. SKU, giá và tồn kho không thuộc revision. Release gate đạt **326/326 backend**, **123/123 frontend**, lint/build sạch và Playwright Flow 13 pass trên Docker demo thật. [Kế hoạch gốc](docs/superpowers/plans/2026-11-06-product-revision-workflow.md), [kế hoạch hardening](docs/superpowers/plans/2026-11-06-product-revision-hardening.md), [ADR 0010](docs/adr/0010-product-revision-workflow.md), [ADR 0012](docs/adr/0012-product-revision-review-and-media-cleanup.md), [API](docs/api/product-revisions.md).
+
+T48 đã hoàn tất Shipping Methods & Fees: Admin quản trị phương thức, mặc định, ETA, ngưỡng miễn phí và phụ phí tỉnh theo optimistic revision; Customer nhận quote từ dữ liệu server và checkout-v3 revalidate nguyên tử trước khi giữ tồn. Order/Payment/COD/Fulfillment lưu snapshot phí và phương thức, đơn lịch sử không đổi khi Admin sửa bảng giá, return không tự hoàn phí ship và reporting tách doanh thu vận chuyển. Demo seed bảo đảm luôn có đúng một active default trên database sạch mà không ghi đè cấu hình hiện hữu. Release gate đạt **357/357 backend**, **130/130 frontend**, lint/build/Compose sạch; Playwright Flow 14 cùng regression Flow 3, 6, 7, 11–13 pass trên Docker demo thật. [Kế hoạch](docs/superpowers/plans/2026-11-06-shipping-methods-fees.md), [ADR 0013](docs/adr/0013-shipping-methods-and-fee-snapshots.md), [API](docs/api/shipping.md).
+
+T49 đã hoàn tất Carrier Consignments & Internal Tracking: Admin quản trị carrier theo optimistic revision; Staff tạo vận đơn cho sales/exchange shipment, tải nhãn PDF/PNG/JPEG có magic-byte validation, bàn giao nguyên tử với stock-out/DeliveryAttempt và ghi tracking event idempotent; Customer xem tracking number, external HTTPS link đã kiểm soát và timeline owner-only. Carrier event không thể bypass fulfillment hoặc tự thu COD. Release gate đạt **375/375 backend**, **134/134 frontend**, lint/build/Compose sạch; Playwright Flow 15 và regression Flow 3, 7, 8, 14 pass trên Docker demo thật. [Kế hoạch](docs/superpowers/plans/2026-11-07-carrier-consignments-tracking.md), [ADR 0014](docs/adr/0014-carrier-consignments-and-tracking-boundary.md), [API](docs/api/carrier-tracking.md).
+
+T50.1 đã hoàn tất nền tảng Advanced Product Search: ADR 0015 chốt PostgreSQL-native search; migration `020` cài `unaccent`/`pg_trgm`, normalize tiếng Việt bằng generated stored columns, partial GIN trigram indexes và supporting indexes cho price/popularity. EF Core mapping không ghi trực tiếp các computed columns. Migration fresh/legacy/reapply/concurrent và toàn bộ **376/376 backend integration tests** đều pass. [Kế hoạch](docs/superpowers/plans/2026-11-07-advanced-product-search-discovery.md), [ADR 0015](docs/adr/0015-postgresql-native-catalog-search.md).
+
+T50.2 đã hoàn tất contract và query normalization: catalog hỗ trợ `inStock`, `minRating`, six-sort allow-list, page size tối đa 48, normalize tiếng Việt không dấu, effective sort động và response query metadata. DTO facets/suggestions đã được chốt nhưng suggestions endpoint chỉ public ở T50.5. `best-selling` đọc source-of-truth 90 ngày, không thêm counter vào fulfillment. Regression đạt **391/391 backend** và **9/9 frontend catalog tests**. [API](docs/api/catalog-search.md).
+
+T50.3 đã hoàn tất product search relevance đa trường: title, SKU/option active, brand active và category visible dùng normalized generated columns + trigram similarity; exact/prefix được ưu tiên trước fuzzy. Lifecycle leakage, inactive dimension, multi-SKU dedupe và deterministic paging đều có integration coverage. Regression đạt **399/399 backend**, frontend catalog giữ **9/9**. [API](docs/api/catalog-search.md).
+
+T50.4 đã hoàn tất facets và advanced sort/filter: category/brand self-exclusion; active-SKU price range; available-stock count; public rating filter/sort; bestseller từ recent completed+delivered source-of-truth. Items/count/facets dùng chung predicate builder. Regression đạt **404/404 backend**, frontend catalog giữ **9/9**. [API](docs/api/catalog-search.md).
+
+T50.5 đã hoàn tất public autocomplete API: Product/SKU/Brand/Category suggestions được normalize/rank/dedupe, bảo vệ lifecycle, truyền cancellation, cache 30 giây và rate-limit riêng 60/phút/IP. Acceptance kiểm chứng request thứ 61 trả 429. Regression đạt **414/414 backend**, catalog suite **63/63**, frontend catalog giữ **9/9**. [API](docs/api/catalog-search.md).
+
+T50.6 đã hoàn tất shared React search UX: Header và Storefront dùng chung `CatalogSearchBox` với debounce 250 ms, abort + stale-response guard, combobox/listbox ARIA, điều khiển bàn phím, click-outside, loading/empty/error-retry và local history tối đa 5 từ khóa có dedupe không dấu. Submit dùng canonical URL helper, reset page và giữ filter khi tìm trong Storefront; Product/SKU suggestion mở thẳng PDP. Regression frontend đạt **141/141**, catalog/search UX **16/16**, lint 0 cảnh báo và production build sạch. [Kế hoạch](docs/superpowers/plans/2026-11-07-advanced-product-search-discovery.md).
+
+T50.7 đã hoàn tất responsive filter workspace: React parse nghiêm ngặt query metadata/facets, hiển thị category/brand count, stock availability, price range, minimum rating và đủ relevance/newest/price/rating/best-selling sort. Active chips, category shortcuts, pagination và form dùng chung canonical URL helper; back/forward phục hồi trạng thái. Mobile drawer có backdrop, focus trap, Escape, sticky actions và cleanup body scroll lock. Regression frontend đạt **145/145**, catalog/search UX **20/20**, lint/build sạch. [Kế hoạch](docs/superpowers/plans/2026-11-07-advanced-product-search-discovery.md).
+
+T50.8 đã hoàn tất performance hardening: tool benchmark tạo database loopback disposable với **10.000 Product/30.000 SKU**, chạy `VACUUM ANALYZE`, bảy `EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)` và 25 mẫu/case. Năm case search/suggestion bắt buộc dùng GIN trigram, không seq scan search tables; lần đo cuối có suggestion p95 **82,71 ms**, fuzzy p95 **72,77 ms**. Public search/suggestion có command timeout **2 giây** được integration-test và phục hồi setting sau request. Backend đạt **415/415**. [Benchmark](docs/performance/catalog-search-benchmark-latest.md), [kế hoạch](docs/superpowers/plans/2026-11-07-advanced-product-search-discovery.md).
+
+T50.9 đã đóng release gate Advanced Search: demo seed lũy đẳng có Brand, review 5 sao và completed+delivered history đại diện; Playwright Flow 16 kiểm tra search không dấu, exact SKU keyboard autocomplete, combined facets, canonical URL/back-forward, mobile drawer focus/Escape và lifecycle visibility khi suspend/resume. Flow 16 cùng regression Flow 4, 5, 11–14 đều xanh trên Docker thật. CI chạy thêm query-plan benchmark và tự đối chiếu số migration thay vì số ghi cứng. Toàn bộ T50 đã hoàn tất với **415/415 backend**, **145/145 frontend** và **18 Playwright tests/16 specs**.
+
+T51 đã được lập kế hoạch: Customer có thể đăng ký cảnh báo `BACK_IN_STOCK` và `PRICE_DROP` cho sản phẩm đang lưu trong Wishlist. Thiết kế dùng PostgreSQL transactional dirty queue để không bỏ sót thay đổi kho/giá/lifecycle; evaluator tạo notification in-app và commerce email outbox idempotent, còn SMTP chạy ngoài transaction với lease/retry. Giá cảnh báo chỉ là regular price, không trộn Flash Sale. [Kế hoạch T51](docs/superpowers/plans/2026-11-07-wishlist-product-alerts.md).
+
+T51.1 đã hoàn tất: ADR 0016 và migration `021_wishlist_product_alerts.sql` bổ sung alert state cho Wishlist, Product dirty queue có reason mask/event version, commerce email outbox và internal notification action URL. Trigger transactionally bắt thay đổi tồn khả dụng, regular price, SKU status và Product lifecycle; rollback không để lại wake-up. EF/migrator/fixture đã đồng bộ; migration tests **10/10** và toàn bộ backend **416/416** pass. [ADR 0016](docs/adr/0016-wishlist-product-alert-outbox.md).
+
+T51.2 đã hoàn tất owner-only Alert Settings API: `GET/PUT /api/v1/wishlist/items/{productId}/alerts` có CSRF/no-store, verified-email và Product lifecycle guard, snapshot tồn/regular price khi bật, replay cùng payload không tăng revision và stale write trả `409` kèm `currentRevision`. Wishlist list/summary trả alert summary để UI tương lai không N+1. Release gate đạt **421/421 backend**, **145/145 frontend**, lint/build sạch. [API contract](docs/api/wishlist-alerts.md).
+
+T51.3 đã hoàn tất `ProductAlertEvaluationWorker`: claim queue bằng short lease/`SKIP LOCKED`, xử lý subscriber theo batch, phát hiện có hàng lại và regular-price giảm, ghi observed state + in-app notification + commerce outbox trong cùng transaction. Queue chỉ bị xóa khi `event_version` không đổi; mutation đến giữa evaluation được giữ lại và lease giải phóng. Hai worker claim rời nhau, lease hết hạn phục hồi, lỗi có backoff/sanitized code; backend đạt **426/426**.
+
+T51.4 đã hoàn tất kênh commerce email: `CommerceEmailDeliveryWorker` claim batch bằng transaction ngắn, gửi SMTP hoàn toàn ngoài transaction với timeout 30 giây từng email, persist outcome và giải phóng lease ngay từng item. Worker phục hồi lease cũ, retry/backoff tối đa 5 lần, revalidate account/email snapshot cùng payload/internal action URL, chỉ hỗ trợ template whitelist và che PII trong log. Hai worker không gửi trùng batch; test SMTP chậm chứng minh item trước được commit ngay. Backend đạt **431/431**. Bước tiếp theo là T51.5 UI Wishlist/PDP/Notifications.
+
+T51.5 đã hoàn tất UI cảnh báo Wishlist/PDP/Notifications: summary state dùng chung tránh N+1, dialog responsive có fieldset/legend, focus trap, Escape/return-focus, pending và stale revision reload; session trả trạng thái email verified để chặn kênh email sớm. Product unavailable chỉ cho tắt alert. Notification feed trả `actionUrl`, phân loại alert có hàng/giảm giá và frontend loại bỏ URL absolute/protocol-relative trước khi render CTA. Release đạt **431/431 backend**, **149/149 frontend**, lint và production build sạch.
+
+T51.6 đã hoàn tất hardening/fault-injection: kiểm chứng concurrent remove/update, xóa Wishlist sau worker snapshot, multi-SKU coalesce, reservation/release tồn, chuỗi new-low price, suspend/resume, Flash Sale isolation và disable/re-enable baseline. Evaluator và commerce email worker cố giải phóng lease trong tối đa 5 giây khi cancellation; lease expiry vẫn là fallback và retry không tạo business event lặp. Frontend có thêm test email chưa verified và account-switch stale response. Release đạt **441/441 backend**, **151/151 frontend**, lint/build sạch.
+
+T51.7 đã hoàn tất Playwright Flow 17 trên Docker/PostgreSQL/Mailpit thật: tạo sản phẩm hết hàng cô lập, bật cả cảnh báo có hàng và giảm regular price qua UI, stock-in/price update phát đúng một in-app notification và một email, reload không nhân bản, sau opt-out không phát thêm. Regression Flow 1, 5, 8, 11, 12 và 16 xanh; Flow 8 được harden dùng Product demo hai SKU cố định thay vì phụ thuộc thứ tự Catalog. Playwright hiện nhận diện **19 tests/17 specs**.
+
+T51.8 đã hoàn tất operations và release gate: có runbook theo dõi queue/outbox backlog, lease, retry/error, ngưỡng cảnh báo, triage và recovery an toàn; CI xác minh Flow 17 được discover trước khi chạy toàn bộ Flows 1–17. Tài liệu API/deployment/E2E/release checklist đã đồng bộ. Nghiệm thu cuối: **441/441 backend**, **151/151 frontend**, **19 tests/17 Playwright specs**, lint/build và Compose validation sạch.
+
+T52 đã được chốt kế hoạch: Guest và người dùng đăng nhập có thể chọn tối đa bốn Product cùng danh mục từ Catalog/PDP, chia sẻ URL `/compare?ids=...` và xem matrix regular price, availability, rating, SKU cùng thông số kỹ thuật. Thiết kế dùng batch Catalog API public không N+1, không migration/database account state; localStorage chỉ giữ lựa chọn tiện dụng và URL là source of truth. [Kế hoạch T52](docs/superpowers/plans/2026-11-08-product-comparison.md).
+
+T52.1 đã hoàn tất contract foundation: query giới hạn 1–4 UUID duy nhất/khác empty, response giữ thứ tự cùng requested/omitted count và mã lỗi category mismatch ổn định. Các contract này là nền tảng cho batch endpoint đã được mở ở T52.2. [API](docs/api/product-comparison.md).
+
+T52.2 đã hoàn tất backend batch API: anonymous `GET /api/v1/catalog/products/compare` giữ thứ tự request, chỉ chiếu dữ liệu public, omit lifecycle/unavailable an toàn, kiểm tra cùng underlying category kể cả taxonomy ẩn và chạy đúng một database command. Category mismatch dùng ProblemDetails ổn định, response `no-store`. Release backend đạt **455/455**, riêng T52 **14/14**. [API](docs/api/product-comparison.md).
+
+T52.3 đã hoàn tất demo comparison data: hai vợt demo cùng danh mục có chung 6 `spec_key` và 12 dòng thông số, gồm cả giá trị giống/khác để kiểm chứng matrix. Upsert chỉ tác động demo IDs, chỉ ghi khi nội dung đổi và chạy seed lặp không duplicate; batch API trả đủ sáu thông số mỗi Product. **15/15 seed + comparison tests** pass.
+
+T52.4 đã hoàn tất frontend comparison state: parser localStorage kiểm tra UUID/dedupe/cap 4, tự phục hồi dữ liệu hỏng và giữ memory state khi storage bị chặn; Context account-agnostic đồng bộ tab, chặn khác danh mục/slot thứ năm. Catalog/PDP có CompareButton accessible và tray responsive hỗ trợ remove/clear/live notice. CTA tray chưa điều hướng cho đến khi trang `/compare` hoàn tất ở T52.5. Release frontend đạt **156/156**, lint/build sạch.
+
+T52.5 đã hoàn tất trang `/compare`: loader canonicalize/dedupe/cap URL và gọi đúng batch API, parser kiểm tra order/count, sau đó đồng bộ storage theo Product còn public. Trang có empty/one/unavailable states, bảng semantic cuộn ngang, core rows và union specifications, ký hiệu thiếu dữ liệu, highlight khác biệt và toggle `different=true`; remove cập nhật URL, CTA tray đã hoạt động. Release frontend đạt **160/160**, lint/build sạch.
+
+T52.6 đã hoàn tất hardening: batch comparison có database command timeout 2 giây và hoàn nguyên cấu hình, client parser từ chối rating/count/order/category response sai, metadata ảnh localStorage được chặn scheme nguy hiểm. Thao tác remove giữ `different=true` và chuyển focus bàn phím sang mục kế; lỗi khác danh mục có hướng dẫn riêng. Release gate Testcontainers được ổn định bằng xUnit conservative tối đa bốn collection threads. Nghiệm thu đạt **455/455 backend**, **162/162 frontend**, lint/build và base+demo Compose sạch.
+
+T52.7 đã hoàn tất Flow 18 trên Docker/PostgreSQL thật: Guest chọn hai vợt, reload/share URL sang context mới, kiểm tra matrix và different-only, remove-add không duplicate, chặn giày khác danh mục; Admin suspend khiến Product bị omit bằng thông báo generic rồi luôn resume trong `finally`. E2E đã phát hiện và sửa GUID parser frontend từng ép RFC version nibble không tương thích demo GUID của .NET/PostgreSQL. Regression Flows 5/12/16/17 đạt 4/4; CI hiện discover Flow 18 và chạy Flows 1–18. Playwright có **20 tests/18 specs**.
+
+T53 đã hoàn tất và qua audit hardening: “Sản phẩm tương tự & Đã xem gần đây” có public related API (ranking deterministic in-stock → same active brand → price distance → rating → review count → ID; tối đa 2 DB commands, timeout 2s) và recent history client-only trong `localStorage` (tối đa 12, TTL 30 ngày, dedupe, loại timestamp tương lai quá 5 phút) được hydrate qua batch API (đúng 1 DB command, giữ order, prune omitted ID). Audit đã bổ sung generic 404 cho `Guid.Empty`, parser frontend strict, image URL sanitation, đồng bộ xóa nhiều tab và bảo toàn PDP hiện tại khi prune. Không AI/ML, không server-side tracking, không account sync và không migration. T53 backend đạt **24/24**, toàn bộ frontend đạt **178/178**; Playwright Flow 19 cùng regressions 5/12/16/17/18 đạt **6/6 trên Docker thật**. [Kế hoạch T53](docs/superpowers/plans/2026-11-08-related-products-recently-viewed.md), [API](docs/api/product-discovery.md).
+
+T46 đã hoàn tất: Admin có thể tạm ngừng, mở bán lại và lưu trữ terminal Product; Catalog/Cart/Checkout/Wishlist/Flash Sale và T47 dùng chung lifecycle contract. Product row lock tuyến tính hóa Suspend với Checkout, giữ nguyên dữ liệu lịch sử và mọi counter khi request bị chặn. Release gate đạt **316/316 backend**, **122/122 frontend**, migration 016 và Playwright flow 12 pass trên Docker thật. [Kế hoạch](docs/superpowers/plans/2026-11-06-product-lifecycle-management.md), [ADR 0011](docs/adr/0011-product-lifecycle-management.md), [API](docs/api/product-lifecycle.md).
+
+Release gate hiện tại: **480/480 backend integration tests** (T53 **24/24**), **178/178 frontend tests**, oxlint sạch (0 lỗi, 0 cảnh báo), production build và base+demo Docker Compose validation thành công. Audit concurrency bổ sung bài test cạnh tranh Review ↔ Full Refund có điều phối khóa thật; khóa Customer của Review dùng `FOR NO KEY UPDATE` để vẫn tuần tự hóa tạo review nhưng không deadlock với khóa FK `KEY SHARE` từ luồng hoàn tiền. Playwright nhận diện **21 tests/19 specs**; Flow 19 và regressions bắt buộc 5/12/16/17/18 đã pass **6/6** trên Docker demo thật.
+
+T39/T41 đã hoàn tất: đổi/trả và hoàn tiền thủ công cho đơn COD, với hàng nhận lại đi vào quarantine exactly-once, kiểm định đủ bốn disposition trước khi hoàn tiền, phân bổ tiền hoàn trên giá thực trả sau Flash Sale/Voucher, lock order thống nhất và audit đầy đủ. Hiện có **290 backend integration tests**, **111 frontend tests** và Playwright E2E flow 07 chạy thật qua Docker. [Kế hoạch T39](docs/superpowers/plans/2026-11-05-cod-returns-manual-refunds.md), [T41](docs/superpowers/plans/2026-11-05-return-quality-inspection.md).
+
+T38 đã hoàn tất: mã giảm giá cơ bản (Fixed Amount & Percentage), áp dụng trên subtotal sau Flash Sale, kiểm tra hạn mức tổng lượt / mỗi khách / ngân sách tài trợ, phân bổ HELD nguyên tử khi checkout, giải phóng RELEASED khi hủy đơn / hết hạn COD / giao thất bại hoàn kho, tiêu thụ CONSUMED khi thu tiền COD thành công, snapshot subtotal và voucher discount trên đơn hàng, chống deadlock qua thứ tự khóa chuẩn hóa, bảo toàn tương thích Idempotency (checkout-v1 / checkout-v2), giao diện giỏ hàng CartPage, không gian quản trị Admin Dashboard và kịch bản Playwright E2E thật 100% pass trên Docker demo stack. [Kế hoạch T38](docs/superpowers/plans/2026-11-04-basic-vouchers.md).
+
+T37 đã hoàn tất: wishlist Customer lưu theo Product (tối đa 500 sản phẩm), shared state cô lập theo tài khoản và chống stale response, Guest giữ `returnTo`, nhiều SKU bắt buộc chọn rõ ràng trong dialog hỗ trợ bàn phím, thêm giỏ không tự xóa yêu thích, owner isolation, mutation PUT/DELETE idempotent (204 No Content), phân loại trạng thái tồn kho (`AVAILABLE`, `OUT_OF_STOCK`, `PRODUCT_UNAVAILABLE`), placeholder cho sản phẩm ngừng bán, live count badge Header, và bộ tests/E2E toàn diện. [Kế hoạch T37](docs/superpowers/plans/2026-11-04-wishlist.md).
 
 ---
 
@@ -209,7 +288,16 @@ dotnet run --project .\HighConcurrencyCommerce.Api -- --migrate-auth
 dotnet run --project .\HighConcurrencyCommerce.Api --launch-profile http
 ```
 
-Lệnh migrate chỉ chấp nhận PostgreSQL loopback, áp upgrade 002 có transaction, không tạo tài khoản. Workspace local đã áp ngày 30/10/2026. API khởi động bình thường không tự migrate. Với DB mới: áp baseline 001 trước rồi upgrade 002, không chạy lại 001 trên DB đã có.
+Lệnh migrate chỉ chấp nhận PostgreSQL loopback, áp upgrade 002 và 004 (`database/004_google_auth.sql`) có transaction, không tạo tài khoản. Workspace local đã áp các bản migration này. API khởi động bình thường không tự migrate.
+
+Để bật đăng nhập Google, cấu hình trong `appsettings.json` hoặc biến môi trường:
+```json
+"GoogleAuth": {
+  "Enabled": true,
+  "ClientId": "<your-google-oauth-client-id>.apps.googleusercontent.com"
+}
+```
+Hoặc qua biến môi trường: `GoogleAuth__Enabled=true` và `GoogleAuth__ClientId=...`. Client Id là public; không cần và không lưu Client Secret trong flow GIS trình duyệt.
 
 Tạo Admin đầu tiên bằng lệnh riêng:
 
@@ -1000,10 +1088,10 @@ Chưa chốt cách hiển thị/đối chiếu counter SOLD/RELEASED sau khi cam
 
 ### OPEN-PAYOS-01
 
-Phải kiểm chứng trên môi trường PayOS:
+Đã kiểm chứng create/query/cancel và chữ ký request trên kênh test ngày 09/11/2026. Còn phải kiểm chứng trên môi trường PayOS:
 
 - Cách đặt `expiredAt` chính xác.
-- Canonicalization và signature payload.
+- Webhook signature payload thực tế cho giao dịch thanh toán thành công.
 - Mapping nhiều attempts.
 - Webhook acknowledgment/retry.
 - Tra cứu transaction tại deadline.
@@ -1015,7 +1103,7 @@ Auth đã chốt tại ADR 0001: cookie HttpOnly, PostgreSQL session 7 ngày, re
 
 ### OPEN-DB-01
 
-Schema nguồn và upgrade auth 002 đã có trong repo; các module được integration test trên PostgreSQL thật. T30 đã chốt quy trình numbered-SQL review/apply/backup/recovery và nguyên tắc không auto-migrate khi startup. Vẫn chưa có EF migration history hoặc migration ledger tự động; mọi schema change mới phải thêm script số mới và fixture tương ứng.
+Schema được quản lý bằng numbered SQL embedded và `public.schema_migrations`; migrator one-shot chạy trước API, kiểm tra checksum, advisory lock và binary downgrade. Mọi schema change mới phải thêm script số mới, manifest và fixture tương ứng.
 
 ### Các OPEN khác
 
@@ -1068,9 +1156,9 @@ Lộ trình dưới đây là nhóm kiến trúc tổng thể. Danh sách công 
 
 ### Giai đoạn 4 — PayOS
 
-1. PayOS adapter sau khi VERIFY provider contract.
-2. Payment attempts.
-3. Webhook signature/receipt/transaction.
+1. PayOS adapter sau khi VERIFY provider contract — backend foundation hoàn tất.
+2. Payment attempts — backend foundation hoàn tất.
+3. Webhook signature/receipt — durable inbox hoàn tất; transaction áp dụng payment chuyển sang T21.
 4. Worker expiry và guarded race.
 5. Reconciliation/refund.
 6. AC-20b và AC-20c.

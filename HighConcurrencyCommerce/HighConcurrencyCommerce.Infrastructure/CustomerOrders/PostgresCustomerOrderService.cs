@@ -2,16 +2,19 @@ using System.Data;
 using System.Text.Json;
 using HighConcurrencyCommerce.Application.CustomerOrders;
 using HighConcurrencyCommerce.Application.Notifications;
+using HighConcurrencyCommerce.Application.Vouchers;
 using HighConcurrencyCommerce.Infrastructure.Persistence;
 using HighConcurrencyCommerce.Infrastructure.Persistence.Models;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace HighConcurrencyCommerce.Infrastructure.CustomerOrders;
 
 public sealed class PostgresCustomerOrderService(
     StoreDbContext db,
     TimeProvider timeProvider,
-    INotificationService notifications) : ICustomerOrderService
+    INotificationService notifications,
+    IVoucherLifecycleManager voucherLifecycle) : ICustomerOrderService
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
@@ -39,7 +42,31 @@ public sealed class PostgresCustomerOrderService(
         var reason = request.Reason.Trim();
         if (reason.Length is < 3 or > 500)
             throw new CustomerOrderFailure("INVALID_ARGUMENT", "Lý do hủy phải có từ 3 đến 500 ký tự sau khi loại bỏ khoảng trắng.", 400);
+
+        for (var attempt = 1; attempt <= 3; attempt++)
+        {
+            try
+            {
+                db.ChangeTracker.Clear();
+                return await ExecuteCancelAsync(customerId, orderId, reason, correlationId, ct);
+            }
+            catch (Exception ex) when (IsRetryable(ex) && attempt < 3)
+            {
+                db.ChangeTracker.Clear();
+                await Task.Delay(50 * attempt, ct);
+            }
+        }
+
+        db.ChangeTracker.Clear();
+        return await ExecuteCancelAsync(customerId, orderId, reason, correlationId, ct);
+    }
+
+    private async Task<CustomerOrderDto> ExecuteCancelAsync(
+        Guid customerId, Guid orderId, string reason, string correlationId, CancellationToken ct)
+    {
         await using var tx = await db.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, ct);
+        await db.Database.ExecuteSqlRawAsync("SET LOCAL lock_timeout = '5s'", ct);
+
         var order = await db.SalesOrders.FromSqlInterpolated($"""
             SELECT * FROM store.sales_orders WHERE id={orderId} AND customer_id={customerId} FOR UPDATE
             """).SingleOrDefaultAsync(ct) ?? throw NotFound();
@@ -58,12 +85,14 @@ public sealed class PostgresCustomerOrderService(
             || reservation.StockReservationLines.Any(x => x.LineStatus != "HELD"))
             throw new CustomerOrderFailure("ORDER_STATE_INVARIANT", "Reservation hoặc Payment không nhất quán để hủy đơn.");
 
+        var now = timeProvider.GetUtcNow().UtcDateTime;
+        await voucherLifecycle.ReleaseForClosedOrderAsync(order.Id, "CUSTOMER_CANCELLED", now, ct);
+
         await LockFlashSaleOffersForOrderAsync(orderId, ct);
         var skuIds = reservation.StockReservationLines.Select(x => x.ProductSkuId).OrderBy(x => x).ToArray();
         await LockSkuAndBalancesAsync(skuIds, ct);
         var balances = await db.InventoryBalances.Where(x => skuIds.Contains(x.ProductSkuId))
             .ToDictionaryAsync(x => x.ProductSkuId, ct);
-        var now = timeProvider.GetUtcNow().UtcDateTime;
         foreach (var line in reservation.StockReservationLines.OrderBy(x => x.ProductSkuId))
         {
             if (!balances.TryGetValue(line.ProductSkuId, out var balance) || balance.ReservedQty < line.Quantity)
@@ -116,8 +145,8 @@ public sealed class PostgresCustomerOrderService(
         {
             Id = Guid.NewGuid(), ActorId = customerId, ActorType = "USER", Action = "CUSTOMER_ORDER_CANCELLED",
             EntityType = "SalesOrder", EntityId = order.Id,
-            BeforeData = JsonSerializer.Serialize(new { orderStatus = "PENDING_COD_CONFIRMATION", paymentStatus = "COD_PENDING", reservationStatus = "HELD" }, JsonOptions),
-            AfterData = JsonSerializer.Serialize(new { orderStatus = "CANCELLED", paymentStatus = "VOID", reservationStatus = "RELEASED", reason }, JsonOptions),
+            BeforeData = JsonSerializer.Serialize(new { orderStatus = "PENDING_COD_CONFIRMATION", paymentStatus = "COD_PENDING", reservationStatus = "HELD", voucherCode = order.VoucherCodeSnapshot, voucherDiscountAmount = order.VoucherDiscountAmount }, JsonOptions),
+            AfterData = JsonSerializer.Serialize(new { orderStatus = "CANCELLED", paymentStatus = "VOID", reservationStatus = "RELEASED", voucherCode = order.VoucherCodeSnapshot, voucherDiscountAmount = order.VoucherDiscountAmount, reason }, JsonOptions),
             CorrelationId = correlationId, OccurredAt = now, CreatedAt = now, UpdatedAt = now
         });
         await notifications.EnsureAsync(customerId, $"order:{order.Id:N}:customer-cancelled", "ORDER_CANCELLED",
@@ -132,8 +161,9 @@ public sealed class PostgresCustomerOrderService(
         .Include(x => x.Payment)
         .Include(x => x.StockReservation)
         .Include(x => x.OrderCancellationRequest)
-        .Include(x => x.SalesOrderItems)
-        .Include(x => x.Shipment).ThenInclude(x => x!.DeliveryAttempts);
+        .Include(x => x.SalesOrderItems).ThenInclude(x => x.ProductSku)
+        .Include(x => x.Shipment).ThenInclude(x => x!.DeliveryAttempts)
+        .Include(x => x.Shipment).ThenInclude(x => x!.CarrierConsignment).ThenInclude(x => x!.Carrier);
 
     private async Task LockSkuAndBalancesAsync(Guid[] skuIds, CancellationToken ct)
     {
@@ -156,8 +186,16 @@ public sealed class PostgresCustomerOrderService(
     {
         var address = JsonSerializer.Deserialize<AddressSnapshot>(order.ShippingAddressSnapshot, JsonOptions)
             ?? throw new InvalidOperationException("Order shipping snapshot is invalid.");
-        var canCancel = order.PaymentMethod == "COD" && order.OrderStatus == "PENDING_COD_CONFIRMATION"
-            && order.Payment?.PaymentStatus == "COD_PENDING" && order.StockReservation?.ReservationStatus == "HELD";
+        var canCancel = order.StockReservation?.ReservationStatus == "HELD"
+            && ((order.PaymentMethod == "COD" && order.OrderStatus == "PENDING_COD_CONFIRMATION"
+                    && order.Payment?.PaymentStatus == "COD_PENDING")
+                || (order.PaymentMethod == "PAYOS" && order.OrderStatus == "PENDING_PAYMENT"
+                    && order.Payment?.PaymentStatus == "PENDING"));
+        var tracking = order.Shipment?.CarrierConsignment is { } consignment
+            ? new CustomerOrderTrackingSummaryDto(
+                consignment.Id, consignment.Carrier.Code, consignment.Carrier.Name,
+                consignment.TrackingNumber, BuildTrackingUrl(consignment), consignment.ConsignmentStatus)
+            : null;
         return new CustomerOrderDto(order.Id, order.OrderNumber, order.OrderStatus, order.PaymentMethod,
             order.Payment?.PaymentStatus ?? "UNKNOWN", order.StockReservation?.ReservationStatus ?? "UNKNOWN",
             order.TotalAmount, order.CreatedAt, order.DeadlineAt, order.ConfirmedAt, order.ClosedReason,
@@ -167,11 +205,31 @@ public sealed class PostgresCustomerOrderService(
             order.Shipment?.RedeliveryCount ?? 0, canCancel, order.OrderCancellationRequest?.Reason,
             order.SalesOrderItems.OrderBy(x => x.ProductSkuId).Select(x => new CustomerOrderItemDto(
                 x.ProductSkuId, x.ProductTitleSnapshot, x.SkuCodeSnapshot, x.SkuOptionLabelSnapshot,
-                x.Quantity, x.UnitPrice, x.Quantity * x.UnitPrice)).ToList(),
+                x.Quantity, x.UnitPrice, x.Quantity * x.UnitPrice, x.ProductSku?.ProductId ?? Guid.Empty)).ToList(),
             order.Shipment?.DeliveryAttempts.OrderBy(x => x.AttemptNo).Select(x => new CustomerDeliveryAttemptDto(
-                x.AttemptNo, x.Result, x.Note, x.FinishedAt)).ToList() ?? []);
+                x.AttemptNo, x.Result, x.Note, x.FinishedAt)).ToList() ?? [],
+            order.SubtotalAmount, order.VoucherDiscountAmount, order.VoucherCodeSnapshot,
+            order.ShippingFee, order.ShippingMethodCodeSnapshot, order.ShippingMethodNameSnapshot,
+            order.ShippingEstimatedMinDays, order.ShippingEstimatedMaxDays, tracking);
+    }
+
+    private static string? BuildTrackingUrl(CarrierConsignment consignment)
+    {
+        var template = consignment.Carrier.TrackingUrlTemplate;
+        if (template is null) return null;
+        var value = template.Replace("{trackingNumber}", Uri.EscapeDataString(consignment.TrackingNumber), StringComparison.Ordinal);
+        return Uri.TryCreate(value, UriKind.Absolute, out var uri) && uri.Scheme == Uri.UriSchemeHttps
+            ? uri.AbsoluteUri
+            : null;
     }
 
     private static CustomerOrderFailure NotFound() => new("NOT_FOUND", "Không tìm thấy đơn hàng.", 404);
     private sealed record AddressSnapshot(string RecipientName, string Phone, string AddressLine, string? Ward, string Province);
+
+    private static bool IsRetryable(Exception ex) => ex switch
+    {
+        PostgresException { SqlState: PostgresErrorCodes.SerializationFailure or PostgresErrorCodes.DeadlockDetected } => true,
+        DbUpdateException { InnerException: PostgresException { SqlState: PostgresErrorCodes.SerializationFailure or PostgresErrorCodes.DeadlockDetected } } => true,
+        _ => false
+    };
 }

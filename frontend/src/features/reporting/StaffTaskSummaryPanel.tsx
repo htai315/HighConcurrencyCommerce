@@ -15,6 +15,7 @@ export function StaffTaskSummaryPanel() {
   const cards = [
     ['COD chờ xác nhận', tasks.pendingCodCount], ['Chờ đóng gói', tasks.shipmentsToPackCount],
     ['Chờ bàn giao', tasks.shipmentsToHandoverCount], ['Giao thất bại', tasks.deliveryFailuresCount],
+    ['Hàng trả chờ nhận', tasks.approvedReturnsCount],
     ['SKU tồn thấp', tasks.lowStockSkuCount], ['Thông báo chưa đọc', tasks.notificationsUnreadCount],
   ] as const
   return <div className="management-card"><h2>Tác vụ cần xử lý</h2><p className="page-intro">Số liệu thời điểm hiện tại, đọc trực tiếp từ nguồn sự thật PostgreSQL.</p>

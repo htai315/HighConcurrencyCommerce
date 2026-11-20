@@ -66,8 +66,8 @@ test('đăng ký dùng CSRF và hướng người dùng đăng nhập, không t�
   await user.type(screen.getByLabelText('Nhập lại mật khẩu'), 'Valid password 123@')
   await user.click(screen.getByRole('checkbox', { name: /Tôi đồng ý/ }))
   await user.click(screen.getByRole('button', { name: 'Tạo tài khoản' }))
-  await waitFor(() => expect(route.state.location.pathname).toBe('/login'))
-  expect(await screen.findByRole('status')).toHaveTextContent('Bạn có thể đăng nhập')
+  await waitFor(() => expect(route.state.location.pathname).toBe('/verify-email'))
+  expect(await screen.findByText('Kiểm tra hộp thư của bạn')).toBeInTheDocument()
 })
 
 test('Customer không xem trang Admin dù nhập URL trực tiếp', async () => {

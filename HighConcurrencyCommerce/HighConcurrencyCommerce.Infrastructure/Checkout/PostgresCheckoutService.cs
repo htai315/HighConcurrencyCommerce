@@ -3,14 +3,22 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using HighConcurrencyCommerce.Application.Checkout;
+using HighConcurrencyCommerce.Application.Shipping;
 using HighConcurrencyCommerce.Infrastructure.Persistence;
 using HighConcurrencyCommerce.Infrastructure.Persistence.Models;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using HighConcurrencyCommerce.Infrastructure.Payments;
+using Microsoft.Extensions.Options;
 
 namespace HighConcurrencyCommerce.Infrastructure.Checkout;
 
-public sealed class PostgresCheckoutService(StoreDbContext db, TimeProvider timeProvider) : ICheckoutService
+public sealed class PostgresCheckoutService(
+    StoreDbContext db,
+    TimeProvider timeProvider,
+    IShippingFeeCalculator shippingFeeCalculator,
+    IProvinceKeyNormalizer provinceKeyNormalizer,
+    IOptions<PayOsOptions> payOsOptions) : ICheckoutService
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
@@ -20,7 +28,10 @@ public sealed class PostgresCheckoutService(StoreDbContext db, TimeProvider time
         CreateCheckoutRequest request,
         CancellationToken ct = default)
     {
-        ValidatePreflight(request);
+        if (request.ShippingMethodId == Guid.Empty || request.ShippingMethodRevision < 1)
+            return await ReplayLegacyAsync(customerId, idempotencyKey, request, ct);
+
+        ValidatePreflight(request, payOsOptions.Value.Enabled);
         var payloadHash = ComputePayloadHash(request);
 
         for (var attempt = 1; ; attempt++)
@@ -45,6 +56,43 @@ public sealed class PostgresCheckoutService(StoreDbContext db, TimeProvider time
         }
     }
 
+    private async Task<CheckoutExecutionResult> ReplayLegacyAsync(
+        Guid customerId,
+        string idempotencyKey,
+        CreateCheckoutRequest request,
+        CancellationToken ct)
+    {
+        var existing = await db.CheckoutRequests.AsNoTracking()
+            .SingleOrDefaultAsync(x => x.CustomerId == customerId && x.IdempotencyKey == idempotencyKey, ct);
+        if (existing is null)
+            throw new CheckoutFailure("VALIDATION_ERROR",
+                "Phương thức, revision và phí giao hàng báo giá là bắt buộc cho checkout mới.");
+
+        var legacyHash = ComputeLegacyPayloadHash(request);
+        if (!CryptographicOperations.FixedTimeEquals(
+                Encoding.ASCII.GetBytes(existing.PayloadHash), Encoding.ASCII.GetBytes(legacyHash)))
+            throw new CheckoutFailure("IDEMPOTENCY_KEY_REUSED",
+                "Idempotency-Key đã được dùng cho nội dung checkout khác.", 409);
+
+        if (existing.ResponseSnapshot is null)
+            throw new CheckoutFailure("CHECKOUT_IN_PROGRESS",
+                "Checkout legacy có cùng Idempotency-Key đang được xử lý.", 409);
+        if (existing.RequestStatus == "SUCCEEDED")
+        {
+            var result = JsonSerializer.Deserialize<CheckoutResultDto>(existing.ResponseSnapshot, JsonOptions)
+                ?? throw new InvalidOperationException("Legacy checkout success snapshot is invalid.");
+            return new CheckoutExecutionResult(result, true);
+        }
+        if (existing.RequestStatus == "REJECTED")
+        {
+            var rejection = JsonSerializer.Deserialize<RejectionSnapshot>(existing.ResponseSnapshot, JsonOptions)
+                ?? throw new InvalidOperationException("Legacy checkout rejection snapshot is invalid.");
+            throw new CheckoutFailure(rejection.Code, rejection.Message, rejection.HttpStatus, true);
+        }
+        throw new CheckoutFailure("CHECKOUT_IN_PROGRESS",
+            "Checkout legacy có cùng Idempotency-Key đang được xử lý.", 409);
+    }
+
     private async Task<CheckoutExecutionResult> ExecuteAsync(
         Guid customerId,
         string idempotencyKey,
@@ -56,7 +104,7 @@ public sealed class PostgresCheckoutService(StoreDbContext db, TimeProvider time
         await db.Database.ExecuteSqlRawAsync("SET LOCAL lock_timeout = '5s'", ct);
 
         var lockedCustomer = await db.Database.SqlQueryRaw<Guid>(
-            "SELECT id AS \"Value\" FROM store.user_accounts WHERE id = {0} AND account_status = 'ACTIVE' FOR UPDATE", customerId)
+            "SELECT id AS \"Value\" FROM store.user_accounts WHERE id = {0} AND account_status = 'ACTIVE' FOR NO KEY UPDATE", customerId)
             .FirstOrDefaultAsync(ct);
         if (lockedCustomer == Guid.Empty)
             throw new CheckoutFailure("CUSTOMER_NOT_AVAILABLE", "Tài khoản không thể tạo đơn hàng.", 409);
@@ -98,14 +146,22 @@ public sealed class PostgresCheckoutService(StoreDbContext db, TimeProvider time
 
         try
         {
-            var result = await CreateOrderAsync(customerId, request, now, ct);
-            checkoutRecord.RequestStatus = "SUCCEEDED";
-            checkoutRecord.OrderId = result.OrderId;
-            checkoutRecord.ResponseSnapshot = JsonSerializer.Serialize(result, JsonOptions);
-            checkoutRecord.UpdatedAt = now;
-            await db.SaveChangesAsync(ct);
-            await tx.CommitAsync(ct);
-            return new CheckoutExecutionResult(result, false);
+            try
+            {
+                var result = await CreateOrderAsync(customerId, request, now, ct);
+                checkoutRecord.RequestStatus = "SUCCEEDED";
+                checkoutRecord.OrderId = result.OrderId;
+                checkoutRecord.ResponseSnapshot = JsonSerializer.Serialize(result, JsonOptions);
+                checkoutRecord.UpdatedAt = timeProvider.GetUtcNow().UtcDateTime;
+                await db.SaveChangesAsync(ct);
+                await tx.CommitAsync(ct);
+                return new CheckoutExecutionResult(result, false);
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is PostgresException { SqlState: PostgresErrorCodes.ForeignKeyViolation } pex
+                                              && pex.ConstraintName?.Contains("shipping_address") == true)
+            {
+                throw new BusinessRejection("ADDRESS_NOT_FOUND", "Không tìm thấy địa chỉ giao hàng thuộc tài khoản.", 404);
+            }
         }
         catch (BusinessRejection rejection)
         {
@@ -140,6 +196,43 @@ public sealed class PostgresCheckoutService(StoreDbContext db, TimeProvider time
             .FirstOrDefaultAsync(x => x.Id == request.ShippingAddressId && x.CustomerId == customerId, ct)
             ?? throw new BusinessRejection("ADDRESS_NOT_FOUND", "Không tìm thấy địa chỉ giao hàng thuộc tài khoản.", 404);
 
+        var shippingMethod = await db.ShippingMethods
+            .FromSqlInterpolated($"SELECT * FROM store.shipping_methods WHERE id = {request.ShippingMethodId} FOR SHARE")
+            .SingleOrDefaultAsync(ct)
+            ?? throw new BusinessRejection("SHIPPING_METHOD_UNAVAILABLE", "Phương thức giao hàng không còn khả dụng.", 409);
+        if (shippingMethod.MethodStatus != "ACTIVE")
+            throw new BusinessRejection("SHIPPING_METHOD_UNAVAILABLE", "Phương thức giao hàng không còn hoạt động.", 409);
+        if (shippingMethod.Revision != request.ShippingMethodRevision)
+            throw new BusinessRejection("SHIPPING_QUOTE_CHANGED", "Cấu hình giao hàng đã thay đổi. Vui lòng báo giá lại.", 409);
+        var destinationProvinceKey = provinceKeyNormalizer.Normalize(address.Province);
+
+        Voucher? lockedVoucher = null;
+        if (!string.IsNullOrWhiteSpace(request.VoucherCode))
+        {
+            var normalizedVoucherCode = request.VoucherCode.Trim().ToUpperInvariant();
+            lockedVoucher = await db.Vouchers
+                .FromSqlInterpolated($"SELECT * FROM store.vouchers WHERE upper(code) = {normalizedVoucherCode} FOR UPDATE")
+                .FirstOrDefaultAsync(ct);
+            if (lockedVoucher is null || lockedVoucher.VoucherStatus == "DRAFT")
+                throw new BusinessRejection("VOUCHER_NOT_FOUND", "Mã giảm giá không tồn tại.", 404);
+        }
+
+        var skuIds = request.Lines.Select(x => x.ProductSkuId).Distinct().OrderBy(x => x).ToArray();
+        var productIds = await db.ProductSkus.AsNoTracking()
+            .Where(x => skuIds.Contains(x.Id))
+            .Select(x => x.ProductId)
+            .Distinct()
+            .OrderBy(x => x)
+            .ToArrayAsync(ct);
+        if (await db.ProductSkus.AsNoTracking().CountAsync(x => skuIds.Contains(x.Id), ct) != skuIds.Length)
+            throw new BusinessRejection("SKU_NOT_AVAILABLE", "Một hoặc nhiều SKU không tồn tại hoặc không còn được bán.", 409);
+
+        var lockedProductIds = await db.Database.SqlQuery<Guid>(
+            $"SELECT id AS \"Value\" FROM store.products WHERE id = ANY({productIds}) ORDER BY id FOR SHARE")
+            .ToListAsync(ct);
+        if (lockedProductIds.Count != productIds.Length)
+            throw new BusinessRejection("PRODUCT_NOT_AVAILABLE", "Một hoặc nhiều sản phẩm không còn được bán.", 409);
+
         var flashSaleOfferIds = request.Lines
             .Where(x => x.FlashSaleOfferId.HasValue)
             .Select(x => x.FlashSaleOfferId!.Value)
@@ -168,7 +261,6 @@ public sealed class PostgresCheckoutService(StoreDbContext db, TimeProvider time
                 throw new BusinessRejection("FLASH_SALE_NOT_FOUND", "Một hoặc nhiều ưu đãi Flash Sale không tồn tại.", 409);
         }
 
-        var skuIds = request.Lines.Select(x => x.ProductSkuId).OrderBy(x => x).ToArray();
         var lockedSkuIds = await db.Database.SqlQuery<Guid>(
             $"SELECT id AS \"Value\" FROM store.product_skus WHERE id = ANY({skuIds}) ORDER BY id FOR UPDATE")
             .ToListAsync(ct);
@@ -178,6 +270,9 @@ public sealed class PostgresCheckoutService(StoreDbContext db, TimeProvider time
         await db.Database.SqlQuery<Guid>(
             $"SELECT product_sku_id AS \"Value\" FROM store.inventory_balances WHERE product_sku_id = ANY({skuIds}) ORDER BY product_sku_id FOR UPDATE")
             .ToListAsync(ct);
+
+        // Refresh 'now' after acquiring all locks so Flash Sale and deadlines are evaluated accurately (F05)
+        now = timeProvider.GetUtcNow().UtcDateTime;
 
         var flashSaleOffers = flashSaleOfferIds.Length > 0
             ? await db.FlashSaleOffers
@@ -206,8 +301,12 @@ public sealed class PostgresCheckoutService(StoreDbContext db, TimeProvider time
                 if (offer.ProductSkuId != line.ProductSkuId)
                     throw new BusinessRejection("FLASH_SALE_INVALID_OFFER", "Ưu đãi Flash Sale không khớp với SKU đã chọn.", 409);
 
+                if (offer.SalePrice >= sku.RegularPrice)
+                    throw new BusinessRejection("FLASH_SALE_PRICE_INVALID", $"Giá ưu đãi Flash Sale ({offer.SalePrice:N0} đ) phải nhỏ hơn giá niêm yết ({sku.RegularPrice:N0} đ).", 409);
+
+                var lockAcquiredAt = timeProvider.GetUtcNow().UtcDateTime;
                 var effectiveActive = offer.Campaign.CampaignStatus is "ACTIVE" or "SCHEDULED"
-                    && now >= offer.Campaign.StartsAt && now < offer.Campaign.EndsAt;
+                    && lockAcquiredAt >= offer.Campaign.StartsAt && lockAcquiredAt < offer.Campaign.EndsAt;
                 if (!effectiveActive)
                     throw new BusinessRejection("FLASH_SALE_CAMPAIGN_NOT_ACTIVE", "Chiến dịch Flash Sale chưa mở hoặc đã kết thúc.", 409);
 
@@ -251,7 +350,93 @@ public sealed class PostgresCheckoutService(StoreDbContext db, TimeProvider time
             return new CheckoutOrderItemDto(sku.Id, sku.Product.Title, sku.SkuCode, sku.OptionLabel,
                 line.Quantity, unitPrice, unitPrice * line.Quantity);
         }).ToList();
-        var total = itemDtos.Sum(x => x.LineTotal);
+        var subtotal = itemDtos.Sum(x => x.LineTotal);
+        var provinceSurcharge = await db.ShippingMethodProvinceRates.AsNoTracking()
+            .Where(x => x.ShippingMethodId == shippingMethod.Id
+                        && x.ProvinceKey == destinationProvinceKey && x.IsActive)
+            .Select(x => (decimal?)x.SurchargeFee)
+            .SingleOrDefaultAsync(ct) ?? 0m;
+        var shippingCalculation = shippingFeeCalculator.Calculate(new ShippingFeeCalculationInput(
+            subtotal, shippingMethod.BaseFee, provinceSurcharge, shippingMethod.FreeShippingThreshold));
+        if (shippingCalculation.ShippingFee != request.QuotedShippingFee)
+            throw new BusinessRejection("SHIPPING_QUOTE_CHANGED", "Phí giao hàng đã thay đổi. Vui lòng báo giá lại.", 409);
+
+        decimal voucherDiscount = 0m;
+        if (lockedVoucher is not null)
+        {
+            if (lockedVoucher.VoucherStatus == "PAUSED")
+                throw new BusinessRejection("VOUCHER_NOT_ACTIVE", "Mã giảm giá hiện đang tạm dừng áp dụng.", 409);
+            if (lockedVoucher.VoucherStatus == "ENDED")
+                throw new BusinessRejection("VOUCHER_EXPIRED", "Mã giảm giá đã kết thúc.", 409);
+            if (lockedVoucher.VoucherStatus != "ACTIVE")
+                throw new BusinessRejection("VOUCHER_NOT_ACTIVE", "Mã giảm giá hiện không khả dụng.", 409);
+
+            if (now < lockedVoucher.StartsAt)
+                throw new BusinessRejection("VOUCHER_NOT_STARTED", "Mã giảm giá chưa đến thời gian áp dụng.", 409);
+            if (now >= lockedVoucher.EndsAt)
+                throw new BusinessRejection("VOUCHER_EXPIRED", "Mã giảm giá đã hết hạn sử dụng.", 409);
+
+            if (lockedVoucher.UsageHeld + lockedVoucher.UsageConsumed >= lockedVoucher.TotalUsageLimit)
+                throw new BusinessRejection("VOUCHER_USAGE_LIMIT_REACHED", "Mã giảm giá đã hết lượt sử dụng.", 409);
+
+            var remainingBudget = lockedVoucher.BudgetTotal - (lockedVoucher.BudgetHeld + lockedVoucher.BudgetConsumed);
+            if (remainingBudget <= 0)
+                throw new BusinessRejection("VOUCHER_BUDGET_EXHAUSTED", "Ngân sách của mã giảm giá đã hết.", 409);
+
+            var customerPurchasedVoucher = await db.VoucherRedemptions
+                .CountAsync(r => r.VoucherId == lockedVoucher.Id && r.CustomerId == customerId
+                    && (r.RedemptionStatus == "HELD" || r.RedemptionStatus == "CONSUMED"), ct);
+            if (customerPurchasedVoucher >= lockedVoucher.PerCustomerLimit)
+                throw new BusinessRejection("VOUCHER_CUSTOMER_LIMIT_REACHED",
+                    $"Bạn chỉ được sử dụng tối đa {lockedVoucher.PerCustomerLimit} lần cho mã giảm giá này.", 409);
+
+            if (subtotal < lockedVoucher.MinimumOrderAmount)
+                throw new BusinessRejection("VOUCHER_MINIMUM_NOT_MET",
+                    $"Đơn hàng tối thiểu phải từ {lockedVoucher.MinimumOrderAmount:N0} đ để sử dụng mã này.", 409);
+
+            if (lockedVoucher.DiscountType == "FIXED_AMOUNT")
+            {
+                voucherDiscount = lockedVoucher.DiscountValue;
+            }
+            else if (lockedVoucher.DiscountType == "PERCENTAGE")
+            {
+                var raw = Math.Floor(subtotal * lockedVoucher.DiscountValue / 100m);
+                voucherDiscount = Math.Min(raw, lockedVoucher.MaxDiscountAmount ?? raw);
+            }
+            else
+            {
+                throw new BusinessRejection("VOUCHER_DISCOUNT_INVALID", "Loại chiết khấu không hợp lệ.", 409);
+            }
+
+            if (voucherDiscount <= 0 || voucherDiscount >= subtotal)
+                throw new BusinessRejection("VOUCHER_DISCOUNT_INVALID", "Chiết khấu không hợp lệ hoặc làm tổng tiền đơn hàng bằng 0.", 409);
+
+            if (voucherDiscount > remainingBudget)
+                throw new BusinessRejection("VOUCHER_BUDGET_EXHAUSTED", "Ngân sách của mã giảm giá không đủ để áp dụng cho đơn hàng.", 409);
+
+            lockedVoucher.UsageHeld += 1;
+            lockedVoucher.BudgetHeld += voucherDiscount;
+            lockedVoucher.UpdatedAt = now;
+
+            db.VoucherRedemptions.Add(new VoucherRedemption
+            {
+                Id = Guid.NewGuid(),
+                VoucherId = lockedVoucher.Id,
+                CustomerId = customerId,
+                OrderId = orderId,
+                SubtotalSnapshot = subtotal,
+                DiscountAmount = voucherDiscount,
+                RedemptionStatus = "HELD",
+                HeldAt = now,
+                ConsumedAt = null,
+                ReleasedAt = null,
+                ReleaseReason = null,
+                CreatedAt = now,
+                UpdatedAt = now
+            });
+        }
+
+        var total = subtotal - voucherDiscount + shippingCalculation.ShippingFee;
 
         db.SalesOrders.Add(new SalesOrder
         {
@@ -259,7 +444,17 @@ public sealed class PostgresCheckoutService(StoreDbContext db, TimeProvider time
             OrderNumber = $"HC-{now:yyyyMMdd}-{orderId.ToString("N")[..12].ToUpperInvariant()}",
             PaymentMethod = request.PaymentMethod, OrderStatus = orderStatus,
             ShippingAddressSnapshot = JsonSerializer.Serialize(addressSnapshot, JsonOptions),
-            TotalAmount = total, DeadlineAt = deadline, CreatedAt = now, UpdatedAt = now
+            TotalAmount = total, SubtotalAmount = subtotal, VoucherDiscountAmount = voucherDiscount,
+            VoucherCodeSnapshot = lockedVoucher?.Code,
+            ShippingMethodId = shippingMethod.Id,
+            ShippingMethodCodeSnapshot = shippingMethod.Code,
+            ShippingMethodNameSnapshot = shippingMethod.Name,
+            ShippingFee = shippingCalculation.ShippingFee,
+            ShippingEstimatedMinDays = shippingMethod.EstimatedMinDays,
+            ShippingEstimatedMaxDays = shippingMethod.EstimatedMaxDays,
+            ShippingDestinationProvinceKey = destinationProvinceKey,
+            ShippingMethodRevision = shippingMethod.Revision,
+            DeadlineAt = deadline, CreatedAt = now, UpdatedAt = now
         });
         db.Payments.Add(new Payment
         {
@@ -328,28 +523,50 @@ public sealed class PostgresCheckoutService(StoreDbContext db, TimeProvider time
         }
 
         var orderNumber = $"HC-{now:yyyyMMdd}-{orderId.ToString("N")[..12].ToUpperInvariant()}";
+        var shippingSnapshot = new CheckoutShippingMethodSnapshotDto(
+            shippingMethod.Id, shippingMethod.Code, shippingMethod.Name,
+            shippingMethod.EstimatedMinDays, shippingMethod.EstimatedMaxDays,
+            shippingMethod.Revision, destinationProvinceKey);
         return new CheckoutResultDto(orderId, orderNumber, orderStatus, request.PaymentMethod, paymentStatus,
-            total, deadline, addressSnapshot, itemDtos);
+            total, deadline, addressSnapshot, itemDtos, subtotal, voucherDiscount, lockedVoucher?.Code,
+            shippingCalculation.ShippingFee, shippingSnapshot);
     }
 
-    private static void ValidatePreflight(CreateCheckoutRequest request)
+    private static void ValidatePreflight(CreateCheckoutRequest request, bool payOsEnabled)
     {
-        if (request.PaymentMethod == "PAYOS")
+        if (request.PaymentMethod == "PAYOS" && !payOsEnabled)
             throw new CheckoutFailure("PAYOS_DEFERRED", "PayOS đang tạm hoãn cho đến khi hoàn tất kiểm chứng sandbox.", 409);
         if (request.Lines.Select(x => x.ProductSkuId).Distinct().Count() != request.Lines.Count)
             throw new CheckoutFailure("DUPLICATE_SKU", "Mỗi SKU chỉ được xuất hiện một lần trong checkout.");
-        if (request.Lines.Any(x => x.ProductSkuId == Guid.Empty) || request.ShippingAddressId == Guid.Empty)
-            throw new CheckoutFailure("VALIDATION_ERROR", "SKU và địa chỉ không được để trống.");
+        if (request.Lines.Any(x => x.ProductSkuId == Guid.Empty)
+            || request.ShippingAddressId == Guid.Empty || request.ShippingMethodId == Guid.Empty)
+            throw new CheckoutFailure("VALIDATION_ERROR", "SKU, địa chỉ và phương thức giao hàng không được để trống.");
+        if (request.ShippingMethodRevision < 1 || request.QuotedShippingFee < 0
+            || request.QuotedShippingFee != decimal.Floor(request.QuotedShippingFee))
+            throw new CheckoutFailure("VALIDATION_ERROR", "Revision hoặc phí giao hàng báo giá không hợp lệ.");
         if (request.Lines.Any(x => x.FlashSaleOfferId == Guid.Empty))
             throw new CheckoutFailure("VALIDATION_ERROR", "FlashSaleOfferId không hợp lệ.");
+        if (!string.IsNullOrWhiteSpace(request.VoucherCode))
+        {
+            var trimmed = request.VoucherCode.Trim();
+            if (!System.Text.RegularExpressions.Regex.IsMatch(trimmed, "^[A-Za-z0-9_-]{3,32}$"))
+                throw new CheckoutFailure("VALIDATION_ERROR", "Mã voucher không hợp lệ.");
+        }
     }
 
     private static string ComputePayloadHash(CreateCheckoutRequest request)
     {
-        var canonical = new
+        var normalizedCode = string.IsNullOrWhiteSpace(request.VoucherCode)
+            ? null
+            : request.VoucherCode.Trim().ToUpperInvariant();
+        var canonicalV3 = new
         {
-            version = "checkout-v1",
+            version = "checkout-v3",
+            voucherCode = normalizedCode,
             shippingAddressId = request.ShippingAddressId.ToString("D").ToLowerInvariant(),
+            shippingMethodId = request.ShippingMethodId.ToString("D").ToLowerInvariant(),
+            shippingMethodRevision = request.ShippingMethodRevision,
+            quotedShippingFee = request.QuotedShippingFee,
             paymentMethod = request.PaymentMethod,
             lines = request.Lines.OrderBy(x => x.ProductSkuId).Select(x => new
             {
@@ -358,6 +575,37 @@ public sealed class PostgresCheckoutService(StoreDbContext db, TimeProvider time
                 flashSaleOfferId = x.FlashSaleOfferId?.ToString("D").ToLowerInvariant()
             }).ToArray()
         };
+        return Convert.ToHexStringLower(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(canonicalV3, JsonOptions)));
+    }
+
+    private static string ComputeLegacyPayloadHash(CreateCheckoutRequest request)
+    {
+        object canonical = string.IsNullOrWhiteSpace(request.VoucherCode)
+            ? new
+            {
+                version = "checkout-v1",
+                shippingAddressId = request.ShippingAddressId.ToString("D").ToLowerInvariant(),
+                paymentMethod = request.PaymentMethod,
+                lines = request.Lines.OrderBy(x => x.ProductSkuId).Select(x => new
+                {
+                    productSkuId = x.ProductSkuId.ToString("D").ToLowerInvariant(),
+                    quantity = x.Quantity,
+                    flashSaleOfferId = x.FlashSaleOfferId?.ToString("D").ToLowerInvariant()
+                }).ToArray()
+            }
+            : new
+            {
+                version = "checkout-v2",
+                voucherCode = request.VoucherCode.Trim().ToUpperInvariant(),
+                shippingAddressId = request.ShippingAddressId.ToString("D").ToLowerInvariant(),
+                paymentMethod = request.PaymentMethod,
+                lines = request.Lines.OrderBy(x => x.ProductSkuId).Select(x => new
+                {
+                    productSkuId = x.ProductSkuId.ToString("D").ToLowerInvariant(),
+                    quantity = x.Quantity,
+                    flashSaleOfferId = x.FlashSaleOfferId?.ToString("D").ToLowerInvariant()
+                }).ToArray()
+            };
         return Convert.ToHexStringLower(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(canonical, JsonOptions)));
     }
 

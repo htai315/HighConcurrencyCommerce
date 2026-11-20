@@ -44,8 +44,8 @@ public sealed class ProductManagementTests(CatalogFixture fixture) : IClassFixtu
             var hash = hasher.HashPassword(new object(), Password);
 
             await using var insertCmd = new NpgsqlCommand(
-                "INSERT INTO store.user_accounts (id, role_id, email, password_hash, full_name, account_status) " +
-                "VALUES (@userId, @roleId, @email, @hash, @fullName, 'ACTIVE')", db);
+                "INSERT INTO store.user_accounts (id, role_id, email, password_hash, full_name, account_status, email_verified_at) " +
+                "VALUES (@userId, @roleId, @email, @hash, @fullName, 'ACTIVE', now())", db);
             insertCmd.Parameters.AddWithValue("userId", userId);
             insertCmd.Parameters.AddWithValue("roleId", roleId);
             insertCmd.Parameters.AddWithValue("email", email);
@@ -66,6 +66,7 @@ public sealed class ProductManagementTests(CatalogFixture fixture) : IClassFixtu
         var email = Email("cust");
         using var reg = await Send(client, "auth/register", new { email, password = Password, confirmPassword = Password, fullName = "Customer" });
         Assert.Equal(HttpStatusCode.Accepted, reg.StatusCode);
+        await fixture.VerifyUserAsync(email);
         using var login = await Send(client, "auth/login", new { email, password = Password });
         Assert.Equal(HttpStatusCode.OK, login.StatusCode);
         return client;
@@ -297,6 +298,62 @@ public sealed class ProductManagementTests(CatalogFixture fixture) : IClassFixtu
         var negPrice = new { price = -500m };
         using var resNeg = await Send(admin, "admin/skus/30000000-0000-0000-0000-000000000001/price", negPrice, HttpMethod.Patch);
         Assert.Equal(HttpStatusCode.BadRequest, resNeg.StatusCode);
+    }
+
+    [Fact]
+    public async Task Admin_price_update_rejects_price_less_than_or_equal_to_active_or_scheduled_flash_sale_offer()
+    {
+        var (staff, _) = await CreateUserClientWithRole(fixture, "STAFF", "staff_flash_price");
+        var (admin, adminId) = await CreateUserClientWithRole(fixture, "ADMIN", "admin_flash_price");
+
+        // 1. Staff creates draft product & SKU
+        using var createRes = await Send(staff, "staff/products", new { title = "Flash Price Product " + Guid.NewGuid().ToString("N")[..6] });
+        Assert.Equal(HttpStatusCode.Created, createRes.StatusCode);
+        var prodId = (await createRes.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("id").GetGuid();
+
+        using var skuRes = await Send(staff, $"staff/products/{prodId}/skus", new { skuCode = "SKU-FP-" + Guid.NewGuid().ToString("N")[..6], optionLabel = "Standard" });
+        Assert.Equal(HttpStatusCode.Created, skuRes.StatusCode);
+        var skuId = (await skuRes.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("id").GetGuid();
+
+        // 2. Admin sets regular price = 200,000đ
+        using var priceRes1 = await Send(admin, $"admin/skus/{skuId}/price", new { price = 200000m }, HttpMethod.Patch);
+        Assert.Equal(HttpStatusCode.OK, priceRes1.StatusCode);
+
+        // 3. Link active Flash Sale campaign & offer with salePrice = 120,000đ
+        var campaignId = Guid.NewGuid();
+        var offerId = Guid.NewGuid();
+        var now = DateTime.UtcNow;
+        await using (var db = await fixture.OpenDatabaseAsync())
+        {
+            await using var insertCampaign = new NpgsqlCommand(
+                "INSERT INTO store.flash_sale_campaigns(id, name, campaign_status, starts_at, ends_at, created_by, created_at, updated_at) " +
+                "VALUES (@id, 'Active Sale', 'ACTIVE', @starts, @ends, @adminId, @now, @now)", db);
+            insertCampaign.Parameters.AddWithValue("id", campaignId);
+            insertCampaign.Parameters.AddWithValue("adminId", adminId);
+            insertCampaign.Parameters.AddWithValue("starts", now.AddHours(-1));
+            insertCampaign.Parameters.AddWithValue("ends", now.AddHours(2));
+            insertCampaign.Parameters.AddWithValue("now", now);
+            await insertCampaign.ExecuteNonQueryAsync();
+
+            await using var insertOffer = new NpgsqlCommand(
+                "INSERT INTO store.flash_sale_offers(id, campaign_id, product_sku_id, sale_price, quota_total, quota_held, quota_sold, per_customer_limit, created_at, updated_at) " +
+                "VALUES (@id, @campId, @skuId, 120000, 10, 0, 0, 2, @now, @now)", db);
+            insertOffer.Parameters.AddWithValue("id", offerId);
+            insertOffer.Parameters.AddWithValue("campId", campaignId);
+            insertOffer.Parameters.AddWithValue("skuId", skuId);
+            insertOffer.Parameters.AddWithValue("now", now);
+            await insertOffer.ExecuteNonQueryAsync();
+        }
+
+        // 4. Admin tries to lower price to 100,000đ (<= salePrice 120,000đ) -> 409 PRICE_CONFLICT_WITH_FLASH_SALE
+        using var conflictRes = await Send(admin, $"admin/skus/{skuId}/price", new { price = 100000m }, HttpMethod.Patch);
+        Assert.Equal(HttpStatusCode.Conflict, conflictRes.StatusCode);
+        var conflictBody = await conflictRes.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal("PRICE_CONFLICT_WITH_FLASH_SALE", conflictBody.GetProperty("code").GetString());
+
+        // 5. Admin updates price to 150,000đ (> salePrice 120,000đ) -> 200 OK
+        using var okRes = await Send(admin, $"admin/skus/{skuId}/price", new { price = 150000m }, HttpMethod.Patch);
+        Assert.Equal(HttpStatusCode.OK, okRes.StatusCode);
     }
 
     [Fact]

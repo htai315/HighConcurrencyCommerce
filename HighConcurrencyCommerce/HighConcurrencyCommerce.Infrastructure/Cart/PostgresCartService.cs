@@ -1,4 +1,6 @@
 using System.Data;
+using System.Security.Cryptography;
+using System.Text.Json;
 using HighConcurrencyCommerce.Application.Cart;
 using HighConcurrencyCommerce.Infrastructure.Persistence;
 using HighConcurrencyCommerce.Infrastructure.Persistence.Models;
@@ -9,6 +11,7 @@ namespace HighConcurrencyCommerce.Infrastructure.Cart;
 public sealed class PostgresCartService(StoreDbContext db) : ICartService
 {
     private const int MaxQuantityPerSku = 99;
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
     public Task<CartDto> GetAsync(Guid customerId, CancellationToken ct = default) => LoadCartAsync(customerId, ct);
 
@@ -16,6 +19,7 @@ public sealed class PostgresCartService(StoreDbContext db) : ICartService
     {
         await using var tx = await db.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, ct);
         await LockCustomerAsync(customerId, ct);
+        await LockProductsBySkuAsync([skuId], ct);
 
         var skuExists = await db.ProductSkus.AnyAsync(s => s.Id == skuId
             && s.SkuStatus == "ACTIVE" && s.Product.PublicationStatus == "PUBLISHED", ct);
@@ -70,14 +74,37 @@ public sealed class PostgresCartService(StoreDbContext db) : ICartService
         await using var tx = await db.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, ct);
         await LockCustomerAsync(customerId, ct);
 
+        string? payloadHash = null;
+        if (!string.IsNullOrWhiteSpace(request.MergeBatchId))
+        {
+            payloadHash = ComputePayloadHash(request);
+            var existingMerge = await db.AuditLogs
+                .Where(a => a.ActorId == customerId && a.Action == "CART_MERGED" && a.CorrelationId == request.MergeBatchId)
+                .OrderByDescending(a => a.OccurredAt)
+                .FirstOrDefaultAsync(ct);
+
+            if (existingMerge != null)
+            {
+                var storedHash = ExtractPayloadHash(existingMerge.BeforeData);
+                if (storedHash != payloadHash)
+                {
+                    throw new CartFailure("IDEMPOTENCY_KEY_REUSED", "MergeBatchId đã được dùng cho nội dung gộp giỏ khác.");
+                }
+
+                await tx.CommitAsync(ct);
+                return new MergeCartResultDto(await LoadCartAsync(customerId, ct), []);
+            }
+        }
+
         var groups = request.Items.GroupBy(i => i.ProductSkuId).ToList();
         if (groups.Any(g => g.Select(x => x.FlashSaleOfferId).Distinct().Count() > 1))
             throw new CartFailure("FLASH_SALE_OFFER_CONFLICT", "Một SKU không thể được gộp với nhiều ưu đãi Flash Sale khác nhau.");
         var incoming = groups.ToDictionary(g => g.Key, g => new
         {
-            Quantity = Math.Min(MaxQuantityPerSku, g.Sum(i => i.Quantity)),
+            Quantity = (int)Math.Min((long)MaxQuantityPerSku, g.Sum(i => (long)i.Quantity)),
             FlashSaleOfferId = g.Select(x => x.FlashSaleOfferId).Distinct().Single()
         });
+        await LockProductsBySkuAsync(incoming.Keys.ToArray(), ct);
         var validSkuIds = await db.ProductSkus
             .Where(s => incoming.Keys.Contains(s.Id) && s.SkuStatus == "ACTIVE" && s.Product.PublicationStatus == "PUBLISHED")
             .Select(s => s.Id).ToListAsync(ct);
@@ -119,6 +146,27 @@ public sealed class PostgresCartService(StoreDbContext db) : ICartService
             await db.SaveChangesAsync(ct);
         }
 
+        if (!string.IsNullOrWhiteSpace(request.MergeBatchId))
+        {
+            var cart = await GetOrCreateCartAsync(customerId, ct);
+            db.AuditLogs.Add(new AuditLog
+            {
+                Id = Guid.NewGuid(),
+                ActorId = customerId,
+                ActorType = "USER",
+                Action = "CART_MERGED",
+                EntityType = "ShoppingCart",
+                EntityId = cart.Id,
+                CorrelationId = request.MergeBatchId,
+                BeforeData = JsonSerializer.Serialize(new { hash = payloadHash }),
+                AfterData = JsonSerializer.Serialize(new { requestedItemCount = request.Items.Count, validSkuCount = validSkuIds.Count }),
+                OccurredAt = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
+            await db.SaveChangesAsync(ct);
+        }
+
         await tx.CommitAsync(ct);
         return new MergeCartResultDto(await LoadCartAsync(customerId, ct), issues);
     }
@@ -131,7 +179,11 @@ public sealed class PostgresCartService(StoreDbContext db) : ICartService
             issues.Add(new CartIssueDto(null, "EMPTY_CART", "Giỏ hàng đang trống."));
         foreach (var item in cart.Items)
         {
-            if (item.AvailabilityCode == "SKU_NOT_AVAILABLE")
+            if (item.AvailabilityCode == "PRODUCT_SUSPENDED")
+                issues.Add(new CartIssueDto(item.ProductSkuId, item.AvailabilityCode, "Sản phẩm đang tạm ngừng bán."));
+            else if (item.AvailabilityCode == "PRODUCT_ARCHIVED")
+                issues.Add(new CartIssueDto(item.ProductSkuId, item.AvailabilityCode, "Sản phẩm không còn kinh doanh."));
+            else if (item.AvailabilityCode == "SKU_NOT_AVAILABLE")
                 issues.Add(new CartIssueDto(item.ProductSkuId, item.AvailabilityCode, "SKU không còn được bán."));
             else if (item.AvailabilityCode == "INSUFFICIENT_STOCK")
                 issues.Add(new CartIssueDto(item.ProductSkuId, item.AvailabilityCode, "Tồn khả dụng hiện không đủ cho số lượng trong giỏ."));
@@ -147,6 +199,22 @@ public sealed class PostgresCartService(StoreDbContext db) : ICartService
             "SELECT id AS \"Value\" FROM store.user_accounts WHERE id = {0} FOR UPDATE", customerId)
             .FirstOrDefaultAsync(ct);
         if (id == Guid.Empty) throw new CartFailure("NOT_FOUND", "Không tìm thấy khách hàng.");
+    }
+
+    private async Task LockProductsBySkuAsync(IReadOnlyCollection<Guid> skuIds, CancellationToken ct)
+    {
+        if (skuIds.Count == 0) return;
+        var ids = skuIds.Distinct().ToArray();
+        var productIds = await db.ProductSkus.AsNoTracking()
+            .Where(x => ids.Contains(x.Id))
+            .Select(x => x.ProductId)
+            .Distinct()
+            .OrderBy(x => x)
+            .ToArrayAsync(ct);
+        if (productIds.Length == 0) return;
+        await db.Database.SqlQuery<Guid>(
+            $"SELECT id AS \"Value\" FROM store.products WHERE id = ANY({productIds}) ORDER BY id FOR SHARE")
+            .ToListAsync(ct);
     }
 
     private async Task<ShoppingCart> GetOrCreateCartAsync(Guid customerId, CancellationToken ct)
@@ -187,7 +255,9 @@ public sealed class PostgresCartService(StoreDbContext db) : ICartService
                 && offer.Campaign.CampaignStatus is "ACTIVE" or "SCHEDULED"
                 && now >= offer.Campaign.StartsAt && now < offer.Campaign.EndsAt
                 && offer.QuotaTotal - offer.QuotaHeld - offer.QuotaSold >= i.Quantity);
-            var availability = !purchasable ? "SKU_NOT_AVAILABLE"
+            var availability = sku.Product.PublicationStatus == "SUSPENDED" ? "PRODUCT_SUSPENDED"
+                : sku.Product.PublicationStatus == "ARCHIVED" ? "PRODUCT_ARCHIVED"
+                : !purchasable ? "SKU_NOT_AVAILABLE"
                 : !sufficient ? "INSUFFICIENT_STOCK"
                 : !offerValid ? "FLASH_SALE_NOT_AVAILABLE" : "AVAILABLE";
             var unitPrice = offer is not null && offerValid ? offer.SalePrice : sku.RegularPrice;
@@ -209,5 +279,34 @@ public sealed class PostgresCartService(StoreDbContext db) : ICartService
             && (o.Campaign.CampaignStatus == "ACTIVE" || o.Campaign.CampaignStatus == "SCHEDULED")
             && o.Campaign.StartsAt <= now && o.Campaign.EndsAt > now, ct);
         if (!valid) throw new CartFailure("FLASH_SALE_NOT_AVAILABLE", "Ưu đãi Flash Sale không tồn tại, không khớp SKU hoặc đã hết hiệu lực.");
+    }
+
+    private static string? ExtractPayloadHash(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return null;
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind == JsonValueKind.Object && doc.RootElement.TryGetProperty("hash", out var prop))
+                return prop.GetString();
+            if (doc.RootElement.ValueKind == JsonValueKind.String)
+                return doc.RootElement.GetString();
+            return null;
+        }
+        catch
+        {
+            return json;
+        }
+    }
+
+    private static string ComputePayloadHash(MergeCartRequest request)
+    {
+        var canonical = request.Items.OrderBy(x => x.ProductSkuId).Select(x => new
+        {
+            productSkuId = x.ProductSkuId.ToString("D").ToLowerInvariant(),
+            quantity = x.Quantity,
+            flashSaleOfferId = x.FlashSaleOfferId?.ToString("D").ToLowerInvariant()
+        }).ToArray();
+        return Convert.ToHexStringLower(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(canonical, JsonOptions)));
     }
 }

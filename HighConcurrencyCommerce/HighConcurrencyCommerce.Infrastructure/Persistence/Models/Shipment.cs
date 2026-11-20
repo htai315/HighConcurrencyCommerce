@@ -25,5 +25,7 @@ public partial class Shipment
 
     public virtual ICollection<DeliveryAttempt> DeliveryAttempts { get; set; } = new List<DeliveryAttempt>();
 
+    public virtual CarrierConsignment? CarrierConsignment { get; set; }
+
     public virtual SalesOrder Order { get; set; } = null!;
 }

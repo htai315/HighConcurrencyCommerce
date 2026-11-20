@@ -15,6 +15,8 @@ Các sự kiện hiện được phát:
 - `ORDER_REDELIVERY`: bắt đầu attempt giao lại.
 - `ORDER_DELIVERED`: giao thành công và thu COD.
 - `ORDER_CANCELLED`: giao thất bại và hàng đã hoàn kho.
+- `WISHLIST_BACK_IN_STOCK`: sản phẩm yêu thích có hàng trở lại.
+- `WISHLIST_PRICE_DROP`: regular price thấp nhất của sản phẩm yêu thích giảm.
 
 ## Quyền và bảo mật
 
@@ -29,6 +31,7 @@ Query:
 
 - `unreadOnly`: boolean, mặc định `false`.
 - `limit`: 1–100, mặc định 50.
+- `before` và `beforeId`: cursor kép, phải cùng có hoặc cùng vắng.
 
 Response sắp xếp mới nhất trước:
 
@@ -40,6 +43,7 @@ Response sắp xếp mới nhất trước:
       "type": "ORDER_SHIPPING",
       "title": "Đơn hàng đang được giao",
       "body": "Đơn HC-... đang trên đường giao đến bạn.",
+      "actionUrl": null,
       "createdAt": "2026-10-30T08:00:00Z",
       "readAt": null
     }
@@ -48,7 +52,7 @@ Response sắp xếp mới nhất trước:
 }
 ```
 
-`unreadCount` là tổng số chưa đọc của recipient, không chỉ số item trong page hiện tại.
+`unreadCount` là tổng số chưa đọc của recipient, không chỉ số item trong page hiện tại. `hasMore` cho biết còn page kế tiếp. `actionUrl` chỉ chứa internal path do server tạo; frontend tiếp tục từ chối absolute/protocol-relative URL trước khi render.
 
 ## `POST /api/v1/notifications/{id}/read`
 
@@ -62,6 +66,6 @@ Không có body. Chỉ cập nhật notification của session hiện tại. Rep
 
 ## Giới hạn đã chốt
 
-- Chưa có push realtime, polling tự động, email hoặc SMS.
-- Chưa có pagination cursor; MVP trả tối đa 100 bản ghi.
+- Chưa có push realtime hoặc polling tự động.
+- Email commerce chỉ áp dụng cho Wishlist Product Alerts qua outbox riêng; notification feed vẫn là nguồn in-app.
 - Nếu sau này tách process/broker hoặc phát sự kiện sau commit, phải có ADR riêng cho Transactional Outbox; không tái sử dụng in-memory event như nguồn đảm bảo giao nhận.

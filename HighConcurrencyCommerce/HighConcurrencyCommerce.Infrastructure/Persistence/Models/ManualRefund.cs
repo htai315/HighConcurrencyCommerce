@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace HighConcurrencyCommerce.Infrastructure.Persistence.Models;
@@ -23,7 +23,15 @@ public partial class ManualRefund
 
     public DateTime? RefundedAt { get; set; }
 
+    public Guid? ReturnRequestId { get; set; }
+
+    public Guid? ReconciliationCaseId { get; set; }
+
     public virtual UserAccount Admin { get; set; } = null!;
 
     public virtual PaymentTransaction Transaction { get; set; } = null!;
+
+    public virtual OrderReturnRequest? ReturnRequest { get; set; }
+
+    public virtual PaymentReconciliationCase? ReconciliationCase { get; set; }
 }

@@ -13,7 +13,7 @@ Tài liệu vận hành cho T30. `compose.yaml` là môi trường smoke/local p
 
 PostgreSQL 18 đổi volume chính thức sang `/var/lib/postgresql`; Compose dùng đúng mount này thay vì đường dẫn cũ `/var/lib/postgresql/data` ([official image documentation](https://github.com/docker-library/docs/blob/master/postgres/README.md#pgdata)).
 
-Compose chỉ khởi tạo `001_create_schema.sql` rồi `002_auth_sessions.sql` khi PostgreSQL volume hoàn toàn mới. API **không tự migrate khi startup**.
+Compose dùng service one-shot `migrator` chạy CLI `--migrate-database` trước API. API phụ thuộc `service_completed_successfully` và tự validation fail-fast lần nữa trước khi nhận traffic. Cơ chế này hoạt động cho cả database trống lẫn volume đã tồn tại; không còn phụ thuộc `/docker-entrypoint-initdb.d`.
 
 ## Chạy smoke stack local
 
@@ -77,19 +77,28 @@ Startup fail-fast nếu thiếu `ConnectionStrings:StoreDb`. Data Protection key
 
 ## Migration/release order
 
-Hiện schema dùng numbered SQL, chưa có EF migration history. Vì vậy release production phải theo thứ tự:
+Schema dùng numbered SQL và history `public.schema_migrations`. Quy trình release production:
 
-1. Backup và kiểm tra khả năng đọc archive.
-2. Review SQL trên bản sao dữ liệu; ghi SHA-256 artifact trong change ticket.
-3. Dừng mutation hoặc dùng maintenance window nếu migration không backward-compatible.
-4. Áp script theo số tăng dần bằng `psql -v ON_ERROR_STOP=1`; `001` chỉ cho database mới, `002` có thể chạy lại.
-5. Kiểm tra schema/constraints, chạy `/health/ready` và smoke read-only.
-6. Deploy API rồi FE; theo dõi error rate, latency, readiness và log correlation.
-7. Rollback application chỉ khi schema còn backward-compatible; database recovery dùng restore/PITR, không tự ý chạy SQL đảo chiều.
+1. Backup và kiểm tra khả năng đọc archive/PITR.
+2. Review migration mới trên bản sao dữ liệu, đặc biệt lock duration và backward compatibility.
+3. Chạy artifact API ở chế độ one-shot: `dotnet HighConcurrencyCommerce.Api.dll --migrate-database` bằng credential có quyền DDL.
+4. Chỉ rollout API khi migrator exit `0`; startup validation sẽ chặn thiếu migration, checksum drift hoặc downgrade binary.
+5. Chạy `/health/ready`, smoke read-only rồi mở mutation/traffic.
+6. Deploy FE; theo dõi error rate, latency, readiness và correlation logs.
 
-Mọi thay đổi schema sau T30 phải có script số mới, forward/rollback notes và integration fixture tương ứng. Tuyệt đối không gọi `EnsureCreated`, không auto-migrate trong startup và không chạy baseline lên database đã có schema `store`.
+Trong Compose, `docker compose up -d --build` tự thực hiện đúng thứ tự `db -> migrator -> api -> web`. Có thể xem kết quả bằng:
+
+```powershell
+docker compose ps -a
+docker compose logs migrator
+docker compose exec db psql -U $env:POSTGRES_USER -d $env:POSTGRES_DB -c "SELECT * FROM public.schema_migrations ORDER BY version"
+```
+
+Migration đã được ghi history là bất biến; sửa file cũ sẽ làm checksum guard từ chối startup. Mọi thay đổi schema mới phải có script số mới, forward/recovery notes và integration test. Rollback application chỉ khi schema còn backward-compatible; rollback database dùng restore/PITR hoặc migration forward sửa lỗi, không tự động chạy down script. Xem [ADR 0007](../adr/0007-versioned-database-migration-runner.md).
 
 ## Graceful shutdown và scale
 
 API có shutdown timeout 30 giây. Orchestrator nên ngừng route traffic khi readiness fail, chờ tối thiểu 30 giây trước khi kill. Rate limiter hiện in-memory theo instance; khi scale ngang, giới hạn là per-replica. `CodExpiryWorker` có database locking/exactly-once guard nhưng cần theo dõi contention. Chưa tuyên bố HA/RPS/p95 cho đến khi có benchmark riêng.
+
+`ProductAlertEvaluationWorker` và `CommerceEmailDeliveryWorker` dùng short lease PostgreSQL, hỗ trợ nhiều replica bằng `FOR UPDATE SKIP LOCKED`. Khi shutdown, worker cố giải phóng lease trong tối đa 5 giây; lease quá 5 phút được replica khác reclaim. Theo dõi backlog, retry/discard và xử lý sự cố theo [Wishlist Product Alerts runbook](wishlist-product-alerts.md); không sửa queue/outbox thủ công trong quy trình rollout.
 

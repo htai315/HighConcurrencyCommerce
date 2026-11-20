@@ -16,7 +16,7 @@ const notification = { id: 'note', type: 'ORDER_CREATED', title: 'Đã tiếp nh
 const inventory = { skuId: sku.id, skuCode: sku.skuCode, optionLabel: sku.optionLabel, productId: product.id, productTitle: product.title, physicalQty: 15, availableQty: 10, reservedQty: 3, allocatedQty: 2, skuStatus: 'ACTIVE', publicationStatus: 'DRAFT' }
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 try {
-  for (const [device, viewport] of [['desktop', { width: 1440, height: 1000 }], ['tablet', { width: 820, height: 1180 }], ['mobile', { width: 390, height: 844 }]]) {
+  for (const [device, viewport] of [['desktop', { width: 1440, height: 1000 }], ['tablet', { width: 820, height: 1180 }], ['mobile', { width: 390, height: 844 }], ['small', { width: 320, height: 740 }]]) {
     const context = await browser.newContext({ viewport, reducedMotion: 'reduce' })
     const page = await context.newPage()
     let role = 'CUSTOMER'
@@ -58,17 +58,33 @@ try {
     }
     for (const [path, name] of [['/products/product', 'product-detail'], ['/cart', 'cart'], ['/account', 'account'], ['/account/security', 'security'], ['/orders', 'orders'], ['/notifications', 'notifications']]) {
       await page.goto(base + path)
+      await expect(page.locator('.cart-count')).toHaveText('1')
       if (device === 'mobile' && name === 'product-detail') {
         await page.getByRole('button', { name: 'Tài khoản của bạn', exact: true }).click()
         await expect(page.getByRole('button', { name: 'Đăng xuất', exact: true })).toBeVisible()
         await page.keyboard.press('Escape')
         await expect(page.getByRole('button', { name: 'Đăng xuất', exact: true })).toBeHidden()
       }
-      if (name === 'orders') await page.getByRole('button', { name: 'Xem chi tiết đơn' }).click()
+      if (name === 'orders') {
+        await page.getByRole('button', { name: 'Xem chi tiết đơn' }).click()
+        await page.locator('.order-cancel-box summary').click()
+        await page.getByLabel('Lý do hủy đơn COD').fill('Kiểm tra giao diện hủy đơn')
+        await page.getByRole('button', { name: 'Hủy đơn', exact: true }).click()
+        await expect(page.getByRole('dialog')).toBeVisible()
+        await expect(page.getByRole('button', { name: 'Quay lại', exact: true })).toBeFocused()
+        await page.keyboard.press('Shift+Tab')
+        await expect(page.getByRole('button', { name: 'Xác nhận hủy đơn' })).toBeFocused()
+        await page.keyboard.press('Escape')
+        await expect(page.getByRole('dialog')).toHaveCount(0)
+        await expect(page.getByRole('button', { name: 'Hủy đơn', exact: true })).toBeFocused()
+      }
       if (name === 'account') await page.getByRole('button', { name: 'Sửa', exact: true }).click()
       if (name === 'notifications') {
         await page.getByRole('button', { name: 'Đánh dấu đã đọc' }).click()
         await expect(page.getByText('Đã đọc', { exact: true })).toBeVisible()
+        await page.getByRole('checkbox', { name: /Chỉ hiện thông báo chưa đọc/ }).check()
+        await expect(page.getByText('Bạn đã đọc hết thông báo trong danh sách này.')).toBeVisible()
+        await page.getByRole('checkbox', { name: /Chỉ hiện thông báo chưa đọc/ }).uncheck()
       }
       await capture(name)
     }
@@ -77,18 +93,37 @@ try {
     empty = false
     role = 'STAFF'
     await page.goto(base + '/staff')
+    await page.getByRole('combobox', { name: 'Tìm sản phẩm' }).fill('no-match-visual')
+    await expect(page.getByText('Không có sản phẩm phù hợp. Hãy thử tên hoặc mã SKU khác.')).toBeVisible()
+    await page.getByRole('combobox', { name: 'Tìm sản phẩm' }).fill('')
     await capture('staff-products')
     for (const [label, name] of [['Vận hành Kho', 'inventory'], ['Đơn COD', 'cod'], ['Tác vụ', 'tasks']]) {
       await page.locator('.dashboard-tabs button').filter({ hasText: label }).click()
       await page.waitForLoadState('networkidle')
+      const section = new URL(page.url()).searchParams.get('section')
+      expect(section).toBeTruthy()
+      await page.reload()
+      await expect(page.locator('.dashboard-tabs button.active')).toContainText(label)
+      if (name === 'inventory') {
+        await page.locator('#stock-in-form summary').click()
+        const receipt = await page.locator('#stock-source-id').inputValue()
+        await page.locator('#stock-in-form summary').click()
+        await page.locator('#stock-in-form summary').click()
+        expect(await page.locator('#stock-source-id').inputValue()).toBe(receipt)
+      }
       await capture(`staff-${name}`)
     }
     role = 'ADMIN'
     await page.goto(base + '/admin')
+    await page.getByRole('button', { name: 'Công bố sản phẩm', exact: true }).click()
+    await expect(page.getByRole('dialog')).toContainText(product.title)
+    await page.keyboard.press('Escape')
     await capture('admin-products')
     for (const [label, name] of [['Duyệt giảm tồn', 'adjustments'], ['Báo cáo', 'reports'], ['Flash Sale', 'flash-sale']]) {
       await page.getByRole('tab', { name: new RegExp(label) }).click()
       await page.waitForLoadState('networkidle')
+      await page.reload()
+      await expect(page.getByRole('tab', { name: new RegExp(label) })).toHaveAttribute('aria-selected', 'true')
       if (name === 'flash-sale') await page.getByRole('button', { name: '+ Tạo chiến dịch mới', exact: true }).click()
       await capture(`admin-${name}`)
     }

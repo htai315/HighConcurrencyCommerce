@@ -13,6 +13,8 @@ public partial class PaymentReconciliationCase
 
     public Guid PaymentId { get; set; }
 
+    public Guid? TransactionId { get; set; }
+
     public string Reason { get; set; } = null!;
 
     public string CaseStatus { get; set; } = null!;
@@ -23,7 +25,17 @@ public partial class PaymentReconciliationCase
 
     public string? Note { get; set; }
 
+    public Guid? AssignedTo { get; set; }
+
+    public DateTime? AssignedAt { get; set; }
+
     public virtual Payment Payment { get; set; } = null!;
 
+    public virtual PaymentTransaction? Transaction { get; set; }
+
+    public virtual ManualRefund? ManualRefund { get; set; }
+
     public virtual UserAccount? ResolvedByNavigation { get; set; }
+
+    public virtual UserAccount? AssignedToNavigation { get; set; }
 }

@@ -49,4 +49,6 @@ public sealed record InventoryBalanceSnapshotDto(
     int AvailableQty,
     int ReservedQty,
     int AllocatedQty,
+    int QuarantinedQty,
+    int DamagedQty,
     long Revision);

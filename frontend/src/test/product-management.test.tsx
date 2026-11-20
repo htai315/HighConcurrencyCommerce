@@ -29,11 +29,13 @@ test('Staff: tạo sản phẩm nháp mới, thêm SKU và thêm ảnh media', a
     title: 'Vợt Cầu Lông Yonex Nanoflare 1000Z',
     description: 'Vợt trợ lực cao cấp',
     categoryId: null,
+    brandId: null,
     publicationStatus: 'DRAFT',
     createdAt: '2026-10-30T10:00:00Z',
     publishedAt: null,
     skus: [],
     images: [],
+    specifications: [],
   }
 
   let productState: ManagedProduct = { ...createdProduct }
@@ -67,16 +69,19 @@ test('Staff: tạo sản phẩm nháp mới, thêm SKU và thêm ảnh media', a
       }
       return HttpResponse.json(newSku, { status: 201 })
     }),
-    http.post(`${staffApi}/products/:id/images`, async ({ request }) => {
-      const body = (await request.json()) as { fileKey: string; altText?: string; displayOrder: number }
+    http.post(`${staffApi}/products/:id/images/upload`, async ({ request }) => {
+      const body = await request.formData()
+      const file = body.get('file') as File
       const newImg = {
         id: 'img-1',
         productId: productState.id,
-        fileKey: body.fileKey,
-        altText: body.altText ?? null,
-        displayOrder: body.displayOrder,
+        fileKey: '/api/v1/media/products/prod-new-1/uploaded.webp',
+        altText: body.get('altText')?.toString() ?? null,
+        displayOrder: Number(body.get('displayOrder') ?? 0),
         imageStatus: 'ACTIVE',
       }
+      expect(file.type).toBe('image/webp')
+      expect(file.size).toBeGreaterThan(0)
       productState = {
         ...productState,
         images: [...productState.images, newImg as never],
@@ -108,16 +113,18 @@ test('Staff: tạo sản phẩm nháp mới, thêm SKU và thêm ảnh media', a
   expect(await screen.findByText('NF1000Z-4UG5')).toBeVisible()
 
   // 3. Thêm ảnh mới
-  await user.type(screen.getByLabelText(/File Key \/ Đường dẫn ảnh/i), 'images/nf1000z-main.webp')
-  await user.type(screen.getByLabelText(/Mô tả ảnh \(Alt text\)/i), 'Mặt trước vợt Nanoflare')
-  await user.click(screen.getByRole('button', { name: /\+ Thêm ảnh/i }))
+  const imageFile = new File([new Uint8Array([82, 73, 70, 70, 0, 0, 0, 0, 87, 69, 66, 80])], 'nf1000z-main.webp', { type: 'image/webp' })
+  await user.upload(screen.getByLabelText(/Kéo ảnh vào đây/i), imageFile)
+  await user.type(screen.getByLabelText(/Alt text chung/i), 'Mặt trước vợt Nanoflare')
+  await user.click(screen.getByRole('button', { name: /Upload 1 ảnh/i }))
 
-  expect(await screen.findByText(/Thêm ảnh thành công/i)).toBeVisible()
-  expect(await screen.findByText('images/nf1000z-main.webp')).toBeVisible()
+  expect(await screen.findByText(/Đã upload 1 ảnh thành công/i)).toBeVisible()
+  expect(await screen.findByText('/api/v1/media/products/prod-new-1/uploaded.webp')).toBeVisible()
 
   // 4. Xóa ảnh
   const deleteBtn = await screen.findByRole('button', { name: /Xóa ảnh/i })
   await user.click(deleteBtn)
+  await user.click(screen.getByRole('button', { name: 'Xác nhận xóa' }))
   expect(await screen.findByText(/Xóa ảnh thành công/i)).toBeVisible()
 })
 
@@ -127,6 +134,7 @@ test('Admin: xem sản phẩm, định giá biến thể SKU và Publish sản p
     title: 'Vợt Victor Thruster Ryuga II',
     description: 'Vợt tấn công chuyên nghiệp',
     categoryId: null,
+      brandId: null,
     publicationStatus: 'DRAFT',
     createdAt: '2026-10-30T10:00:00Z',
     publishedAt: null,
@@ -141,6 +149,7 @@ test('Admin: xem sản phẩm, định giá biến thể SKU và Publish sản p
       },
     ],
     images: [],
+      specifications: [],
   }
 
   server.use(
@@ -177,7 +186,7 @@ test('Admin: xem sản phẩm, định giá biến thể SKU và Publish sản p
   expect(screen.getByRole('heading', { name: 'Vợt Victor Thruster Ryuga II', level: 2 })).toBeVisible()
 
   // Nút publish lúc đầu bị disable do SKU có regularPrice = 0
-  const publishBtn = screen.getByRole('button', { name: /Duyệt & Công bố lên Storefront/i })
+  const publishBtn = screen.getByRole('button', { name: 'Công bố sản phẩm' })
   expect(publishBtn).toBeDisabled()
 
   // 2. Nhập giá mới cho SKU và lưu
@@ -195,7 +204,44 @@ test('Admin: xem sản phẩm, định giá biến thể SKU và Publish sản p
 
   // 4. Click Publish
   await user.click(publishBtn)
+  await user.click(screen.getByRole('button', { name: 'Xác nhận' }))
 
   expect(await screen.findByText(/Đã công bố sản phẩm thành công lên Catalog/i)).toBeVisible()
-  expect(screen.getByText(/Sản phẩm này đang hoạt động trên Catalog công khai/i)).toBeVisible()
+  expect(await screen.findByText(/Sản phẩm này đang hoạt động trên Catalog công khai/i)).toBeVisible()
+})
+
+test('Admin: tạm ngừng và mở bán lại sản phẩm với lý do vận hành', async () => {
+  let productState: ManagedProduct = {
+    id: 'prod-lifecycle-1', title: 'Vợt Yonex Lifecycle', description: 'Đang bán', categoryId: null, brandId: null,
+    publicationStatus: 'PUBLISHED', createdAt: '2026-11-06T10:00:00Z', publishedAt: '2026-11-06T11:00:00Z',
+    statusChangedAt: '2026-11-06T11:00:00Z', statusChangedBy: 'admin-1', statusReason: null,
+    skus: [{ id: 'sku-life-1', productId: 'prod-lifecycle-1', skuCode: 'LIFE-1', optionLabel: '4U/G5', regularPrice: 1_500_000, skuStatus: 'ACTIVE' }], images: [], specifications: [],
+  }
+  server.use(
+    http.get(`${authApi}/me`, () => HttpResponse.json(adminUser)),
+    http.get(`${authApi}/csrf`, () => HttpResponse.json({ requestToken: 'csrf-token' })),
+    http.get(`${adminApi}/products`, () => HttpResponse.json([productState])),
+    http.post(`${adminApi}/products/:id/suspend`, async ({ request }) => {
+      const body = (await request.json()) as { reason: string }
+      productState = { ...productState, publicationStatus: 'SUSPENDED', statusReason: body.reason, statusChangedAt: '2026-11-06T12:00:00Z' }
+      return HttpResponse.json({ productId: productState.id, publicationStatus: productState.publicationStatus, statusChangedAt: productState.statusChangedAt, statusChangedBy: 'admin-1', statusReason: productState.statusReason })
+    }),
+    http.post(`${adminApi}/products/:id/resume`, () => {
+      productState = { ...productState, publicationStatus: 'PUBLISHED', statusReason: null, statusChangedAt: '2026-11-06T12:05:00Z' }
+      return HttpResponse.json({ productId: productState.id, publicationStatus: productState.publicationStatus, statusChangedAt: productState.statusChangedAt, statusChangedBy: 'admin-1', statusReason: null })
+    }),
+  )
+
+  const user = userEvent.setup()
+  open('/admin')
+  expect(await screen.findByRole('heading', { name: 'Vợt Yonex Lifecycle', level: 2 })).toBeVisible()
+  await user.type(screen.getByLabelText('Lý do tạm ngừng'), 'Kiểm tra chất lượng lô hàng')
+  await user.click(screen.getByRole('button', { name: 'Tạm ngừng bán' }))
+  await user.click(screen.getByRole('button', { name: 'Xác nhận' }))
+  expect(await screen.findByText(/Đã chuyển sản phẩm sang SUSPENDED/i)).toBeVisible()
+  expect(await screen.findByText(/Sản phẩm đang tạm ngừng bán/i)).toBeVisible()
+
+  await user.click(screen.getByRole('button', { name: 'Mở bán lại' }))
+  await user.click(screen.getByRole('button', { name: 'Xác nhận' }))
+  expect(await screen.findByText(/Đã chuyển sản phẩm sang PUBLISHED/i)).toBeVisible()
 })

@@ -54,8 +54,8 @@ public sealed class InventoryTests(CatalogFixture fixture) : IClassFixture<Catal
             var hash = hasher.HashPassword(new object(), Password);
 
             await using var insertCmd = new NpgsqlCommand(
-                "INSERT INTO store.user_accounts (id, role_id, email, password_hash, full_name, account_status) " +
-                "VALUES (@userId, @roleId, @email, @hash, @fullName, 'ACTIVE')", db);
+                "INSERT INTO store.user_accounts (id, role_id, email, password_hash, full_name, account_status, email_verified_at) " +
+                "VALUES (@userId, @roleId, @email, @hash, @fullName, 'ACTIVE', now())", db);
             insertCmd.Parameters.AddWithValue("userId", userId);
             insertCmd.Parameters.AddWithValue("roleId", roleId);
             insertCmd.Parameters.AddWithValue("email", email);
@@ -76,6 +76,7 @@ public sealed class InventoryTests(CatalogFixture fixture) : IClassFixture<Catal
         var email = Email("cust");
         using var reg = await Send(client, "auth/register", new { email, password = Password, confirmPassword = Password, fullName = "Customer" });
         Assert.Equal(HttpStatusCode.Accepted, reg.StatusCode);
+        await fixture.VerifyUserAsync(email);
         using var login = await Send(client, "auth/login", new { email, password = Password });
         Assert.Equal(HttpStatusCode.OK, login.StatusCode);
         return client;
@@ -141,6 +142,7 @@ public sealed class InventoryTests(CatalogFixture fixture) : IClassFixture<Catal
             productSkuId = skuId,
             quantity = 25,
             sourceType = "PURCHASE_RECEIPT",
+            sourceId = Guid.NewGuid(),
             note = "Nhập hàng từ kho tổng"
         };
 
@@ -180,18 +182,72 @@ public sealed class InventoryTests(CatalogFixture fixture) : IClassFixture<Catal
         var skuId = Guid.Parse("30000000-0000-0000-0000-000000000001");
 
         // Zero or negative quantity -> 400 Bad Request
-        using var resZero = await Send(staff, "staff/inventory/stock-in", new { productSkuId = skuId, quantity = 0 });
+        using var resZero = await Send(staff, "staff/inventory/stock-in", new { productSkuId = skuId, quantity = 0, sourceId = Guid.NewGuid() });
         Assert.Equal(HttpStatusCode.BadRequest, resZero.StatusCode);
 
-        using var resNeg = await Send(staff, "staff/inventory/stock-in", new { productSkuId = skuId, quantity = -5 });
+        using var resNeg = await Send(staff, "staff/inventory/stock-in", new { productSkuId = skuId, quantity = -5, sourceId = Guid.NewGuid() });
         Assert.Equal(HttpStatusCode.BadRequest, resNeg.StatusCode);
 
         // Missing SKU -> 404 Not Found
         var missingSkuId = Guid.NewGuid();
-        using var resMissing = await Send(staff, "staff/inventory/stock-in", new { productSkuId = missingSkuId, quantity = 10 });
+        using var resMissing = await Send(staff, "staff/inventory/stock-in", new { productSkuId = missingSkuId, quantity = 10, sourceId = Guid.NewGuid() });
         Assert.Equal(HttpStatusCode.NotFound, resMissing.StatusCode);
         var err = await resMissing.Content.ReadFromJsonAsync<JsonElement>();
         Assert.Equal("NOT_FOUND", err.GetProperty("code").GetString());
+
+        using var missingSource = await Send(staff, "staff/inventory/stock-in", new { productSkuId = skuId, quantity = 10 });
+        Assert.Equal(HttpStatusCode.BadRequest, missingSource.StatusCode);
+
+        using var emptySource = await Send(staff, "staff/inventory/stock-in", new { productSkuId = skuId, quantity = 10, sourceId = Guid.Empty });
+        Assert.Equal(HttpStatusCode.BadRequest, emptySource.StatusCode);
+        var emptySourceError = await emptySource.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal("INVALID_ARGUMENT", emptySourceError.GetProperty("code").GetString());
+    }
+
+    [Fact]
+    public async Task Stock_in_rejects_integer_overflow_without_mutating_inventory()
+    {
+        var (staff, _) = await CreateStaffClient(fixture, "staff_overflow_inv");
+        var skuId = Guid.Parse("30000000-0000-0000-0000-000000000001");
+
+        await using var db = await fixture.OpenDatabaseAsync();
+        await using var seed = new NpgsqlCommand(
+            "UPDATE store.inventory_balances SET physical_qty=@qty, available_qty=@qty, reserved_qty=0, allocated_qty=0, quarantined_qty=0, damaged_qty=0 WHERE product_sku_id=@skuId",
+            db);
+        seed.Parameters.AddWithValue("qty", int.MaxValue - 5);
+        seed.Parameters.AddWithValue("skuId", skuId);
+        await seed.ExecuteNonQueryAsync();
+
+        try
+        {
+            using var response = await Send(staff, "staff/inventory/stock-in", new
+            {
+                productSkuId = skuId,
+                quantity = 10,
+                sourceId = Guid.NewGuid(),
+            });
+
+            Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+            var error = await response.Content.ReadFromJsonAsync<JsonElement>();
+            Assert.Equal("INVENTORY_LIMIT_EXCEEDED", error.GetProperty("code").GetString());
+
+            await using var verify = new NpgsqlCommand(
+                "SELECT physical_qty, available_qty FROM store.inventory_balances WHERE product_sku_id=@skuId",
+                db);
+            verify.Parameters.AddWithValue("skuId", skuId);
+            await using var reader = await verify.ExecuteReaderAsync();
+            Assert.True(await reader.ReadAsync());
+            Assert.Equal(int.MaxValue - 5, reader.GetInt32(0));
+            Assert.Equal(int.MaxValue - 5, reader.GetInt32(1));
+        }
+        finally
+        {
+            await using var restore = new NpgsqlCommand(
+                "UPDATE store.inventory_balances SET physical_qty=10, available_qty=0, reserved_qty=5, allocated_qty=5, quarantined_qty=0, damaged_qty=0 WHERE product_sku_id=@skuId",
+                db);
+            restore.Parameters.AddWithValue("skuId", skuId);
+            await restore.ExecuteNonQueryAsync();
+        }
     }
 
     [Fact]

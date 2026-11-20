@@ -1,5 +1,7 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Npgsql;
@@ -32,6 +34,7 @@ public sealed class FulfillmentTests(CatalogFixture fixture) : IClassFixture<Cat
         var client = fixture.CreateClient();
         using var register = await Send(client, "auth/register", new { email, password = Password, confirmPassword = Password, fullName = "Fulfillment Customer" });
         Assert.Equal(HttpStatusCode.Accepted, register.StatusCode);
+        await fixture.VerifyUserAsync(email);
         using var login = await Send(client, "auth/login", new { email, password = Password });
         Assert.Equal(HttpStatusCode.OK, login.StatusCode);
         using var addressResponse = await Send(client, "account/addresses", new
@@ -55,7 +58,7 @@ public sealed class FulfillmentTests(CatalogFixture fixture) : IClassFixture<Cat
         var roleId = (Guid)(await role.ExecuteScalarAsync())!;
         var hash = new PasswordHasher<object>().HashPassword(new object(), Password);
         await using var insert = new NpgsqlCommand(
-            "INSERT INTO store.user_accounts(id,role_id,email,password_hash,full_name,account_status) VALUES(@id,@role,@email,@hash,@name,'ACTIVE')", db);
+            "INSERT INTO store.user_accounts(id,role_id,email,password_hash,full_name,account_status,email_verified_at) VALUES(@id,@role,@email,@hash,@name,'ACTIVE',now())", db);
         insert.Parameters.AddWithValue("id", id);
         insert.Parameters.AddWithValue("role", roleId);
         insert.Parameters.AddWithValue("email", email);
@@ -94,7 +97,7 @@ public sealed class FulfillmentTests(CatalogFixture fixture) : IClassFixture<Cat
         var sku = await CreateSku(customerId);
         using var checkout = await Send(customer, "checkouts", new
         {
-            shippingAddressId = addressId, paymentMethod = "COD",
+            shippingAddressId = addressId, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee, paymentMethod = "COD",
             lines = new[] { new { productSkuId = sku, quantity, flashSaleOfferId = (Guid?)null } }
         }, "fulfillment-" + Guid.NewGuid().ToString("N"));
         Assert.Equal(HttpStatusCode.Created, checkout.StatusCode);
@@ -107,6 +110,41 @@ public sealed class FulfillmentTests(CatalogFixture fixture) : IClassFixture<Cat
         using var pack = await Send(staff, $"staff/shipments/{shipmentId}/pack");
         Assert.Equal(HttpStatusCode.OK, pack.StatusCode);
         return (orderId, shipmentId, sku);
+    }
+
+    private async Task<(Guid ConsignmentId, long Revision)> PrepareCarrierConsignment(
+        HttpClient admin, HttpClient staff, Guid shipmentId)
+    {
+        var code = "FC" + Guid.NewGuid().ToString("N")[..12].ToUpperInvariant();
+        using var createdCarrier = await Send(admin, "admin/carriers", new
+        {
+            code, name = "Fulfillment Carrier",
+            trackingUrlTemplate = "https://tracking.example.com/{trackingNumber}"
+        });
+        Assert.Equal(HttpStatusCode.Created, createdCarrier.StatusCode);
+        var carrierId = (await createdCarrier.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("id").GetGuid();
+        using var activated = await Send(admin, $"admin/carriers/{carrierId}/activate", new { expectedRevision = 1L });
+        Assert.Equal(HttpStatusCode.OK, activated.StatusCode);
+        using var created = await Send(staff, $"staff/carrier-consignments/sales-shipments/{shipmentId}", new
+        {
+            carrierId, trackingNumber = "FUL-" + Guid.NewGuid().ToString("N")[..16].ToUpperInvariant()
+        });
+        Assert.Equal(HttpStatusCode.Created, created.StatusCode);
+        var consignmentId = (await created.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("id").GetGuid();
+
+        using var request = new HttpRequestMessage(HttpMethod.Post,
+            $"/api/v1/staff/carrier-consignments/{consignmentId}/label");
+        var multipart = new MultipartFormDataContent();
+        var file = new ByteArrayContent(Encoding.ASCII.GetBytes("%PDF-1.7\nfulfillment label"));
+        file.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
+        multipart.Add(file, "file", "label.pdf");
+        multipart.Add(new StringContent("1"), "expectedRevision");
+        request.Content = multipart;
+        request.Headers.Add("X-CSRF-TOKEN", await Csrf(staff));
+        using var label = await staff.SendAsync(request);
+        Assert.Equal(HttpStatusCode.OK, label.StatusCode);
+        var revision = (await label.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("revision").GetInt64();
+        return (consignmentId, revision);
     }
 
     [Fact]
@@ -138,6 +176,11 @@ public sealed class FulfillmentTests(CatalogFixture fixture) : IClassFixture<Cat
             var body = await handover.Content.ReadFromJsonAsync<JsonElement>();
             Assert.Equal("SHIPPING", body.GetProperty("shipmentStatus").GetString());
             Assert.Equal("FULFILLING", body.GetProperty("orderStatus").GetString());
+            Assert.Equal(0m, body.GetProperty("shippingFee").GetDecimal());
+            Assert.Equal("TEST_FREE", body.GetProperty("shippingMethodCode").GetString());
+            Assert.Equal("Giao hàng test miễn phí", body.GetProperty("shippingMethodName").GetString());
+            Assert.Equal(1, body.GetProperty("shippingEstimatedMinDays").GetInt16());
+            Assert.Equal(3, body.GetProperty("shippingEstimatedMaxDays").GetInt16());
 
             await using var db = await fixture.OpenDatabaseAsync();
             await using var query = new NpgsqlCommand(
@@ -152,6 +195,111 @@ public sealed class FulfillmentTests(CatalogFixture fixture) : IClassFixture<Cat
             Assert.True(await reader.NextResultAsync()); Assert.True(await reader.ReadAsync()); Assert.Equal("CONSUMED", reader.GetString(0));
             Assert.True(await reader.NextResultAsync()); Assert.True(await reader.ReadAsync()); Assert.Equal(1L, reader.GetInt64(0));
             Assert.True(await reader.NextResultAsync()); Assert.True(await reader.ReadAsync()); Assert.Equal(1L, reader.GetInt64(0));
+        }
+    }
+
+    [Fact]
+    public async Task Legacy_and_carrier_handover_share_one_atomic_sales_transition()
+    {
+        var (customer, customerId, addressId) = await CreateCustomer();
+        var (staffA, _) = await CreateRoleClient("STAFF");
+        var (staffB, _) = await CreateRoleClient("STAFF");
+        var (admin, _) = await CreateRoleClient("ADMIN");
+        using (customer) using (staffA) using (staffB) using (admin)
+        {
+            var (orderId, shipmentId, skuId) = await PreparePackedShipment(customer, staffA, customerId, addressId);
+            var (consignmentId, revision) = await PrepareCarrierConsignment(admin, staffA, shipmentId);
+
+            var handovers = await Task.WhenAll(
+                Send(staffA, $"staff/shipments/{shipmentId}/handover"),
+                Send(staffB, $"staff/carrier-consignments/{consignmentId}/handover",
+                    new { expectedRevision = revision }));
+            Assert.All(handovers, response => Assert.Equal(HttpStatusCode.OK, response.StatusCode));
+            foreach (var response in handovers) response.Dispose();
+
+            await using (var db = await fixture.OpenDatabaseAsync())
+            await using (var check = new NpgsqlCommand("""
+                SELECT
+                  (SELECT count(*) FROM store.inventory_movements WHERE source_id=@order AND product_sku_id=@sku AND movement_type='STOCK_OUT'),
+                  (SELECT count(*) FROM store.delivery_attempts WHERE shipment_id=@shipment AND attempt_no=1),
+                  (SELECT count(*) FROM store.carrier_tracking_events WHERE consignment_id=@consignment AND event_type='HANDED_OVER'),
+                  (SELECT consignment_status FROM store.carrier_consignments WHERE id=@consignment)
+                """, db))
+            {
+                check.Parameters.AddWithValue("order", orderId);
+                check.Parameters.AddWithValue("sku", skuId);
+                check.Parameters.AddWithValue("shipment", shipmentId);
+                check.Parameters.AddWithValue("consignment", consignmentId);
+                await using var reader = await check.ExecuteReaderAsync();
+                Assert.True(await reader.ReadAsync());
+                Assert.Equal(1L, reader.GetInt64(0));
+                Assert.Equal(1L, reader.GetInt64(1));
+                Assert.Equal(1L, reader.GetInt64(2));
+                Assert.Equal("HANDED_OVER", reader.GetString(3));
+            }
+
+            using var delivered = await Send(staffA, $"staff/shipments/{shipmentId}/delivery-result", new
+            {
+                result = "DELIVERED", codCollectedAmount = 700000m,
+                collectionReference = "CARRIER-COD-" + Guid.NewGuid().ToString("N")[..8]
+            });
+            Assert.Equal(HttpStatusCode.OK, delivered.StatusCode);
+            await using var finalDb = await fixture.OpenDatabaseAsync();
+            await using var finalCheck = new NpgsqlCommand("""
+                SELECT consignment_status,delivered_at IS NOT NULL,
+                  (SELECT count(*) FROM store.carrier_tracking_events WHERE consignment_id=@id AND event_type='DELIVERED')
+                FROM store.carrier_consignments WHERE id=@id
+                """, finalDb);
+            finalCheck.Parameters.AddWithValue("id", consignmentId);
+            await using var finalReader = await finalCheck.ExecuteReaderAsync();
+            Assert.True(await finalReader.ReadAsync());
+            Assert.Equal("DELIVERED", finalReader.GetString(0));
+            Assert.True(finalReader.GetBoolean(1));
+            Assert.Equal(1L, finalReader.GetInt64(2));
+        }
+    }
+
+    [Fact]
+    public async Task Carrier_timeline_follows_failed_retry_and_return_stock_commands()
+    {
+        var (customer, customerId, addressId) = await CreateCustomer();
+        var (staff, _) = await CreateRoleClient("STAFF");
+        var (admin, _) = await CreateRoleClient("ADMIN");
+        using (customer) using (staff) using (admin)
+        {
+            var (_, shipmentId, _) = await PreparePackedShipment(customer, staff, customerId, addressId);
+            var (consignmentId, revision) = await PrepareCarrierConsignment(admin, staff, shipmentId);
+            using var handover = await Send(staff, $"staff/carrier-consignments/{consignmentId}/handover",
+                new { expectedRevision = revision });
+            Assert.Equal(HttpStatusCode.OK, handover.StatusCode);
+
+            using var failed = await Send(staff, $"staff/shipments/{shipmentId}/delivery-result",
+                new { result = "FAILED", failureReason = "Khách vắng mặt" });
+            Assert.Equal(HttpStatusCode.OK, failed.StatusCode);
+            using var retry = await Send(staff, $"staff/shipments/{shipmentId}/retry");
+            Assert.Equal(HttpStatusCode.OK, retry.StatusCode);
+            using var failedAgain = await Send(staff, $"staff/shipments/{shipmentId}/delivery-result",
+                new { result = "FAILED", failureReason = "Khách tiếp tục vắng mặt" });
+            Assert.Equal(HttpStatusCode.OK, failedAgain.StatusCode);
+            using var returned = await Send(staff, $"staff/shipments/{shipmentId}/return-stock",
+                new { receivedEvidence = "Phiếu nhận lại carrier T49" });
+            Assert.Equal(HttpStatusCode.OK, returned.StatusCode);
+
+            await using var db = await fixture.OpenDatabaseAsync();
+            await using var check = new NpgsqlCommand("""
+                SELECT consignment_status,
+                  (SELECT count(*) FROM store.carrier_tracking_events WHERE consignment_id=@id AND event_type='DELIVERY_FAILED'),
+                  (SELECT count(*) FROM store.carrier_tracking_events WHERE consignment_id=@id AND event_type='REDELIVERY_STARTED'),
+                  (SELECT count(*) FROM store.carrier_tracking_events WHERE consignment_id=@id AND event_type='RETURNED')
+                FROM store.carrier_consignments WHERE id=@id
+                """, db);
+            check.Parameters.AddWithValue("id", consignmentId);
+            await using var reader = await check.ExecuteReaderAsync();
+            Assert.True(await reader.ReadAsync());
+            Assert.Equal("RETURNED", reader.GetString(0));
+            Assert.Equal(2L, reader.GetInt64(1));
+            Assert.Equal(1L, reader.GetInt64(2));
+            Assert.Equal(1L, reader.GetInt64(3));
         }
     }
 

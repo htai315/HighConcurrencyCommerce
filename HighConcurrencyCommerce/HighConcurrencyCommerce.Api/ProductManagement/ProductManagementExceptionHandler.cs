@@ -13,6 +13,7 @@ public sealed class ProductManagementExceptionHandler : IExceptionHandler
         {
             "NOT_FOUND" => (404, failure.Message.Length > 0 ? failure.Message : "Không tìm thấy dữ liệu."),
             "CONFLICT" => (409, failure.Message.Length > 0 ? failure.Message : "Dữ liệu bị trùng lặp."),
+            "PRICE_CONFLICT_WITH_FLASH_SALE" => (409, failure.Message.Length > 0 ? failure.Message : "Xung đột giá với chiến dịch Flash Sale."),
             "INVALID_STATE" => (400, failure.Message.Length > 0 ? failure.Message : "Trạng thái sản phẩm không hợp lệ."),
             "CANNOT_PUBLISH" => (400, failure.Message.Length > 0 ? failure.Message : "Không thể công bố sản phẩm."),
             _ => (400, failure.Message.Length > 0 ? failure.Message : "Yêu cầu không hợp lệ.")

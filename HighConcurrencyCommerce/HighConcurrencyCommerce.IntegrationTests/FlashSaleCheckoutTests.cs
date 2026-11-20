@@ -48,7 +48,7 @@ public sealed class FlashSaleCheckoutTests(CatalogFixture fixture) : IClassFixtu
         var roleId = (Guid)(await role.ExecuteScalarAsync())!;
         var hash = new PasswordHasher<object>().HashPassword(new object(), Password);
         await using var insert = new NpgsqlCommand(
-            "INSERT INTO store.user_accounts(id,role_id,email,password_hash,full_name,account_status) VALUES(@id,@role,@email,@hash,@name,'ACTIVE')", db);
+            "INSERT INTO store.user_accounts(id,role_id,email,password_hash,full_name,account_status,email_verified_at) VALUES(@id,@role,@email,@hash,@name,'ACTIVE',now())", db);
         insert.Parameters.AddWithValue("id", id);
         insert.Parameters.AddWithValue("role", roleId);
         insert.Parameters.AddWithValue("email", email);
@@ -167,7 +167,7 @@ public sealed class FlashSaleCheckoutTests(CatalogFixture fixture) : IClassFixtu
             var key = Guid.NewGuid().ToString("N");
             using var checkoutRes = await Send(customer, "checkouts", new
             {
-                shippingAddressId = addressId,
+                shippingAddressId = addressId, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee,
                 paymentMethod = "COD",
                 lines = new[]
                 {
@@ -209,7 +209,7 @@ public sealed class FlashSaleCheckoutTests(CatalogFixture fixture) : IClassFixtu
             // Replay cùng Idempotency-Key trả 200 OK
             using var replayRes = await Send(customer, "checkouts", new
             {
-                shippingAddressId = addressId,
+                shippingAddressId = addressId, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee,
                 paymentMethod = "COD",
                 lines = new[]
                 {
@@ -238,7 +238,7 @@ public sealed class FlashSaleCheckoutTests(CatalogFixture fixture) : IClassFixtu
             // Cust1 mua 2 suất -> thành công (còn 1 suất)
             using var res1 = await Send(cust1, "checkouts", new
             {
-                shippingAddressId = addr1,
+                shippingAddressId = addr1, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee,
                 paymentMethod = "COD",
                 lines = new[] { new { productSkuId = skuId, quantity = 2, flashSaleOfferId = (Guid?)offerId } }
             }, idempotencyKey: Guid.NewGuid().ToString("N"));
@@ -247,7 +247,7 @@ public sealed class FlashSaleCheckoutTests(CatalogFixture fixture) : IClassFixtu
             // Cust2 muốn mua 2 suất -> chỉ còn 1 suất -> nhận 409 FLASH_SALE_QUOTA_EXCEEDED
             using var res2 = await Send(cust2, "checkouts", new
             {
-                shippingAddressId = addr2,
+                shippingAddressId = addr2, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee,
                 paymentMethod = "COD",
                 lines = new[] { new { productSkuId = skuId, quantity = 2, flashSaleOfferId = (Guid?)offerId } }
             }, idempotencyKey: Guid.NewGuid().ToString("N"));
@@ -273,7 +273,7 @@ public sealed class FlashSaleCheckoutTests(CatalogFixture fixture) : IClassFixtu
             // Đơn 1: Mua 2 suất -> thành công
             using var res1 = await Send(customer, "checkouts", new
             {
-                shippingAddressId = addressId,
+                shippingAddressId = addressId, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee,
                 paymentMethod = "COD",
                 lines = new[] { new { productSkuId = skuId, quantity = 2, flashSaleOfferId = (Guid?)offerId } }
             }, idempotencyKey: Guid.NewGuid().ToString("N"));
@@ -282,7 +282,7 @@ public sealed class FlashSaleCheckoutTests(CatalogFixture fixture) : IClassFixtu
             // Đơn 2: Cố mua thêm 1 suất nữa -> nhận 409 FLASH_SALE_CUSTOMER_LIMIT_EXCEEDED
             using var res2 = await Send(customer, "checkouts", new
             {
-                shippingAddressId = addressId,
+                shippingAddressId = addressId, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee,
                 paymentMethod = "COD",
                 lines = new[] { new { productSkuId = skuId, quantity = 1, flashSaleOfferId = (Guid?)offerId } }
             }, idempotencyKey: Guid.NewGuid().ToString("N"));
@@ -310,7 +310,7 @@ public sealed class FlashSaleCheckoutTests(CatalogFixture fixture) : IClassFixtu
             // Customer checkout ưu đãi này -> 409 FLASH_SALE_CAMPAIGN_NOT_ACTIVE
             using var checkoutRes = await Send(customer, "checkouts", new
             {
-                shippingAddressId = addressId,
+                shippingAddressId = addressId, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee,
                 paymentMethod = "COD",
                 lines = new[] { new { productSkuId = skuId, quantity = 1, flashSaleOfferId = (Guid?)offerId } }
             }, idempotencyKey: Guid.NewGuid().ToString("N"));
@@ -339,7 +339,7 @@ public sealed class FlashSaleCheckoutTests(CatalogFixture fixture) : IClassFixtu
             // 1. Cust1 checkout 2 suất -> HELD (QuotaHeld = 2, QuotaSold = 0)
             using var coRes1 = await Send(cust1, "checkouts", new
             {
-                shippingAddressId = addr1,
+                shippingAddressId = addr1, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee,
                 paymentMethod = "COD",
                 lines = new[] { new { productSkuId = skuId, quantity = 2, flashSaleOfferId = (Guid?)offerId } }
             }, idempotencyKey: Guid.NewGuid().ToString("N"));
@@ -363,7 +363,7 @@ public sealed class FlashSaleCheckoutTests(CatalogFixture fixture) : IClassFixtu
             // 2. Cust2 checkout 3 suất -> HELD (QuotaHeld = 3, QuotaSold = 2)
             using var coRes2 = await Send(cust2, "checkouts", new
             {
-                shippingAddressId = addr2,
+                shippingAddressId = addr2, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee,
                 paymentMethod = "COD",
                 lines = new[] { new { productSkuId = skuId, quantity = 3, flashSaleOfferId = (Guid?)offerId } }
             }, idempotencyKey: Guid.NewGuid().ToString("N"));
@@ -423,7 +423,7 @@ public sealed class FlashSaleCheckoutTests(CatalogFixture fixture) : IClassFixtu
                 await startGate.Task;
                 return await Send(c.Client, "checkouts", new
                 {
-                    shippingAddressId = c.AddressId,
+                    shippingAddressId = c.AddressId, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee,
                     paymentMethod = "COD",
                     lines = new[] { new { productSkuId = skuId, quantity = 1, flashSaleOfferId = (Guid?)offerId } }
                 }, idempotencyKey: Guid.NewGuid().ToString("N"));
@@ -489,7 +489,7 @@ public sealed class FlashSaleCheckoutTests(CatalogFixture fixture) : IClassFixtu
 
             using var response = await Send(customer, "checkouts", new
             {
-                shippingAddressId = addressId, paymentMethod = "COD",
+                shippingAddressId = addressId, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee, paymentMethod = "COD",
                 lines = new[] { new { productSkuId = skuId, quantity = 1, flashSaleOfferId = (Guid?)offerId } }
             }, idempotencyKey: Guid.NewGuid().ToString("N"));
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -516,7 +516,7 @@ public sealed class FlashSaleCheckoutTests(CatalogFixture fixture) : IClassFixtu
 
             var checkout = Send(customer, "checkouts", new
             {
-                shippingAddressId = addressId, paymentMethod = "COD",
+                shippingAddressId = addressId, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee, paymentMethod = "COD",
                 lines = new[] { new { productSkuId = skuId, quantity = 1, flashSaleOfferId = (Guid?)offerId } }
             }, idempotencyKey: Guid.NewGuid().ToString("N"));
             await Task.Delay(200);
@@ -543,7 +543,7 @@ public sealed class FlashSaleCheckoutTests(CatalogFixture fixture) : IClassFixtu
             var (_, offerId, skuId, _, _) = await SetupActiveFlashSale(admin, stock: 20, quota: 10, perCustomerLimit: 3);
             using var first = await Send(customer1, "checkouts", new
             {
-                shippingAddressId = address1, paymentMethod = "COD",
+                shippingAddressId = address1, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee, paymentMethod = "COD",
                 lines = new[] { new { productSkuId = skuId, quantity = 1, flashSaleOfferId = (Guid?)offerId } }
             }, idempotencyKey: Guid.NewGuid().ToString("N"));
             var orderId = (await first.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("orderId").GetGuid();
@@ -552,7 +552,7 @@ public sealed class FlashSaleCheckoutTests(CatalogFixture fixture) : IClassFixtu
             var confirm = Task.Run(async () => { await gate.Task; return await Send(staff, $"staff/orders/{orderId}/confirm-cod", null); });
             var checkout = Task.Run(async () => { await gate.Task; return await Send(customer2, "checkouts", new
             {
-                shippingAddressId = address2, paymentMethod = "COD",
+                shippingAddressId = address2, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee, paymentMethod = "COD",
                 lines = new[] { new { productSkuId = skuId, quantity = 1, flashSaleOfferId = (Guid?)offerId } }
             }, idempotencyKey: Guid.NewGuid().ToString("N")); });
             gate.SetResult();

@@ -20,7 +20,7 @@ public sealed class AdminBootstrap(StoreDbContext db, PasswordService passwords,
         var role = await db.Roles.SingleAsync(r => r.RoleKey == "ADMIN", ct);
         var now = clock.GetUtcNow().UtcDateTime;
         var user = new UserAccount { Id = Guid.NewGuid(), Email = request.Email, FullName = request.FullName.Trim(),
-            RoleId = role.Id, AccountStatus = "ACTIVE", CreatedAt = now, UpdatedAt = now };
+            RoleId = role.Id, AccountStatus = "ACTIVE", CreatedAt = now, UpdatedAt = now, EmailVerifiedAt = now };
         user.PasswordHash = passwords.Hash(user, request.Password);
         db.UserAccounts.Add(user);
         await db.SaveChangesAsync(ct);

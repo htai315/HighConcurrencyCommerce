@@ -1,0 +1,147 @@
+/* Discovery Sections (Related Products & Recently Viewed) */
+.discovery-section {
+  margin: 44px 0 24px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line, #e2e8f0);
+}
+
+.discovery-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.discovery-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #102b50;
+  letter-spacing: -0.3px;
+}
+
+.clear-recent-button {
+  background: none;
+  border: 1px solid transparent;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.clear-recent-button:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+  border-color: #cbd5e1;
+}
+
+.clear-recent-button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* Skeleton Loading */
+.discovery-skeleton-grid .skeleton-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #fff;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-box {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: discovery-shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+.skeleton-art {
+  width: 100%;
+  aspect-ratio: 1 / 1.08;
+  border-radius: 10px;
+}
+
+.skeleton-body {
+  padding: 14px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton-tag {
+  width: 35%;
+  height: 12px;
+}
+
+.skeleton-title {
+  width: 80%;
+  height: 18px;
+}
+
+.skeleton-price {
+  width: 45%;
+  height: 22px;
+  margin-top: 6px;
+}
+
+@keyframes discovery-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Error State */
+.discovery-error-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  font-size: 14px;
+}
+
+.discovery-error-box p {
+  margin: 0;
+}
+
+.discovery-error-box button {
+  flex-shrink: 0;
+}
+
+@media (max-width: 780px) {
+  .discovery-section {
+    margin: 32px 0 16px;
+    padding-top: 24px;
+  }
+
+  .discovery-header h2 {
+    font-size: 18px;
+  }
+
+  .clear-recent-button {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-box {
+    animation: none;
+    background: #e2e8f0;
+  }
+}
+

@@ -1,16 +1,44 @@
 using System.Security.Claims;
 using HighConcurrencyCommerce.Application.Account;
+using HighConcurrencyCommerce.Application.Auth;
+using HighConcurrencyCommerce.Api.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace HighConcurrencyCommerce.Api.Controllers;
 
 [ApiController]
 [Authorize(Policy = "Customer")]
 [Route("api/v1/account")]
-public sealed class AccountController(IAccountService accountService) : ControllerBase
+public sealed class AccountController(
+    IAccountService accountService,
+    IAuthService auth,
+    SessionCookie cookie,
+    ChallengeCookie challengeCookie) : ControllerBase
 {
     private Guid CustomerId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+    [HttpGet("auth-methods")]
+    public async Task<ActionResult<AuthMethodsResponse>> AuthMethods(CancellationToken ct) =>
+        Ok(await auth.GetAuthMethodsAsync(CustomerId, ct));
+
+    [HttpPost("auth-methods/google"), EnableRateLimiting("password")]
+    public async Task<IActionResult> LinkGoogle(LinkGoogleRequest request, CancellationToken ct)
+    {
+        var challengeToken = challengeCookie.Read(HttpContext) ?? "";
+        await auth.LinkGoogleAsync(CustomerId, request, challengeToken, HttpContext.TraceIdentifier, ct);
+        challengeCookie.Delete(HttpContext);
+        return NoContent();
+    }
+
+    [HttpDelete("auth-methods/google"), EnableRateLimiting("password")]
+    public async Task<IActionResult> UnlinkGoogle(UnlinkGoogleRequest request, CancellationToken ct)
+    {
+        await auth.UnlinkGoogleAsync(CustomerId, request, HttpContext.TraceIdentifier, ct);
+        cookie.Delete(HttpContext);
+        return NoContent();
+    }
 
     [HttpGet("profile")]
     public async Task<ActionResult<CustomerProfileDto>> Profile(CancellationToken ct) =>

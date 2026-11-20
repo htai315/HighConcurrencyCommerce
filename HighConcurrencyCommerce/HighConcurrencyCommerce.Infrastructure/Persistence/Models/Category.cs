@@ -13,6 +13,8 @@ public partial class Category
 
     public string Name { get; set; } = null!;
 
+    public string SearchNameNorm { get; private set; } = null!;
+
     public string Slug { get; set; } = null!;
 
     public bool IsVisible { get; set; }

@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "payos-contract-evidence-v1",
+  "observedDate": "2026-11-09",
+  "environment": "provider-test-channel",
+  "apiBaseHost": "api-merchant.payos.vn",
+  "request": {
+    "amount": 2000,
+    "description": "HCC T19 TEST",
+    "expiryMinutes": 15,
+    "signatureAlgorithm": "HMAC-SHA256",
+    "returnUrlHost": "localhost",
+    "cancelUrlHost": "localhost"
+  },
+  "invalidSignatureProbe": {
+    "providerCode": "20",
+    "description": "Thông tin truyền lên không đúng.",
+    "paymentLinkCreated": false
+  },
+  "create": {
+    "providerCode": "00",
+    "description": "success",
+    "status": "PENDING",
+    "returnedOrderCodeMatched": true,
+    "responseSignaturePresent": true,
+    "checkoutHost": "pay.payos.vn",
+    "qrCodePresent": true
+  },
+  "queryBeforeCancel": {
+    "providerCode": "00",
+    "status": "PENDING",
+    "amount": 2000,
+    "amountPaid": 0,
+    "amountRemaining": 2000,
+    "responseSignaturePresent": true
+  },
+  "cancel": {
+    "providerCode": "00",
+    "status": "CANCELLED",
+    "responseSignaturePresent": true
+  },
+  "queryAfterCancel": {
+    "providerCode": "00",
+    "status": "CANCELLED",
+    "cancellationReasonMatched": true,
+    "responseSignaturePresent": true
+  },
+  "sdkProbe": {
+    "package": "payOS",
+    "version": "2.1.0",
+    "targetFramework": "net10.0",
+    "buildWarnings": 0,
+    "buildErrors": 0,
+    "maxRetries": 0,
+    "queryStatus": "Cancelled",
+    "queryAmount": 2000
+  },
+  "redactions": [
+    "credentials",
+    "providerOrderCode",
+    "paymentLinkId",
+    "checkoutUrl",
+    "qrCode",
+    "responseSignature",
+    "bankAccountData"
+  ]
+}
+

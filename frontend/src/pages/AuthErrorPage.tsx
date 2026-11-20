@@ -5,7 +5,22 @@ export function AuthErrorPage() {
   const error = useRouteError()
   const revalidator = useRevalidator()
   const forbidden = error instanceof ApiError && error.status === 403
-  const isCart = useLocation().pathname.startsWith('/cart')
+  const pathname = useLocation().pathname
+  const context = pathname.startsWith('/cart')
+    ? ['Chưa thể tải giỏ hàng.', 'Đã xảy ra sự cố khi đồng bộ hoặc đọc giỏ hàng của bạn. Hãy thử tải lại.']
+    : pathname.startsWith('/wishlist')
+      ? ['Chưa thể tải danh sách yêu thích.', 'Danh sách yêu thích chưa thể đồng bộ. Hãy thử tải lại.']
+      : pathname.startsWith('/orders')
+        ? ['Chưa thể tải đơn hàng.', 'Lịch sử đơn hàng chưa thể đồng bộ. Hãy thử tải lại.']
+        : pathname.startsWith('/payment/payos')
+          ? ['Chưa thể xác minh thanh toán.', 'Trạng thái PayOS chưa thể đồng bộ. Đơn hàng của bạn vẫn được giữ an toàn.']
+          : pathname.startsWith('/admin') || pathname.startsWith('/staff')
+            ? ['Chưa thể tải không gian vận hành.', 'Dữ liệu quản trị chưa thể đồng bộ. Hãy thử tải lại.']
+            : pathname.startsWith('/account')
+              ? ['Chưa thể tải tài khoản.', 'Thông tin tài khoản chưa thể đồng bộ. Hãy thử tải lại.']
+              : pathname.startsWith('/notifications')
+                ? ['Chưa thể tải thông báo.', 'Thông báo chưa thể đồng bộ. Hãy thử tải lại.']
+                : ['Chưa thể kiểm tra phiên đăng nhập.', 'Kiểm tra kết nối và thử lại sau.']
   const correlationId = error instanceof ApiError ? error.correlationId : undefined
 
   return (
@@ -16,16 +31,12 @@ export function AuthErrorPage() {
           <h1>
             {forbidden
               ? 'Bạn không có quyền truy cập.'
-              : isCart
-              ? 'Chưa thể tải giỏ hàng.'
-              : 'Chưa thể kiểm tra phiên đăng nhập.'}
+              : context[0]}
           </h1>
           <p>
             {forbidden
               ? 'Hãy dùng tài khoản có quyền phù hợp.'
-              : isCart
-              ? 'Đã xảy ra sự cố khi đồng bộ hoặc đọc giỏ hàng của bạn. Hãy thử tải lại.'
-              : 'Kiểm tra kết nối và thử lại sau.'}
+              : context[1]}
           </p>
         </div>
 

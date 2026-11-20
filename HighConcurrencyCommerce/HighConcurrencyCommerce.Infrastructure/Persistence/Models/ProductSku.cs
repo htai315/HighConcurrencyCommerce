@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace HighConcurrencyCommerce.Infrastructure.Persistence.Models;
@@ -15,7 +15,11 @@ public partial class ProductSku
 
     public string SkuCode { get; set; } = null!;
 
+    public string SearchSkuNorm { get; private set; } = null!;
+
     public string OptionLabel { get; set; } = null!;
+
+    public string SearchOptionNorm { get; private set; } = null!;
 
     public decimal RegularPrice { get; set; }
 
@@ -36,4 +40,6 @@ public partial class ProductSku
     public virtual ICollection<SalesOrderItem> SalesOrderItems { get; set; } = new List<SalesOrderItem>();
 
     public virtual ICollection<StockReservationLine> StockReservationLines { get; set; } = new List<StockReservationLine>();
+
+    public virtual ICollection<OrderReturnRequestLine> ReturnRequestLines { get; set; } = new List<OrderReturnRequestLine>();
 }

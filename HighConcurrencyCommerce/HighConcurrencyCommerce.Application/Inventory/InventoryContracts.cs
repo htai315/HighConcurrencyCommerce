@@ -12,6 +12,8 @@ public sealed record SkuInventorySummaryDto(
     int AvailableQty,
     int ReservedQty,
     int AllocatedQty,
+    int QuarantinedQty,
+    int DamagedQty,
     string SkuStatus,
     string PublicationStatus);
 
@@ -38,6 +40,7 @@ public sealed class StockInRequest
     [StringLength(60, ErrorMessage = "Loại nguồn nhập kho tối đa 60 ký tự.")]
     public string? SourceType { get; set; }
 
+    [Required(ErrorMessage = "Mã phiếu nhập không được để trống.")]
     public Guid? SourceId { get; set; }
 
     [StringLength(500, ErrorMessage = "Ghi chú nhập kho tối đa 500 ký tự.")]
@@ -51,6 +54,8 @@ public sealed record StockInResultDto(
     int AvailableQty,
     int ReservedQty,
     int AllocatedQty,
+    int QuarantinedQty,
+    int DamagedQty,
     long Revision,
     Guid MovementId);
 

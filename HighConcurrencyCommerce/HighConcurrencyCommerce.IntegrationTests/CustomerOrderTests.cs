@@ -31,6 +31,7 @@ public sealed class CustomerOrderTests(CatalogFixture fixture) : IClassFixture<C
         var client = fixture.CreateClient();
         using var register = await Send(client, "auth/register", new { email, password = Password, confirmPassword = Password, fullName = "Order Customer" });
         Assert.Equal(HttpStatusCode.Accepted, register.StatusCode);
+        await fixture.VerifyUserAsync(email);
         using var login = await Send(client, "auth/login", new { email, password = Password });
         Assert.Equal(HttpStatusCode.OK, login.StatusCode);
         using var addressResponse = await Send(client, "account/addresses", new
@@ -53,7 +54,7 @@ public sealed class CustomerOrderTests(CatalogFixture fixture) : IClassFixture<C
         var roleId = (Guid)(await role.ExecuteScalarAsync())!;
         var hash = new PasswordHasher<object>().HashPassword(new object(), Password);
         await using var insert = new NpgsqlCommand(
-            "INSERT INTO store.user_accounts(id,role_id,email,password_hash,full_name,account_status) VALUES(gen_random_uuid(),@role,@email,@hash,'Order Staff','ACTIVE')", db);
+            "INSERT INTO store.user_accounts(id,role_id,email,password_hash,full_name,account_status,email_verified_at) VALUES(gen_random_uuid(),@role,@email,@hash,'Order Staff','ACTIVE',now())", db);
         insert.Parameters.AddWithValue("role", roleId); insert.Parameters.AddWithValue("email", email); insert.Parameters.AddWithValue("hash", hash);
         await insert.ExecuteNonQueryAsync();
         var client = fixture.CreateClient();
@@ -83,7 +84,7 @@ public sealed class CustomerOrderTests(CatalogFixture fixture) : IClassFixture<C
 
     private static object CheckoutPayload(Guid addressId, Guid skuId, int quantity = 2) => new
     {
-        shippingAddressId = addressId, paymentMethod = "COD",
+        shippingAddressId = addressId, shippingMethodId = ShippingCheckoutTestDefaults.MethodId, shippingMethodRevision = ShippingCheckoutTestDefaults.Revision, quotedShippingFee = ShippingCheckoutTestDefaults.Fee, paymentMethod = "COD",
         lines = new[] { new { productSkuId = skuId, quantity, flashSaleOfferId = (Guid?)null } }
     };
 
@@ -114,8 +115,15 @@ public sealed class CustomerOrderTests(CatalogFixture fixture) : IClassFixture<C
             Assert.Equal(orderId, item.GetProperty("id").GetGuid());
             Assert.Equal("Vợt Customer Order", item.GetProperty("items")[0].GetProperty("productTitle").GetString());
             Assert.Equal("31 Đường Đơn Hàng, Phường Cầu, Hà Nội", item.GetProperty("shippingAddress").GetString());
+            Assert.Equal(0m, item.GetProperty("shippingFee").GetDecimal());
+            Assert.Equal("TEST_FREE", item.GetProperty("shippingMethodCode").GetString());
+            Assert.Equal("Giao hàng test miễn phí", item.GetProperty("shippingMethodName").GetString());
+            Assert.Equal(1, item.GetProperty("shippingEstimatedMinDays").GetInt16());
+            Assert.Equal(3, item.GetProperty("shippingEstimatedMaxDays").GetInt16());
             using var detail = await owner.GetAsync($"/api/v1/orders/{orderId}");
             Assert.Equal(HttpStatusCode.OK, detail.StatusCode);
+            var detailBody = await detail.Content.ReadFromJsonAsync<JsonElement>();
+            Assert.Equal("TEST_FREE", detailBody.GetProperty("shippingMethodCode").GetString());
             using var crossOwner = await other.GetAsync($"/api/v1/orders/{orderId}");
             Assert.Equal(HttpStatusCode.NotFound, crossOwner.StatusCode);
         }

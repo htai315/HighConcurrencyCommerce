@@ -45,10 +45,42 @@ public sealed class StaffProductController(IProductManagementService service) : 
         return StatusCode(201, image);
     }
 
+    [HttpPost("{id:guid}/images/upload")]
+    [RequestFormLimits(MultipartBodyLengthLimit = 8 * 1024 * 1024 + 64 * 1024)]
+    [RequestSizeLimit(8 * 1024 * 1024 + 64 * 1024)]
+    public async Task<ActionResult<ProductImageItemDto>> UploadImage(
+        Guid id, [FromForm] IFormFile file, [FromForm] string? altText, [FromForm] int displayOrder = 0, CancellationToken ct = default)
+    {
+        if (file is null || file.Length == 0)
+            throw new ProductManagementFailure("MEDIA_EMPTY", "Vui lòng chọn một tệp ảnh.");
+        await using var content = file.OpenReadStream();
+        var image = await service.UploadImageAsync(StaffId, id, content, file.FileName, file.ContentType, file.Length, altText, displayOrder, ct);
+        return StatusCode(201, image);
+    }
+
+    [HttpPatch("{id:guid}/images/{imageId:guid}")]
+    public async Task<ActionResult<ProductImageItemDto>> UpdateImage(Guid id, Guid imageId, UpdateProductImageRequest request, CancellationToken ct) =>
+        Ok(await service.UpdateImageAsync(StaffId, id, imageId, request, ct));
+
+    [HttpPut("{id:guid}/images/order")]
+    public async Task<ActionResult<IReadOnlyList<ProductImageItemDto>>> ReorderImages(Guid id, ReorderProductImagesRequest request, CancellationToken ct) =>
+        Ok(await service.ReorderImagesAsync(StaffId, id, request, ct));
+
     [HttpDelete("{id:guid}/images/{imageId:guid}")]
     public async Task<IActionResult> DeleteImage(Guid id, Guid imageId, CancellationToken ct)
     {
         await service.DeleteImageAsync(StaffId, id, imageId, ct);
+        return NoContent();
+    }
+
+    [HttpPut("{id:guid}/specifications/{key}")]
+    public async Task<ActionResult<ProductSpecificationDto>> UpsertSpecification(Guid id, string key, UpsertProductSpecificationRequest request, CancellationToken ct) =>
+        Ok(await service.UpsertSpecificationAsync(StaffId, id, key, request, HttpContext.TraceIdentifier, ct));
+
+    [HttpDelete("{id:guid}/specifications/{key}")]
+    public async Task<IActionResult> DeleteSpecification(Guid id, string key, CancellationToken ct)
+    {
+        await service.DeleteSpecificationAsync(StaffId, id, key, HttpContext.TraceIdentifier, ct);
         return NoContent();
     }
 }

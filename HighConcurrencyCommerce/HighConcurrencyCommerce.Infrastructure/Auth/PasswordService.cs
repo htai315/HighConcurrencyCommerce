@@ -14,8 +14,12 @@ public sealed class PasswordService
     public string Hash(UserAccount user, string password) => hasher.HashPassword(user, password);
     public PasswordVerificationResult Verify(UserAccount? user, string password)
     {
-        try { return hasher.VerifyHashedPassword(user ?? dummy, user?.PasswordHash ?? dummyHash, password); }
+        if (user is null || user.PasswordHash is null)
+        {
+            hasher.VerifyHashedPassword(dummy, dummyHash, password);
+            return PasswordVerificationResult.Failed;
+        }
+        try { return hasher.VerifyHashedPassword(user, user.PasswordHash, password); }
         catch (FormatException) { return PasswordVerificationResult.Failed; }
     }
 }
-

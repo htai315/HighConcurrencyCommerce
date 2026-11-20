@@ -60,6 +60,10 @@ export const deliverCodShipment = (shipmentId: string, amount: number, reference
   `/staff/shipments/${encodeURIComponent(shipmentId)}/delivery-result`,
   { result: 'DELIVERED', codCollectedAmount: amount, collectionReference: reference },
 )
+export const deliverPrepaidShipment = (shipmentId: string) => mutation(
+  `/staff/shipments/${encodeURIComponent(shipmentId)}/delivery-result`,
+  { result: 'DELIVERED' },
+)
 export const failDelivery = (shipmentId: string, reason: string) => mutation(
   `/staff/shipments/${encodeURIComponent(shipmentId)}/delivery-result`,
   { result: 'FAILED', failureReason: reason },

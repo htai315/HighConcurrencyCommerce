@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import hero from '../../assets/badminton-hero-v2.png'
+import hero from '../../assets/badminton-hero-v2.webp'
 import './auth.css'
 import './auth-premium.css'
 

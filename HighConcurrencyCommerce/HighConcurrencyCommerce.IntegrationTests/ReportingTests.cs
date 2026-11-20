@@ -26,7 +26,7 @@ public sealed class ReportingTests(CatalogFixture fixture) : IClassFixture<Catal
         var roleId = (Guid)(await role.ExecuteScalarAsync())!;
         var hash = new PasswordHasher<object>().HashPassword(new object(), Password);
         await using var insert = new NpgsqlCommand(
-            "INSERT INTO store.user_accounts(id,role_id,email,password_hash,full_name,account_status) VALUES(@id,@role,@email,@hash,@name,'ACTIVE')", db);
+            "INSERT INTO store.user_accounts(id,role_id,email,password_hash,full_name,account_status,email_verified_at) VALUES(@id,@role,@email,@hash,@name,'ACTIVE',now())", db);
         insert.Parameters.AddWithValue("id", id); insert.Parameters.AddWithValue("role", roleId);
         insert.Parameters.AddWithValue("email", email); insert.Parameters.AddWithValue("hash", hash);
         insert.Parameters.AddWithValue("name", roleKey + " Reporting");
@@ -82,14 +82,14 @@ public sealed class ReportingTests(CatalogFixture fixture) : IClassFixture<Catal
                 (@low,@product,@lowCode,'Low',100000,'ACTIVE'),(@high,@product,@highCode,'High',200000,'ACTIVE');
                 INSERT INTO store.inventory_balances(id,product_sku_id,physical_qty,available_qty,reserved_qty,allocated_qty,revision) VALUES
                 (gen_random_uuid(),@low,3,3,0,0,0),(gen_random_uuid(),@high,10,10,0,0,0);
-                INSERT INTO store.sales_orders(id,customer_id,order_number,payment_method,order_status,shipping_address_snapshot,total_amount,deadline_at,confirmed_at) VALUES
-                (@validOrder,@customer,@validNumber,'COD','COMPLETED','{}',100000,now()+interval '1 day',now()),
-                (@invalidOrder,@customer,@invalidNumber,'COD','COMPLETED','{}',200000,now()+interval '1 day',now());
+                INSERT INTO store.sales_orders(id,customer_id,order_number,payment_method,order_status,shipping_address_snapshot,total_amount,subtotal_amount,voucher_discount_amount,shipping_fee,shipping_method_code_snapshot,shipping_method_name_snapshot,deadline_at,confirmed_at) VALUES
+                (@validOrder,@customer,@validNumber,'COD','COMPLETED','{}',120000,100000,0,20000,'REPORT_SHIP','Giao hàng báo cáo',now()+interval '1 day',now()),
+                (@invalidOrder,@customer,@invalidNumber,'COD','COMPLETED','{}',200000,200000,0,0,'LEGACY_FREE','Miễn phí (đơn lịch sử)',now()+interval '1 day',now());
                 INSERT INTO store.payments(id,order_id,payment_method,expected_amount,payment_status,paid_at) VALUES
-                (@validPayment,@validOrder,'COD',100000,'COD_COLLECTED',now()),
+                (@validPayment,@validOrder,'COD',120000,'COD_COLLECTED',now()),
                 (@invalidPayment,@invalidOrder,'COD',200000,'COD_COLLECTED',now());
                 INSERT INTO store.payment_transactions(id,payment_id,provider,provider_transaction_id,amount,provider_paid_at,verified_at,transaction_status) VALUES
-                (gen_random_uuid(),@validPayment,'COD',@validRef,100000,now(),now(),'VERIFIED'),
+                (gen_random_uuid(),@validPayment,'COD',@validRef,120000,now(),now(),'VERIFIED'),
                 (gen_random_uuid(),@invalidPayment,'COD',@invalidRef,199999,now(),now(),'VERIFIED');
                 """, db);
             seed.Parameters.AddWithValue("product", productId); seed.Parameters.AddWithValue("admin", adminId);
@@ -109,15 +109,63 @@ public sealed class ReportingTests(CatalogFixture fixture) : IClassFixture<Catal
             using var revenueResponse = await admin.GetAsync($"/api/v1/admin/reports/revenue?from={date}&to={date}");
             Assert.Equal(HttpStatusCode.OK, revenueResponse.StatusCode);
             var revenue = await revenueResponse.Content.ReadFromJsonAsync<JsonElement>();
-            Assert.Equal(100000m, revenue.GetProperty("revenue").GetDecimal());
+            Assert.Equal(120000m, revenue.GetProperty("revenue").GetDecimal());
+            Assert.Equal(120000m, revenue.GetProperty("grossRevenue").GetDecimal());
+            Assert.Equal(20000m, revenue.GetProperty("shippingRevenue").GetDecimal());
             Assert.Equal(1, revenue.GetProperty("completedOrderCount").GetInt32());
-            Assert.Equal(100000m, revenue.GetProperty("averageOrderValue").GetDecimal());
+            Assert.Equal(120000m, revenue.GetProperty("averageOrderValue").GetDecimal());
 
             using var lowStockResponse = await admin.GetAsync("/api/v1/admin/reports/low-stock");
             var lowStock = await lowStockResponse.Content.ReadFromJsonAsync<JsonElement>();
             Assert.Equal(5, lowStock.GetProperty("threshold").GetInt32());
             var ids = lowStock.GetProperty("items").EnumerateArray().Select(x => x.GetProperty("productSkuId").GetGuid()).ToList();
             Assert.Contains(lowSkuId, ids); Assert.DoesNotContain(highSkuId, ids);
+        }
+    }
+
+    [Fact]
+    public async Task Revenue_allows_negative_net_when_refund_is_recognized_after_original_payment_period()
+    {
+        var (admin, adminId) = await CreateRoleClient("ADMIN");
+        var (customer, customerId) = await CreateRoleClient("CUSTOMER");
+        using (admin) using (customer)
+        {
+            var orderId = Guid.NewGuid();
+            var paymentId = Guid.NewGuid();
+            var transactionId = Guid.NewGuid();
+            const decimal refundAmount = 40_000m;
+
+            await using var db = await fixture.OpenDatabaseAsync();
+            await using var seed = new NpgsqlCommand("""
+                INSERT INTO store.sales_orders(id,customer_id,order_number,payment_method,order_status,shipping_address_snapshot,total_amount,subtotal_amount,voucher_discount_amount,deadline_at,confirmed_at)
+                VALUES(@order,@customer,@number,'COD','COMPLETED','{}',100000,100000,0,now()+interval '1 day',now());
+                INSERT INTO store.payments(id,order_id,payment_method,expected_amount,payment_status,paid_at)
+                VALUES(@payment,@order,'COD',100000,'PARTIALLY_REFUNDED','2020-02-01 12:00:00+00');
+                INSERT INTO store.payment_transactions(id,payment_id,provider,provider_transaction_id,amount,provider_paid_at,verified_at,transaction_status)
+                VALUES(@transaction,@payment,'COD',@providerRef,100000,'2020-02-01 12:00:00+00','2020-02-01 12:00:00+00','VERIFIED');
+                INSERT INTO store.manual_refunds(id,transaction_id,admin_id,amount,evidence_reference,refund_status,refunded_at)
+                VALUES(gen_random_uuid(),@transaction,@admin,@refund,@evidence,'REFUNDED','2020-02-02 12:00:00+00');
+                """, db);
+            seed.Parameters.AddWithValue("order", orderId);
+            seed.Parameters.AddWithValue("customer", customerId);
+            seed.Parameters.AddWithValue("number", "HC-NEGATIVE-NET-" + orderId.ToString("N")[..8]);
+            seed.Parameters.AddWithValue("payment", paymentId);
+            seed.Parameters.AddWithValue("transaction", transactionId);
+            seed.Parameters.AddWithValue("providerRef", "NEGATIVE-NET-" + transactionId.ToString("N"));
+            seed.Parameters.AddWithValue("admin", adminId);
+            seed.Parameters.AddWithValue("refund", refundAmount);
+            seed.Parameters.AddWithValue("evidence", "NEGATIVE-NET-REFUND-" + Guid.NewGuid().ToString("N"));
+            await seed.ExecuteNonQueryAsync();
+
+            using var response = await admin.GetAsync("/api/v1/admin/reports/revenue?from=2020-02-02&to=2020-02-02");
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var report = await response.Content.ReadFromJsonAsync<JsonElement>();
+            Assert.Equal(0m, report.GetProperty("grossRevenue").GetDecimal());
+            Assert.Equal(refundAmount, report.GetProperty("refundAmount").GetDecimal());
+            Assert.Equal(-refundAmount, report.GetProperty("netRevenue").GetDecimal());
+            Assert.Equal(-refundAmount, report.GetProperty("revenue").GetDecimal());
+            var day = Assert.Single(report.GetProperty("days").EnumerateArray());
+            Assert.Equal(-refundAmount, day.GetProperty("netRevenue").GetDecimal());
         }
     }
 
@@ -148,6 +196,24 @@ public sealed class ReportingTests(CatalogFixture fixture) : IClassFixture<Catal
             Assert.Equal(entityA, item.GetProperty("entityId").GetGuid());
             Assert.Equal("REPORT_TEST_ACTION", item.GetProperty("action").GetString());
             Assert.Equal("ADMIN Reporting", item.GetProperty("actorName").GetString());
+        }
+    }
+
+    [Fact]
+    public async Task Revenue_and_audit_date_range_boundary_does_not_overflow_500()
+    {
+        var (admin, _) = await CreateRoleClient("ADMIN");
+        using (admin)
+        {
+            using var revenueResponse = await admin.GetAsync("/api/v1/admin/reports/revenue?from=9999-12-31&to=9999-12-31");
+            Assert.Equal(HttpStatusCode.BadRequest, revenueResponse.StatusCode);
+            var revenueProblem = await revenueResponse.Content.ReadFromJsonAsync<JsonElement>();
+            Assert.Equal("INVALID_DATE_RANGE", revenueProblem.GetProperty("code").GetString());
+
+            using var auditResponse = await admin.GetAsync("/api/v1/admin/audit-logs?to=9999-12-31");
+            Assert.Equal(HttpStatusCode.BadRequest, auditResponse.StatusCode);
+            var auditProblem = await auditResponse.Content.ReadFromJsonAsync<JsonElement>();
+            Assert.Equal("INVALID_DATE_RANGE", auditProblem.GetProperty("code").GetString());
         }
     }
 }

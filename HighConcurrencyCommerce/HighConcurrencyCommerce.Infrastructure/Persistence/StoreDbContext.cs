@@ -14,6 +14,14 @@ public partial class StoreDbContext : DbContext
 
     public virtual DbSet<AuditLog> AuditLogs { get; set; }
 
+    public virtual DbSet<Brand> Brands { get; set; }
+
+    public virtual DbSet<Carrier> Carriers { get; set; }
+
+    public virtual DbSet<CarrierConsignment> CarrierConsignments { get; set; }
+
+    public virtual DbSet<CarrierTrackingEvent> CarrierTrackingEvents { get; set; }
+
     public virtual DbSet<CartItem> CartItems { get; set; }
 
     public virtual DbSet<Category> Categories { get; set; }
@@ -21,6 +29,8 @@ public partial class StoreDbContext : DbContext
     public virtual DbSet<CheckoutRequest> CheckoutRequests { get; set; }
 
     public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
+
+    public virtual DbSet<CustomerWishlistItem> CustomerWishlistItems { get; set; }
 
     public virtual DbSet<DeliveryAttempt> DeliveryAttempts { get; set; }
 
@@ -54,6 +64,18 @@ public partial class StoreDbContext : DbContext
 
     public virtual DbSet<ProductImage> ProductImages { get; set; }
 
+    public virtual DbSet<ProductReview> ProductReviews { get; set; }
+
+    public virtual DbSet<ProductRevision> ProductRevisions { get; set; }
+
+    public virtual DbSet<ProductRevisionImage> ProductRevisionImages { get; set; }
+
+    public virtual DbSet<ProductRevisionSpecification> ProductRevisionSpecifications { get; set; }
+
+    public virtual DbSet<ProductMediaCleanupJob> ProductMediaCleanupJobs { get; set; }
+
+    public virtual DbSet<ProductSpecification> ProductSpecifications { get; set; }
+
     public virtual DbSet<ProductSku> ProductSkus { get; set; }
 
     public virtual DbSet<ProviderCallbackEvent> ProviderCallbackEvents { get; set; }
@@ -63,6 +85,10 @@ public partial class StoreDbContext : DbContext
     public virtual DbSet<SalesOrder> SalesOrders { get; set; }
 
     public virtual DbSet<SalesOrderItem> SalesOrderItems { get; set; }
+
+    public virtual DbSet<ShippingMethod> ShippingMethods { get; set; }
+
+    public virtual DbSet<ShippingMethodProvinceRate> ShippingMethodProvinceRates { get; set; }
 
     public virtual DbSet<Shipment> Shipments { get; set; }
 
@@ -74,8 +100,126 @@ public partial class StoreDbContext : DbContext
 
     public virtual DbSet<UserAccount> UserAccounts { get; set; }
 
+    public virtual DbSet<Voucher> Vouchers { get; set; }
+
+    public virtual DbSet<VoucherRedemption> VoucherRedemptions { get; set; }
+
+    public virtual DbSet<OrderReturnRequest> OrderReturnRequests { get; set; }
+
+    public virtual DbSet<OrderReturnRequestLine> OrderReturnRequestLines { get; set; }
+
+    public virtual DbSet<OrderExchangeLine> OrderExchangeLines { get; set; }
+
+    public virtual DbSet<ExchangeStockAllocation> ExchangeStockAllocations { get; set; }
+
+    public virtual DbSet<ExchangeShipment> ExchangeShipments { get; set; }
+
+    public virtual DbSet<ExchangeDeliveryAttempt> ExchangeDeliveryAttempts { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Carrier>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("carriers_pkey");
+            entity.ToTable("carriers", "store");
+            entity.HasIndex(e => e.Code, "carriers_code_key").IsUnique();
+            entity.HasIndex(e => new { e.CarrierStatus, e.Name, e.Id }, "ix_carriers_status_name");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id");
+            entity.Property(e => e.Code).HasMaxLength(32).HasColumnName("code");
+            entity.Property(e => e.Name).HasMaxLength(120).HasColumnName("name");
+            entity.Property(e => e.Hotline).HasMaxLength(32).HasColumnName("hotline");
+            entity.Property(e => e.TrackingUrlTemplate).HasMaxLength(500).HasColumnName("tracking_url_template");
+            entity.Property(e => e.CarrierStatus).HasMaxLength(16).HasDefaultValue("INACTIVE").HasColumnName("carrier_status");
+            entity.Property(e => e.Revision).HasDefaultValue(1L).HasColumnName("revision");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()").HasColumnName("updated_at");
+            entity.HasOne(e => e.CreatedByNavigation).WithMany(e => e.CarriersCreated).HasForeignKey(e => e.CreatedBy).OnDelete(DeleteBehavior.Restrict).HasConstraintName("carriers_created_by_fkey");
+            entity.HasOne(e => e.UpdatedByNavigation).WithMany(e => e.CarriersUpdated).HasForeignKey(e => e.UpdatedBy).OnDelete(DeleteBehavior.Restrict).HasConstraintName("carriers_updated_by_fkey");
+        });
+
+        modelBuilder.Entity<CarrierConsignment>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("carrier_consignments_pkey");
+            entity.ToTable("carrier_consignments", "store");
+            entity.HasIndex(e => e.SalesShipmentId, "carrier_consignments_sales_shipment_id_key").IsUnique();
+            entity.HasIndex(e => e.ExchangeShipmentId, "carrier_consignments_exchange_shipment_id_key").IsUnique();
+            entity.HasIndex(e => new { e.ConsignmentStatus, e.SalesShipmentId, e.Id }, "ix_carrier_consignments_sales_queue").HasFilter("sales_shipment_id IS NOT NULL");
+            entity.HasIndex(e => new { e.ConsignmentStatus, e.ExchangeShipmentId, e.Id }, "ix_carrier_consignments_exchange_queue").HasFilter("exchange_shipment_id IS NOT NULL");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id");
+            entity.Property(e => e.SalesShipmentId).HasColumnName("sales_shipment_id");
+            entity.Property(e => e.ExchangeShipmentId).HasColumnName("exchange_shipment_id");
+            entity.Property(e => e.CarrierId).HasColumnName("carrier_id");
+            entity.Property(e => e.TrackingNumber).HasMaxLength(100).HasColumnName("tracking_number");
+            entity.Property(e => e.ConsignmentStatus).HasMaxLength(24).HasDefaultValue("DRAFT").HasColumnName("consignment_status");
+            entity.Property(e => e.ServiceCode).HasMaxLength(64).HasColumnName("service_code");
+            entity.Property(e => e.RecipientNameSnapshot).HasMaxLength(200).HasColumnName("recipient_name_snapshot");
+            entity.Property(e => e.RecipientPhoneSnapshot).HasMaxLength(32).HasColumnName("recipient_phone_snapshot");
+            entity.Property(e => e.DestinationSnapshot).HasColumnName("destination_snapshot");
+            entity.Property(e => e.ShippingMethodCodeSnapshot).HasMaxLength(32).HasColumnName("shipping_method_code_snapshot");
+            entity.Property(e => e.ShippingMethodNameSnapshot).HasMaxLength(120).HasColumnName("shipping_method_name_snapshot");
+            entity.Property(e => e.LabelFileKey).HasMaxLength(300).HasColumnName("label_file_key");
+            entity.Property(e => e.LabelContentType).HasMaxLength(80).HasColumnName("label_content_type");
+            entity.Property(e => e.LabelSizeBytes).HasColumnName("label_size_bytes");
+            entity.Property(e => e.LabelSha256).HasMaxLength(64).IsFixedLength().HasColumnName("label_sha256");
+            entity.Property(e => e.Revision).HasDefaultValue(1L).HasColumnName("revision");
+            entity.Property(e => e.HandedOverAt).HasColumnName("handed_over_at");
+            entity.Property(e => e.DeliveredAt).HasColumnName("delivered_at");
+            entity.Property(e => e.CancelledAt).HasColumnName("cancelled_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()").HasColumnName("updated_at");
+            entity.HasOne(e => e.Carrier).WithMany(e => e.Consignments).HasForeignKey(e => e.CarrierId).OnDelete(DeleteBehavior.Restrict).HasConstraintName("carrier_consignments_carrier_fkey");
+            entity.HasOne(e => e.SalesShipment).WithOne(e => e.CarrierConsignment).HasForeignKey<CarrierConsignment>(e => e.SalesShipmentId).OnDelete(DeleteBehavior.Restrict).HasConstraintName("carrier_consignments_sales_shipment_fkey");
+            entity.HasOne(e => e.ExchangeShipment).WithOne(e => e.CarrierConsignment).HasForeignKey<CarrierConsignment>(e => e.ExchangeShipmentId).OnDelete(DeleteBehavior.Restrict).HasConstraintName("carrier_consignments_exchange_shipment_fkey");
+            entity.HasOne(e => e.CreatedByNavigation).WithMany(e => e.CarrierConsignmentsCreated).HasForeignKey(e => e.CreatedBy).OnDelete(DeleteBehavior.Restrict).HasConstraintName("carrier_consignments_created_by_fkey");
+            entity.HasOne(e => e.UpdatedByNavigation).WithMany(e => e.CarrierConsignmentsUpdated).HasForeignKey(e => e.UpdatedBy).OnDelete(DeleteBehavior.Restrict).HasConstraintName("carrier_consignments_updated_by_fkey");
+        });
+
+        modelBuilder.Entity<CarrierTrackingEvent>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("carrier_tracking_events_pkey");
+            entity.ToTable("carrier_tracking_events", "store");
+            entity.HasIndex(e => new { e.ConsignmentId, e.EventKey }, "ux_carrier_tracking_event_key").IsUnique();
+            entity.HasIndex(e => new { e.ConsignmentId, e.ExternalEventId }, "ux_carrier_tracking_external_event").IsUnique().HasFilter("external_event_id IS NOT NULL");
+            entity.HasIndex(e => new { e.ConsignmentId, e.OccurredAt, e.Id }, "ix_carrier_tracking_timeline");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id");
+            entity.Property(e => e.ConsignmentId).HasColumnName("consignment_id");
+            entity.Property(e => e.EventKey).HasMaxLength(180).HasColumnName("event_key");
+            entity.Property(e => e.EventType).HasMaxLength(32).HasColumnName("event_type");
+            entity.Property(e => e.EventStatus).HasMaxLength(24).HasColumnName("event_status");
+            entity.Property(e => e.Location).HasMaxLength(200).HasColumnName("location");
+            entity.Property(e => e.Description).HasMaxLength(500).HasColumnName("description");
+            entity.Property(e => e.OccurredAt).HasColumnName("occurred_at");
+            entity.Property(e => e.RecordedAt).HasDefaultValueSql("now()").HasColumnName("recorded_at");
+            entity.Property(e => e.SourceType).HasMaxLength(16).HasColumnName("source_type");
+            entity.Property(e => e.ActorId).HasColumnName("actor_id");
+            entity.Property(e => e.ExternalEventId).HasMaxLength(180).HasColumnName("external_event_id");
+            entity.Property(e => e.PayloadHash).HasMaxLength(64).IsFixedLength().HasColumnName("payload_hash");
+            entity.HasOne(e => e.Consignment).WithMany(e => e.TrackingEvents).HasForeignKey(e => e.ConsignmentId).OnDelete(DeleteBehavior.Restrict).HasConstraintName("carrier_tracking_events_consignment_fkey");
+            entity.HasOne(e => e.Actor).WithMany(e => e.CarrierTrackingEvents).HasForeignKey(e => e.ActorId).OnDelete(DeleteBehavior.Restrict).HasConstraintName("carrier_tracking_events_actor_fkey");
+        });
+
+        modelBuilder.Entity<Brand>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("brands_pkey");
+            entity.ToTable("brands", "store");
+            entity.HasIndex(e => e.Slug, "brands_slug_key").IsUnique();
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()").HasColumnName("updated_at");
+            entity.Property(e => e.Name).HasMaxLength(160).HasColumnName("name");
+            entity.Property(e => e.SearchNameNorm)
+                .HasComputedColumnSql("store.catalog_search_normalize(name)", stored: true)
+                .HasColumnName("search_name_norm");
+            entity.Property(e => e.Slug).HasMaxLength(180).HasColumnName("slug");
+            entity.Property(e => e.Country).HasMaxLength(100).HasColumnName("country");
+            entity.Property(e => e.WebsiteUrl).HasMaxLength(500).HasColumnName("website_url");
+            entity.Property(e => e.IsActive).HasDefaultValue(true).HasColumnName("is_active");
+        });
+
         modelBuilder.Entity<AuditLog>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("audit_logs_pkey");
@@ -179,6 +323,9 @@ public partial class StoreDbContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(180)
                 .HasColumnName("name");
+            entity.Property(e => e.SearchNameNorm)
+                .HasComputedColumnSql("store.catalog_search_normalize(name)", stored: true)
+                .HasColumnName("search_name_norm");
             entity.Property(e => e.Slug)
                 .HasMaxLength(220)
                 .HasColumnName("slug");
@@ -512,6 +659,8 @@ public partial class StoreDbContext : DbContext
                 .HasDefaultValueSql("now()")
                 .HasColumnName("created_at");
             entity.Property(e => e.PhysicalQty).HasColumnName("physical_qty");
+            entity.Property(e => e.QuarantinedQty).HasColumnName("quarantined_qty");
+            entity.Property(e => e.DamagedQty).HasColumnName("damaged_qty");
             entity.Property(e => e.ProductSkuId).HasColumnName("product_sku_id");
             entity.Property(e => e.ReservedQty).HasColumnName("reserved_qty");
             entity.Property(e => e.Revision).HasColumnName("revision");
@@ -588,6 +737,8 @@ public partial class StoreDbContext : DbContext
                 .HasColumnName("refund_status");
             entity.Property(e => e.RefundedAt).HasColumnName("refunded_at");
             entity.Property(e => e.TransactionId).HasColumnName("transaction_id");
+            entity.Property(e => e.ReturnRequestId).HasColumnName("return_request_id");
+            entity.Property(e => e.ReconciliationCaseId).HasColumnName("reconciliation_case_id");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("now()")
                 .HasColumnName("updated_at");
@@ -601,6 +752,15 @@ public partial class StoreDbContext : DbContext
                 .HasForeignKey<ManualRefund>(d => d.TransactionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("manual_refunds_transaction_id_fkey");
+
+            entity.HasOne(d => d.ReturnRequest).WithOne(p => p.ManualRefund)
+                .HasForeignKey<ManualRefund>(d => d.ReturnRequestId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("manual_refunds_return_request_id_fkey");
+
+            entity.HasOne(d => d.ReconciliationCase).WithOne(p => p.ManualRefund)
+                .HasForeignKey<ManualRefund>(d => d.ReconciliationCaseId)
+                .HasConstraintName("manual_refunds_reconciliation_case_id_fkey");
         });
 
         modelBuilder.Entity<OrderCancellationRequest>(entity =>
@@ -691,6 +851,14 @@ public partial class StoreDbContext : DbContext
 
             entity.HasIndex(e => e.ProviderOrderCode, "payment_attempts_provider_order_code_key").IsUnique();
 
+            entity.HasIndex(e => e.PaymentId, "ux_payment_attempt_active")
+                .IsUnique()
+                .HasFilter("attempt_status IN ('CREATED', 'LINK_READY')");
+
+            entity.HasIndex(e => e.ProviderPaymentLinkId, "ux_payment_attempt_provider_link")
+                .IsUnique()
+                .HasFilter("provider_payment_link_id IS NOT NULL");
+
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
@@ -704,7 +872,10 @@ public partial class StoreDbContext : DbContext
             entity.Property(e => e.ExpiresAt).HasColumnName("expires_at");
             entity.Property(e => e.PaymentId).HasColumnName("payment_id");
             entity.Property(e => e.ProviderLink).HasColumnName("provider_link");
+            entity.Property(e => e.ProviderPaymentLinkId).HasMaxLength(80).HasColumnName("provider_payment_link_id");
             entity.Property(e => e.ProviderOrderCode).HasColumnName("provider_order_code");
+            entity.Property(e => e.LastErrorCode).HasMaxLength(64).HasColumnName("last_error_code");
+            entity.Property(e => e.LastQueriedAt).HasColumnName("last_queried_at");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("now()")
                 .HasColumnName("updated_at");
@@ -733,7 +904,10 @@ public partial class StoreDbContext : DbContext
                 .HasDefaultValueSql("now()")
                 .HasColumnName("created_at");
             entity.Property(e => e.Note).HasColumnName("note");
+            entity.Property(e => e.AssignedTo).HasColumnName("assigned_to");
+            entity.Property(e => e.AssignedAt).HasColumnName("assigned_at");
             entity.Property(e => e.PaymentId).HasColumnName("payment_id");
+            entity.Property(e => e.TransactionId).HasColumnName("transaction_id");
             entity.Property(e => e.Reason).HasColumnName("reason");
             entity.Property(e => e.ResolvedAt).HasColumnName("resolved_at");
             entity.Property(e => e.ResolvedBy).HasColumnName("resolved_by");
@@ -746,9 +920,17 @@ public partial class StoreDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("payment_reconciliation_cases_payment_id_fkey");
 
+            entity.HasOne(d => d.Transaction).WithOne(p => p.ReconciliationCase)
+                .HasForeignKey<PaymentReconciliationCase>(d => d.TransactionId)
+                .HasConstraintName("payment_reconciliation_cases_transaction_id_fkey");
+
             entity.HasOne(d => d.ResolvedByNavigation).WithMany(p => p.PaymentReconciliationCases)
                 .HasForeignKey(d => d.ResolvedBy)
                 .HasConstraintName("payment_reconciliation_cases_resolved_by_fkey");
+
+            entity.HasOne(d => d.AssignedToNavigation).WithMany(p => p.AssignedPaymentReconciliationCases)
+                .HasForeignKey(d => d.AssignedTo)
+                .HasConstraintName("payment_reconciliation_cases_assigned_to_fkey");
         });
 
         modelBuilder.Entity<PaymentTransaction>(entity =>
@@ -809,6 +991,7 @@ public partial class StoreDbContext : DbContext
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
             entity.Property(e => e.CategoryId).HasColumnName("category_id");
+            entity.Property(e => e.BrandId).HasColumnName("brand_id");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("now()")
                 .HasColumnName("created_at");
@@ -819,9 +1002,16 @@ public partial class StoreDbContext : DbContext
                 .HasColumnName("publication_status");
             entity.Property(e => e.PublishedAt).HasColumnName("published_at");
             entity.Property(e => e.PublishedBy).HasColumnName("published_by");
+            entity.Property(e => e.ContentVersion).HasDefaultValue(1L).HasColumnName("content_version");
+            entity.Property(e => e.StatusChangedAt).HasDefaultValueSql("now()").HasColumnName("status_changed_at");
+            entity.Property(e => e.StatusChangedBy).HasColumnName("status_changed_by");
+            entity.Property(e => e.StatusReason).HasMaxLength(500).HasColumnName("status_reason");
             entity.Property(e => e.Title)
                 .HasMaxLength(240)
                 .HasColumnName("title");
+            entity.Property(e => e.SearchTitleNorm)
+                .HasComputedColumnSql("store.catalog_search_normalize(title)", stored: true)
+                .HasColumnName("search_title_norm");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("now()")
                 .HasColumnName("updated_at");
@@ -829,6 +1019,11 @@ public partial class StoreDbContext : DbContext
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
                 .HasConstraintName("products_category_id_fkey");
+
+            entity.HasOne(d => d.Brand).WithMany(p => p.Products)
+                .HasForeignKey(d => d.BrandId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("products_brand_id_fkey");
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ProductCreatedByNavigations)
                 .HasForeignKey(d => d.CreatedBy)
@@ -838,6 +1033,93 @@ public partial class StoreDbContext : DbContext
             entity.HasOne(d => d.PublishedByNavigation).WithMany(p => p.ProductPublishedByNavigations)
                 .HasForeignKey(d => d.PublishedBy)
                 .HasConstraintName("products_published_by_fkey");
+
+            entity.HasOne<UserAccount>().WithMany()
+                .HasForeignKey(d => d.StatusChangedBy)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("products_status_changed_by_fkey");
+        });
+
+        modelBuilder.Entity<ProductRevision>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("product_revisions_pkey");
+            entity.ToTable("product_revisions", "store");
+            entity.HasIndex(e => new { e.ProductId, e.RevisionNo }, "ux_product_revision_number").IsUnique();
+            entity.HasIndex(e => e.ProductId, "ux_product_one_open_revision").IsUnique().HasFilter("revision_status IN ('DRAFT','PENDING_REVIEW')");
+            entity.HasIndex(e => new { e.RevisionStatus, e.SubmittedAt, e.Id }, "ix_product_revisions_review_queue");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()").HasColumnName("updated_at");
+            entity.Property(e => e.ProductId).HasColumnName("product_id"); entity.Property(e => e.RevisionNo).HasColumnName("revision_no");
+            entity.Property(e => e.RevisionStatus).HasColumnName("revision_status"); entity.Property(e => e.BaseContentVersion).HasColumnName("base_content_version");
+            entity.Property(e => e.Title).HasMaxLength(240).HasColumnName("title"); entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.CategoryId).HasColumnName("category_id"); entity.Property(e => e.BrandId).HasColumnName("brand_id");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by"); entity.Property(e => e.SubmittedBy).HasColumnName("submitted_by"); entity.Property(e => e.ReviewedBy).HasColumnName("reviewed_by");
+            entity.Property(e => e.SubmittedAt).HasColumnName("submitted_at"); entity.Property(e => e.ReviewedAt).HasColumnName("reviewed_at"); entity.Property(e => e.ReviewNote).HasMaxLength(1000).HasColumnName("review_note");
+            entity.HasOne(e => e.Product).WithMany(p => p.ProductRevisions).HasForeignKey(e => e.ProductId).OnDelete(DeleteBehavior.Restrict).HasConstraintName("product_revisions_product_id_fkey");
+        });
+
+        modelBuilder.Entity<ProductRevisionImage>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("product_revision_images_pkey"); entity.ToTable("product_revision_images", "store");
+            entity.HasIndex(e => new { e.RevisionId, e.DisplayOrder, e.Id }, "ix_product_revision_images_order");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id"); entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at"); entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()").HasColumnName("updated_at");
+            entity.Property(e => e.RevisionId).HasColumnName("revision_id"); entity.Property(e => e.SourceImageId).HasColumnName("source_image_id"); entity.Property(e => e.FileKey).HasColumnName("file_key"); entity.Property(e => e.ImageStatus).HasColumnName("image_status"); entity.Property(e => e.AltText).HasMaxLength(240).HasColumnName("alt_text"); entity.Property(e => e.DisplayOrder).HasColumnName("display_order"); entity.Property(e => e.IsNewUpload).HasColumnName("is_new_upload");
+            entity.HasOne(e => e.Revision).WithMany(r => r.Images).HasForeignKey(e => e.RevisionId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("product_revision_images_revision_id_fkey");
+        });
+
+        modelBuilder.Entity<ProductRevisionSpecification>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("product_revision_specifications_pkey"); entity.ToTable("product_revision_specifications", "store");
+            entity.HasIndex(e => new { e.RevisionId, e.SpecKey }, "ux_product_revision_specification_key").IsUnique(); entity.HasIndex(e => new { e.RevisionId, e.DisplayOrder, e.Id }, "ix_product_revision_specs_order");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id"); entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at"); entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()").HasColumnName("updated_at");
+            entity.Property(e => e.RevisionId).HasColumnName("revision_id"); entity.Property(e => e.SpecKey).HasMaxLength(80).HasColumnName("spec_key"); entity.Property(e => e.DisplayName).HasMaxLength(160).HasColumnName("display_name"); entity.Property(e => e.SpecValue).HasMaxLength(500).HasColumnName("spec_value"); entity.Property(e => e.DisplayOrder).HasColumnName("display_order");
+            entity.HasOne(e => e.Revision).WithMany(r => r.Specifications).HasForeignKey(e => e.RevisionId).OnDelete(DeleteBehavior.Cascade).HasConstraintName("product_revision_specifications_revision_id_fkey");
+        });
+
+        modelBuilder.Entity<ProductMediaCleanupJob>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("product_media_cleanup_jobs_pkey");
+            entity.ToTable("product_media_cleanup_jobs", "store");
+            entity.HasIndex(e => new { e.JobStatus, e.NextAttemptAt, e.CreatedAt, e.Id }, "ix_product_media_cleanup_queue");
+            entity.HasIndex(e => new { e.RevisionId, e.CreatedAt }, "ix_product_media_cleanup_revision");
+            entity.HasIndex(e => e.StorageKey, "ux_product_media_cleanup_active_storage_key").IsUnique().HasFilter("job_status IN ('PENDING','PROCESSING')");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id");
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.RevisionId).HasColumnName("revision_id");
+            entity.Property(e => e.StorageKey).HasMaxLength(700).HasColumnName("storage_key");
+            entity.Property(e => e.PublicPath).HasColumnName("public_path");
+            entity.Property(e => e.CleanupReason).HasMaxLength(40).HasColumnName("cleanup_reason");
+            entity.Property(e => e.JobStatus).HasMaxLength(20).HasColumnName("job_status");
+            entity.Property(e => e.AttemptCount).HasColumnName("attempt_count");
+            entity.Property(e => e.NextAttemptAt).HasColumnName("next_attempt_at");
+            entity.Property(e => e.LockedAt).HasColumnName("locked_at");
+            entity.Property(e => e.LockedBy).HasColumnName("locked_by");
+            entity.Property(e => e.LastErrorCode).HasMaxLength(64).HasColumnName("last_error_code");
+            entity.Property(e => e.CompletedAt).HasColumnName("completed_at");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()").HasColumnName("updated_at");
+            entity.HasOne(e => e.Product).WithMany().HasForeignKey(e => e.ProductId).OnDelete(DeleteBehavior.Restrict).HasConstraintName("product_media_cleanup_jobs_product_id_fkey");
+            entity.HasOne(e => e.Revision).WithMany().HasForeignKey(e => e.RevisionId).OnDelete(DeleteBehavior.SetNull).HasConstraintName("product_media_cleanup_jobs_revision_id_fkey");
+        });
+
+        modelBuilder.Entity<ProductSpecification>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("product_specifications_pkey");
+            entity.ToTable("product_specifications", "store");
+            entity.HasIndex(e => new { e.ProductId, e.SpecKey }, "ux_product_specification_key").IsUnique();
+            entity.HasIndex(e => new { e.ProductId, e.DisplayOrder, e.Id }, "ix_product_specifications_order");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()").HasColumnName("updated_at");
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.SpecKey).HasMaxLength(80).HasColumnName("spec_key");
+            entity.Property(e => e.DisplayName).HasMaxLength(160).HasColumnName("display_name");
+            entity.Property(e => e.SpecValue).HasMaxLength(500).HasColumnName("spec_value");
+            entity.Property(e => e.DisplayOrder).HasColumnName("display_order");
+            entity.HasOne(e => e.Product).WithMany(p => p.ProductSpecifications)
+                .HasForeignKey(e => e.ProductId).OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("product_specifications_product_id_fkey");
         });
 
         modelBuilder.Entity<ProductImage>(entity =>
@@ -890,6 +1172,9 @@ public partial class StoreDbContext : DbContext
             entity.Property(e => e.OptionLabel)
                 .HasMaxLength(200)
                 .HasColumnName("option_label");
+            entity.Property(e => e.SearchOptionNorm)
+                .HasComputedColumnSql("store.catalog_search_normalize(option_label)", stored: true)
+                .HasColumnName("search_option_norm");
             entity.Property(e => e.ProductId).HasColumnName("product_id");
             entity.Property(e => e.RegularPrice)
                 .HasPrecision(18, 2)
@@ -897,6 +1182,9 @@ public partial class StoreDbContext : DbContext
             entity.Property(e => e.SkuCode)
                 .HasMaxLength(100)
                 .HasColumnName("sku_code");
+            entity.Property(e => e.SearchSkuNorm)
+                .HasComputedColumnSql("store.catalog_search_normalize(sku_code)", stored: true)
+                .HasColumnName("search_sku_norm");
             entity.Property(e => e.SkuStatus)
                 .HasDefaultValueSql("'ACTIVE'::text")
                 .HasColumnName("sku_status");
@@ -917,6 +1205,8 @@ public partial class StoreDbContext : DbContext
             entity.ToTable("provider_callback_events", "store");
 
             entity.HasIndex(e => new { e.ProviderOrderCode, e.ReceivedAt }, "ix_callbacks_order_received").IsDescending(false, true);
+
+            entity.HasIndex(e => e.PayloadHash, "ux_provider_callback_payload_hash").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
@@ -968,6 +1258,53 @@ public partial class StoreDbContext : DbContext
                 .HasColumnName("updated_at");
         });
 
+        modelBuilder.Entity<ShippingMethod>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("shipping_methods_pkey");
+            entity.ToTable("shipping_methods", "store");
+            entity.HasIndex(e => e.Code, "shipping_methods_code_key").IsUnique();
+            entity.HasIndex(e => new { e.MethodStatus, e.DisplayOrder, e.Id }, "ix_shipping_methods_list");
+            entity.HasIndex(e => e.IsDefault, "ux_shipping_methods_one_active_default").IsUnique().HasFilter("is_default AND method_status = 'ACTIVE'");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id");
+            entity.Property(e => e.Code).HasMaxLength(32).HasColumnName("code");
+            entity.Property(e => e.Name).HasMaxLength(120).HasColumnName("name");
+            entity.Property(e => e.Description).HasMaxLength(500).HasColumnName("description");
+            entity.Property(e => e.MethodStatus).HasMaxLength(20).HasColumnName("method_status");
+            entity.Property(e => e.BaseFee).HasPrecision(18, 2).HasColumnName("base_fee");
+            entity.Property(e => e.FreeShippingThreshold).HasPrecision(18, 2).HasColumnName("free_shipping_threshold");
+            entity.Property(e => e.EstimatedMinDays).HasColumnName("estimated_min_days");
+            entity.Property(e => e.EstimatedMaxDays).HasColumnName("estimated_max_days");
+            entity.Property(e => e.IsDefault).HasColumnName("is_default");
+            entity.Property(e => e.DisplayOrder).HasColumnName("display_order");
+            entity.Property(e => e.Revision).HasDefaultValue(1L).HasColumnName("revision");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()").HasColumnName("updated_at");
+            entity.HasOne<UserAccount>().WithMany().HasForeignKey(e => e.CreatedBy).OnDelete(DeleteBehavior.Restrict).HasConstraintName("shipping_methods_created_by_fkey");
+            entity.HasOne<UserAccount>().WithMany().HasForeignKey(e => e.UpdatedBy).OnDelete(DeleteBehavior.Restrict).HasConstraintName("shipping_methods_updated_by_fkey");
+        });
+
+        modelBuilder.Entity<ShippingMethodProvinceRate>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("shipping_method_province_rates_pkey");
+            entity.ToTable("shipping_method_province_rates", "store");
+            entity.HasIndex(e => new { e.ShippingMethodId, e.ProvinceKey }, "ux_shipping_method_province_rate").IsUnique();
+            entity.HasIndex(e => new { e.ShippingMethodId, e.ProvinceKey }, "ix_shipping_method_province_rates_lookup").HasFilter("is_active");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id");
+            entity.Property(e => e.ShippingMethodId).HasColumnName("shipping_method_id");
+            entity.Property(e => e.ProvinceKey).HasMaxLength(160).HasColumnName("province_key");
+            entity.Property(e => e.SurchargeFee).HasPrecision(18, 2).HasColumnName("surcharge_fee");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()").HasColumnName("updated_at");
+            entity.HasOne(e => e.ShippingMethod).WithMany(e => e.ProvinceRates).HasForeignKey(e => e.ShippingMethodId).OnDelete(DeleteBehavior.Restrict).HasConstraintName("shipping_method_province_rates_method_id_fkey");
+            entity.HasOne<UserAccount>().WithMany().HasForeignKey(e => e.CreatedBy).OnDelete(DeleteBehavior.Restrict).HasConstraintName("shipping_method_province_rates_created_by_fkey");
+            entity.HasOne<UserAccount>().WithMany().HasForeignKey(e => e.UpdatedBy).OnDelete(DeleteBehavior.Restrict).HasConstraintName("shipping_method_province_rates_updated_by_fkey");
+        });
+
         modelBuilder.Entity<SalesOrder>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("sales_orders_pkey");
@@ -1006,6 +1343,24 @@ public partial class StoreDbContext : DbContext
             entity.Property(e => e.TotalAmount)
                 .HasPrecision(18, 2)
                 .HasColumnName("total_amount");
+            entity.Property(e => e.SubtotalAmount)
+                .HasPrecision(18, 2)
+                .HasColumnName("subtotal_amount");
+            entity.Property(e => e.VoucherDiscountAmount)
+                .HasPrecision(18, 2)
+                .HasDefaultValue(0m)
+                .HasColumnName("voucher_discount_amount");
+            entity.Property(e => e.VoucherCodeSnapshot)
+                .HasMaxLength(32)
+                .HasColumnName("voucher_code_snapshot");
+            entity.Property(e => e.ShippingMethodId).HasColumnName("shipping_method_id");
+            entity.Property(e => e.ShippingMethodCodeSnapshot).HasMaxLength(32).HasDefaultValue("LEGACY_FREE").HasColumnName("shipping_method_code_snapshot");
+            entity.Property(e => e.ShippingMethodNameSnapshot).HasMaxLength(120).HasDefaultValue("Miễn phí (đơn lịch sử)").HasColumnName("shipping_method_name_snapshot");
+            entity.Property(e => e.ShippingFee).HasPrecision(18, 2).HasDefaultValue(0m).HasColumnName("shipping_fee");
+            entity.Property(e => e.ShippingEstimatedMinDays).HasColumnName("shipping_estimated_min_days");
+            entity.Property(e => e.ShippingEstimatedMaxDays).HasColumnName("shipping_estimated_max_days");
+            entity.Property(e => e.ShippingDestinationProvinceKey).HasMaxLength(160).HasColumnName("shipping_destination_province_key");
+            entity.Property(e => e.ShippingMethodRevision).HasColumnName("shipping_method_revision");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("now()")
                 .HasColumnName("updated_at");
@@ -1018,6 +1373,11 @@ public partial class StoreDbContext : DbContext
             entity.HasOne(d => d.ShippingAddress).WithMany(p => p.SalesOrders)
                 .HasForeignKey(d => d.ShippingAddressId)
                 .HasConstraintName("sales_orders_shipping_address_id_fkey");
+
+            entity.HasOne(d => d.ShippingMethod).WithMany(p => p.SalesOrders)
+                .HasForeignKey(d => d.ShippingMethodId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("sales_orders_shipping_method_id_fkey");
         });
 
         modelBuilder.Entity<SalesOrderItem>(entity =>
@@ -1229,6 +1589,7 @@ public partial class StoreDbContext : DbContext
                 .HasMaxLength(160)
                 .HasColumnName("full_name");
             entity.Property(e => e.LockedAt).HasColumnName("locked_at");
+            entity.Property(e => e.EmailVerifiedAt).HasColumnName("email_verified_at");
             entity.Property(e => e.PasswordHash).HasColumnName("password_hash");
             entity.Property(e => e.Phone)
                 .HasMaxLength(30)
@@ -1242,6 +1603,452 @@ public partial class StoreDbContext : DbContext
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("user_accounts_role_id_fkey");
+        });
+
+        modelBuilder.Entity<ProductReview>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("product_reviews_pkey");
+
+            entity.ToTable("product_reviews", "store");
+
+            entity.HasIndex(e => new { e.CustomerId, e.ProductId }, "ux_product_reviews_active_customer_product")
+                .IsUnique()
+                .HasFilter("(deleted_at IS NULL)");
+
+            entity.HasIndex(e => new { e.ProductId, e.CreatedAt, e.Id }, "ix_product_reviews_public_product")
+                .IsDescending(false, true, false)
+                .HasFilter("(review_status = 'PUBLISHED'::text AND deleted_at IS NULL)");
+
+            entity.HasIndex(e => new { e.ReviewStatus, e.CreatedAt, e.Id }, "ix_product_reviews_moderation")
+                .IsDescending(false, true, false)
+                .HasFilter("(deleted_at IS NULL)");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.QualifyingOrderItemId).HasColumnName("qualifying_order_item_id");
+            entity.Property(e => e.Rating).HasColumnName("rating");
+            entity.Property(e => e.Content)
+                .HasMaxLength(2000)
+                .HasColumnName("content");
+            entity.Property(e => e.ReviewStatus)
+                .HasMaxLength(20)
+                .HasDefaultValueSql("'PUBLISHED'::text")
+                .HasColumnName("review_status");
+            entity.Property(e => e.ModeratedBy).HasColumnName("moderated_by");
+            entity.Property(e => e.ModeratedAt).HasColumnName("moderated_at");
+            entity.Property(e => e.ModerationReason)
+                .HasMaxLength(500)
+                .HasColumnName("moderation_reason");
+            entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.ProductReviews)
+                .HasForeignKey(d => d.CustomerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("product_reviews_customer_id_fkey");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.ProductReviews)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("product_reviews_product_id_fkey");
+
+            entity.HasOne(d => d.QualifyingOrderItem).WithMany(p => p.ProductReviews)
+                .HasForeignKey(d => d.QualifyingOrderItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("product_reviews_qualifying_order_item_id_fkey");
+
+            entity.HasOne(d => d.ModeratedByNavigation).WithMany(p => p.ProductReviewModeratedByNavigations)
+                .HasForeignKey(d => d.ModeratedBy)
+                .HasConstraintName("product_reviews_moderated_by_fkey");
+        });
+
+        modelBuilder.Entity<CustomerWishlistItem>(entity =>
+        {
+            entity.HasKey(e => new { e.CustomerId, e.ProductId }).HasName("customer_wishlist_items_pkey");
+
+            entity.ToTable("customer_wishlist_items", "store");
+
+            entity.HasIndex(e => new { e.CustomerId, e.CreatedAt, e.ProductId }, "ix_customer_wishlist_created")
+                .IsDescending(false, true, false);
+
+            entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("created_at");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.WishlistItems)
+                .HasForeignKey(d => d.CustomerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("customer_wishlist_items_customer_id_fkey");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.WishlistItems)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("customer_wishlist_items_product_id_fkey");
+        });
+
+        modelBuilder.Entity<Voucher>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("vouchers_pkey");
+
+            entity.ToTable("vouchers", "store");
+
+            entity.HasIndex(e => e.Code, "ux_vouchers_upper_code").IsUnique();
+            entity.HasIndex(e => new { e.VoucherStatus, e.StartsAt, e.EndsAt }, "ix_vouchers_status_dates");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.Code)
+                .HasMaxLength(32)
+                .HasColumnName("code");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .HasDefaultValue("")
+                .HasColumnName("name");
+            entity.Property(e => e.VoucherStatus)
+                .HasDefaultValue("DRAFT")
+                .HasColumnName("voucher_status");
+            entity.Property(e => e.DiscountType)
+                .HasColumnName("discount_type");
+            entity.Property(e => e.DiscountValue)
+                .HasPrecision(18, 2)
+                .HasColumnName("discount_value");
+            entity.Property(e => e.MaxDiscountAmount)
+                .HasPrecision(18, 2)
+                .HasColumnName("max_discount_amount");
+            entity.Property(e => e.MinimumOrderAmount)
+                .HasPrecision(18, 2)
+                .HasDefaultValue(0m)
+                .HasColumnName("minimum_order_amount");
+            entity.Property(e => e.TotalUsageLimit)
+                .HasColumnName("total_usage_limit");
+            entity.Property(e => e.PerCustomerLimit)
+                .HasColumnName("per_customer_limit");
+            entity.Property(e => e.UsageHeld)
+                .HasDefaultValue(0)
+                .HasColumnName("usage_held");
+            entity.Property(e => e.UsageConsumed)
+                .HasDefaultValue(0)
+                .HasColumnName("usage_consumed");
+            entity.Property(e => e.BudgetTotal)
+                .HasPrecision(18, 2)
+                .HasColumnName("budget_total");
+            entity.Property(e => e.BudgetHeld)
+                .HasPrecision(18, 2)
+                .HasDefaultValue(0m)
+                .HasColumnName("budget_held");
+            entity.Property(e => e.BudgetConsumed)
+                .HasPrecision(18, 2)
+                .HasDefaultValue(0m)
+                .HasColumnName("budget_consumed");
+            entity.Property(e => e.StartsAt).HasColumnName("starts_at");
+            entity.Property(e => e.EndsAt).HasColumnName("ends_at");
+            entity.Property(e => e.ActivatedAt).HasColumnName("activated_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.ActivatedBy).HasColumnName("activated_by");
+            entity.Property(e => e.Revision)
+                .HasDefaultValue(0)
+                .HasColumnName("revision");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.VouchersCreated)
+                .HasForeignKey(d => d.CreatedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("vouchers_created_by_fkey");
+
+            entity.HasOne(d => d.ActivatedByNavigation).WithMany(p => p.VouchersActivated)
+                .HasForeignKey(d => d.ActivatedBy)
+                .HasConstraintName("vouchers_activated_by_fkey");
+        });
+
+        modelBuilder.Entity<VoucherRedemption>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("voucher_redemptions_pkey");
+
+            entity.ToTable("voucher_redemptions", "store");
+
+            entity.HasIndex(e => e.OrderId, "ux_voucher_redemptions_order_id").IsUnique();
+            entity.HasIndex(e => new { e.VoucherId, e.CustomerId, e.RedemptionStatus }, "ix_voucher_redemptions_voucher_customer_status");
+            entity.HasIndex(e => new { e.VoucherId, e.RedemptionStatus }, "ix_voucher_redemptions_voucher_status");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.VoucherId).HasColumnName("voucher_id");
+            entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.SubtotalSnapshot)
+                .HasPrecision(18, 2)
+                .HasColumnName("subtotal_snapshot");
+            entity.Property(e => e.DiscountAmount)
+                .HasPrecision(18, 2)
+                .HasColumnName("discount_amount");
+            entity.Property(e => e.RedemptionStatus)
+                .HasDefaultValue("HELD")
+                .HasColumnName("redemption_status");
+            entity.Property(e => e.HeldAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("held_at");
+            entity.Property(e => e.ConsumedAt).HasColumnName("consumed_at");
+            entity.Property(e => e.ReleasedAt).HasColumnName("released_at");
+            entity.Property(e => e.ReleaseReason)
+                .HasMaxLength(100)
+                .HasColumnName("release_reason");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.Voucher).WithMany(p => p.VoucherRedemptions)
+                .HasForeignKey(d => d.VoucherId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("voucher_redemptions_voucher_id_fkey");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.VoucherRedemptions)
+                .HasForeignKey(d => d.CustomerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("voucher_redemptions_customer_id_fkey");
+
+            entity.HasOne(d => d.Order).WithOne(p => p.VoucherRedemption)
+                .HasForeignKey<VoucherRedemption>(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("voucher_redemptions_order_id_fkey");
+        });
+
+        modelBuilder.Entity<OrderReturnRequest>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("order_return_requests_pkey");
+
+            entity.ToTable("order_return_requests", "store");
+
+            entity.HasIndex(e => e.OrderId, "ux_order_return_requests_order_id").IsUnique();
+            entity.HasIndex(e => new { e.ReturnStatus, e.RequestedAt, e.Id }, "ix_order_return_requests_queue");
+            entity.HasIndex(e => new { e.CustomerId, e.RequestedAt }, "ix_order_return_requests_customer");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+            entity.Property(e => e.ReturnStatus)
+                .HasMaxLength(32)
+                .HasDefaultValue("REQUESTED")
+                .HasColumnName("return_status");
+            entity.Property(e => e.ResolutionType).HasMaxLength(16).HasDefaultValue("RETURN").HasColumnName("resolution_type");
+            entity.Property(e => e.ReasonCode)
+                .HasMaxLength(32)
+                .HasColumnName("reason_code");
+            entity.Property(e => e.CustomerNote).HasColumnName("customer_note");
+            entity.Property(e => e.RequestedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("requested_at");
+            entity.Property(e => e.DecidedBy).HasColumnName("decided_by");
+            entity.Property(e => e.DecidedAt).HasColumnName("decided_at");
+            entity.Property(e => e.DecisionNote).HasColumnName("decision_note");
+            entity.Property(e => e.ReceivedBy).HasColumnName("received_by");
+            entity.Property(e => e.ReceivedAt).HasColumnName("received_at");
+            entity.Property(e => e.ReceivedEvidence).HasColumnName("received_evidence");
+            entity.Property(e => e.InspectedBy).HasColumnName("inspected_by");
+            entity.Property(e => e.InspectedAt).HasColumnName("inspected_at");
+            entity.Property(e => e.InspectionNote).HasMaxLength(500).HasColumnName("inspection_note");
+            entity.Property(e => e.RefundAmount)
+                .HasPrecision(18, 2)
+                .HasColumnName("refund_amount");
+            entity.Property(e => e.Revision)
+                .HasDefaultValue(0)
+                .HasColumnName("revision");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.Order).WithOne(p => p.ReturnRequest)
+                .HasForeignKey<OrderReturnRequest>(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("order_return_requests_order_id_fkey");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.ReturnRequestsCreated)
+                .HasForeignKey(d => d.CustomerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("order_return_requests_customer_id_fkey");
+
+            entity.HasOne(d => d.DecidedByAdmin).WithMany(p => p.ReturnRequestsDecided)
+                .HasForeignKey(d => d.DecidedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("order_return_requests_decided_by_fkey");
+
+            entity.HasOne(d => d.ReceivedByStaff).WithMany(p => p.ReturnRequestsReceived)
+                .HasForeignKey(d => d.ReceivedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("order_return_requests_received_by_fkey");
+
+            entity.HasOne(d => d.InspectedByStaff).WithMany(p => p.ReturnRequestsInspected)
+                .HasForeignKey(d => d.InspectedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("order_return_requests_inspected_by_fkey");
+        });
+
+        modelBuilder.Entity<OrderReturnRequestLine>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("order_return_request_lines_pkey");
+
+            entity.ToTable("order_return_request_lines", "store");
+
+            entity.HasIndex(e => new { e.ReturnRequestId, e.OrderItemId }, "ux_order_return_request_lines").IsUnique();
+            entity.HasIndex(e => e.ReturnRequestId, "ix_order_return_request_lines_return");
+            entity.HasIndex(e => e.ProductSkuId, "ix_order_return_request_lines_sku");
+            entity.HasIndex(e => e.OrderItemId, "ix_order_return_request_lines_order_item");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.ReturnRequestId).HasColumnName("return_request_id");
+            entity.Property(e => e.OrderItemId).HasColumnName("order_item_id");
+            entity.Property(e => e.ProductSkuId).HasColumnName("product_sku_id");
+            entity.Property(e => e.RequestedQty).HasColumnName("requested_qty");
+            entity.Property(e => e.ProductTitleSnapshot)
+                .HasMaxLength(255)
+                .HasColumnName("product_title_snapshot");
+            entity.Property(e => e.SkuCodeSnapshot)
+                .HasMaxLength(64)
+                .HasColumnName("sku_code_snapshot");
+            entity.Property(e => e.OptionLabelSnapshot)
+                .HasMaxLength(100)
+                .HasColumnName("option_label_snapshot");
+            entity.Property(e => e.UnitPrice)
+                .HasPrecision(18, 2)
+                .HasColumnName("unit_price");
+            entity.Property(e => e.GrossAmount)
+                .HasPrecision(18, 2)
+                .HasColumnName("gross_amount");
+            entity.Property(e => e.AllocatedVoucherDiscount)
+                .HasPrecision(18, 2)
+                .HasDefaultValue(0m)
+                .HasColumnName("allocated_voucher_discount");
+            entity.Property(e => e.RefundAmount)
+                .HasPrecision(18, 2)
+                .HasColumnName("refund_amount");
+            entity.Property(e => e.RestockQty).HasColumnName("restock_qty");
+            entity.Property(e => e.QuarantineQty).HasColumnName("quarantine_qty");
+            entity.Property(e => e.DamagedQty).HasColumnName("damaged_qty");
+            entity.Property(e => e.ScrappedQty).HasColumnName("scrapped_qty");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("created_at");
+
+            entity.HasOne(d => d.ReturnRequest).WithMany(p => p.Lines)
+                .HasForeignKey(d => d.ReturnRequestId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("order_return_request_lines_return_request_id_fkey");
+
+            entity.HasOne(d => d.OrderItem).WithMany(p => p.ReturnRequestLines)
+                .HasForeignKey(d => d.OrderItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("order_return_request_lines_order_item_id_fkey");
+
+            entity.HasOne(d => d.ProductSku).WithMany(p => p.ReturnRequestLines)
+                .HasForeignKey(d => d.ProductSkuId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("order_return_request_lines_product_sku_id_fkey");
+        });
+
+        modelBuilder.Entity<OrderExchangeLine>(entity =>
+        {
+            entity.ToTable("order_exchange_lines", "store");
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.ReturnRequestLineId).IsUnique();
+            entity.HasIndex(e => new { e.ReturnRequestId, e.TargetSkuId }).IsUnique();
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()").HasColumnName("updated_at");
+            entity.Property(e => e.ReturnRequestId).HasColumnName("return_request_id");
+            entity.Property(e => e.ReturnRequestLineId).HasColumnName("return_request_line_id");
+            entity.Property(e => e.SourceSkuId).HasColumnName("source_sku_id");
+            entity.Property(e => e.TargetSkuId).HasColumnName("target_sku_id");
+            entity.Property(e => e.Quantity).HasColumnName("quantity");
+            entity.Property(e => e.TargetSkuCodeSnapshot).HasMaxLength(64).HasColumnName("target_sku_code_snapshot");
+            entity.Property(e => e.TargetOptionLabelSnapshot).HasMaxLength(100).HasColumnName("target_option_label_snapshot");
+            entity.Property(e => e.TargetRegularPriceSnapshot).HasPrecision(18, 2).HasColumnName("target_regular_price_snapshot");
+            entity.HasOne(e => e.ReturnRequest).WithMany(e => e.ExchangeLines).HasForeignKey(e => e.ReturnRequestId);
+            entity.HasOne(e => e.ReturnRequestLine).WithOne(e => e.ExchangeLine).HasForeignKey<OrderExchangeLine>(e => e.ReturnRequestLineId);
+            entity.HasOne(e => e.SourceSku).WithMany().HasForeignKey(e => e.SourceSkuId).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.TargetSku).WithMany().HasForeignKey(e => e.TargetSkuId).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<ExchangeStockAllocation>(entity =>
+        {
+            entity.ToTable("exchange_stock_allocations", "store");
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.ExchangeLineId).IsUnique();
+            entity.HasIndex(e => new { e.ReturnRequestId, e.ProductSkuId }).IsUnique();
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()").HasColumnName("updated_at");
+            entity.Property(e => e.ReturnRequestId).HasColumnName("return_request_id");
+            entity.Property(e => e.ExchangeLineId).HasColumnName("exchange_line_id");
+            entity.Property(e => e.ProductSkuId).HasColumnName("product_sku_id");
+            entity.Property(e => e.Quantity).HasColumnName("quantity");
+            entity.Property(e => e.AllocationStatus).HasMaxLength(16).HasColumnName("allocation_status");
+            entity.Property(e => e.ReservedAt).HasColumnName("reserved_at");
+            entity.Property(e => e.ExpiresAt).HasColumnName("expires_at");
+            entity.Property(e => e.ReleasedAt).HasColumnName("released_at");
+            entity.Property(e => e.ReleaseReason).HasMaxLength(100).HasColumnName("release_reason");
+            entity.Property(e => e.Revision).HasColumnName("revision");
+            entity.HasOne(e => e.ReturnRequest).WithMany(e => e.ExchangeAllocations).HasForeignKey(e => e.ReturnRequestId);
+            entity.HasOne(e => e.ExchangeLine).WithOne(e => e.Allocation).HasForeignKey<ExchangeStockAllocation>(e => e.ExchangeLineId);
+            entity.HasOne(e => e.ProductSku).WithMany().HasForeignKey(e => e.ProductSkuId).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<ExchangeShipment>(entity =>
+        {
+            entity.ToTable("exchange_shipments", "store");
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.ReturnRequestId).IsUnique();
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()").HasColumnName("updated_at");
+            entity.Property(e => e.ReturnRequestId).HasColumnName("return_request_id");
+            entity.Property(e => e.ShipmentStatus).HasMaxLength(24).HasColumnName("shipment_status");
+            entity.Property(e => e.RedeliveryCount).HasColumnName("redelivery_count");
+            entity.Property(e => e.ReturnStockCompleted).HasColumnName("return_stock_completed");
+            entity.Property(e => e.ShippedAt).HasColumnName("shipped_at");
+            entity.Property(e => e.DeliveredAt).HasColumnName("delivered_at");
+            entity.HasOne(e => e.ReturnRequest).WithOne(e => e.ExchangeShipment).HasForeignKey<ExchangeShipment>(e => e.ReturnRequestId);
+        });
+
+        modelBuilder.Entity<ExchangeDeliveryAttempt>(entity =>
+        {
+            entity.ToTable("exchange_delivery_attempts", "store");
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.ExchangeShipmentId, e.AttemptNo }).IsUnique();
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()").HasColumnName("id");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()").HasColumnName("updated_at");
+            entity.Property(e => e.ExchangeShipmentId).HasColumnName("exchange_shipment_id");
+            entity.Property(e => e.AttemptNo).HasColumnName("attempt_no");
+            entity.Property(e => e.Result).HasMaxLength(16).HasColumnName("result");
+            entity.Property(e => e.Note).HasColumnName("note");
+            entity.Property(e => e.FinishedAt).HasColumnName("finished_at");
+            entity.HasOne(e => e.ExchangeShipment).WithMany(e => e.DeliveryAttempts).HasForeignKey(e => e.ExchangeShipmentId);
         });
 
         OnModelCreatingPartial(modelBuilder);

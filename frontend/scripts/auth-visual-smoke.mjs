@@ -6,7 +6,7 @@ const output = new URL('../playwright-artifacts/', import.meta.url)
 await mkdir(output, { recursive: true })
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 try {
-  for (const [device, viewport] of [['desktop', { width: 1440, height: 1000 }], ['tablet', { width: 820, height: 1180 }], ['mobile', { width: 390, height: 844 }]]) {
+  for (const [device, viewport] of [['desktop', { width: 1440, height: 1000 }], ['tablet', { width: 820, height: 1180 }], ['mobile', { width: 390, height: 844 }], ['small', { width: 320, height: 740 }]]) {
     const context = await browser.newContext({ viewport, reducedMotion: 'reduce' })
     const page = await context.newPage()
     const errors = []

@@ -10,14 +10,29 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     volumes:
       - postgres-data:/var/lib/postgresql
-      - ./database/001_create_schema.sql:/docker-entrypoint-initdb.d/001_create_schema.sql:ro
-      - ./database/002_auth_sessions.sql:/docker-entrypoint-initdb.d/002_auth_sessions.sql:ro
-      - ./database/003_flash_sale_cart_offer.sql:/docker-entrypoint-initdb.d/003_flash_sale_cart_offer.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 12
+    networks: [backend]
+
+  migrator:
+    build:
+      context: .
+      dockerfile: HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Dockerfile
+    restart: "no"
+    command: ["--migrate-database"]
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__StoreDb: Host=db;Port=5432;Database=${POSTGRES_DB:-highcommerce};Username=${POSTGRES_USER:-highcommerce};Password=${POSTGRES_PASSWORD}
+      DatabaseMigrations__LockTimeoutSeconds: "120"
+    depends_on:
+      db:
+        condition: service_healthy
+    tmpfs:
+      - /tmp
+    read_only: true
     networks: [backend]
 
   api:
@@ -32,11 +47,32 @@ services:
       DataProtection__KeysPath: /var/lib/hcc/keys
       Security__RequireHttps: "false"
       AllowedHosts: "*"
+      AuthEmail__SmtpHost: mailpit
+      AuthEmail__SmtpPort: "1025"
+      AuthEmail__SenderAddress: no-reply@hcc.local
+      AuthEmail__FrontendBaseUrl: ${PUBLIC_WEB_URL:-http://localhost:8080}
+      PayOs__Enabled: ${PAYOS_ENABLED:-false}
+      PayOs__ClientId: ${PAYOS_CLIENT_ID:-}
+      PayOs__ApiKey: ${PAYOS_API_KEY:-}
+      PayOs__ChecksumKey: ${PAYOS_CHECKSUM_KEY:-}
+      PayOs__ReturnUrl: ${PAYOS_RETURN_URL:-http://localhost:8080/payment/payos/return}
+      PayOs__CancelUrl: ${PAYOS_CANCEL_URL:-http://localhost:8080/payment/payos/return?cancel=1}
+      # The API is not exposed directly. Trust only the deterministic Nginx
+      # address so X-Forwarded-For can safely partition per-client rate limits.
+      ReverseProxy__KnownProxies__0: 172.31.240.10
+      ProductMedia__RootPath: /var/lib/hcc/media
+      ProductMedia__MaxFileBytes: "8388608"
+      CarrierLabels__RootPath: /var/lib/hcc/carrier-labels
+      CarrierLabels__MaxFileBytes: "5242880"
     depends_on:
-      db:
-        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+      mailpit:
+        condition: service_started
     volumes:
       - data-protection-keys:/var/lib/hcc/keys
+      - product-media:/var/lib/hcc/media
+      - carrier-labels:/var/lib/hcc/carrier-labels
     tmpfs:
       - /tmp
     read_only: true
@@ -64,13 +100,28 @@ services:
       - /var/run
       - /tmp
     read_only: true
+    networks:
+      backend:
+        ipv4_address: 172.31.240.10
+
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - "${MAILPIT_HTTP_PORT:-8025}:8025"
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
     networks: [backend]
 
 networks:
   backend:
     internal: false
+    ipam:
+      config:
+        - subnet: 172.31.240.0/24
 
 volumes:
   postgres-data:
   data-protection-keys:
+  product-media:
+  carrier-labels:
 

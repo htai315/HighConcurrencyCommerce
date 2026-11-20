@@ -1,0 +1,25 @@
+# =============================================================================
+# CẢNH BÁO BẢO MẬT: FILE NÀY CHỈ DÙNG CHO MÔI TRƯỜNG DEMO / LOCAL TESTING.
+# KHÔNG SỬ DỤNG TRÊN MÔI TRƯỜNG PRODUCTION HOẶC CHỨA DỮ LIỆU THỰC TẾ!
+#
+# Cách sử dụng:
+#   docker compose -f compose.yaml -f compose.demo.yaml up -d --build
+# Hoặc chạy script một chạm:
+#   .\scripts\demo-up.ps1 (PowerShell) hoặc ./scripts/demo-up.sh (Bash)
+# =============================================================================
+name: high-concurrency-commerce
+
+services:
+  api:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Testing
+      DemoSeed__Enabled: "true"
+      # E2E chạy nhiều luồng xác thực từ cùng địa chỉ IP của reverse proxy.
+      # Chỉ nới giới hạn trong override demo/testing; production giữ mặc định an toàn.
+      Auth__LoginPermitLimit: "1000"
+      Auth__RegisterPermitLimit: "1000"
+      Auth__PasswordResetPermitLimit: "1000"
+      Auth__EmailVerificationResendPermitLimit: "1000"
+      Auth__AuthRecoveryConfirmPermitLimit: "1000"
+      Auth__StaffInvitationAcceptPermitLimit: "1000"
+

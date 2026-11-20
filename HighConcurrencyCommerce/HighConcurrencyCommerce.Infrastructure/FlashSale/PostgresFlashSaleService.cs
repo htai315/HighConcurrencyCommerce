@@ -428,9 +428,6 @@ public sealed class PostgresFlashSaleService(StoreDbContext db, TimeProvider tim
 
         await db.Entry(campaign)
             .Collection(c => c.FlashSaleOffers)
-            .Query()
-            .Include(o => o.ProductSku)
-                .ThenInclude(s => s.Product)
             .LoadAsync(ct);
 
         if (campaign.FlashSaleOffers.Count == 0)
@@ -438,9 +435,23 @@ public sealed class PostgresFlashSaleService(StoreDbContext db, TimeProvider tim
             throw new FlashSaleFailure("CANNOT_PUBLISH", "Chiến dịch phải có ít nhất 1 sản phẩm khuyến mãi trước khi công bố.");
         }
 
+        var skuIds = campaign.FlashSaleOffers.Select(o => o.ProductSkuId).Distinct().OrderBy(id => id).ToArray();
+        await db.Database.SqlQuery<Guid>($"SELECT id AS \"Value\" FROM store.product_skus WHERE id = ANY({skuIds}) ORDER BY id FOR UPDATE").ToListAsync(ct);
+        await db.Database.SqlQuery<Guid>($"SELECT product_sku_id AS \"Value\" FROM store.inventory_balances WHERE product_sku_id = ANY({skuIds}) ORDER BY product_sku_id FOR UPDATE").ToListAsync(ct);
+
+        var freshSkus = await db.ProductSkus
+            .Include(s => s.Product)
+            .Include(s => s.InventoryBalance)
+            .Where(s => skuIds.Contains(s.Id))
+            .ToDictionaryAsync(s => s.Id, ct);
+
         foreach (var offer in campaign.FlashSaleOffers)
         {
-            var sku = offer.ProductSku;
+            if (!freshSkus.TryGetValue(offer.ProductSkuId, out var sku))
+            {
+                throw new FlashSaleFailure("CANNOT_PUBLISH", "Không tìm thấy biến thể SKU tương ứng.");
+            }
+
             if (sku.SkuStatus != "ACTIVE" || sku.Product.PublicationStatus != "PUBLISHED")
             {
                 throw new FlashSaleFailure("CANNOT_PUBLISH", $"Sản phẩm {sku.SkuCode} không ở trạng thái mở bán hợp lệ.");
@@ -451,11 +462,7 @@ public sealed class PostgresFlashSaleService(StoreDbContext db, TimeProvider tim
                 throw new FlashSaleFailure("CANNOT_PUBLISH", $"Giá sale của SKU {sku.SkuCode} ({offer.SalePrice:N0} đ) phải nhỏ hơn giá gốc ({sku.RegularPrice:N0} đ).");
             }
 
-            var balance = await db.InventoryBalances
-                .AsNoTracking()
-                .FirstOrDefaultAsync(b => b.ProductSkuId == offer.ProductSkuId, ct);
-
-            var availableQty = balance?.AvailableQty ?? 0;
+            var availableQty = sku.InventoryBalance?.AvailableQty ?? 0;
             if (offer.QuotaTotal > availableQty)
             {
                 throw new FlashSaleFailure("CANNOT_PUBLISH", $"Quota của SKU {sku.SkuCode} ({offer.QuotaTotal}) vượt quá tồn kho khả dụng ({availableQty}).");

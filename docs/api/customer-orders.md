@@ -8,7 +8,7 @@ Contract đã triển khai cho trung tâm đơn hàng của Customer. Base path:
 - `customer_id` luôn lấy từ session, không nhận từ request.
 - Truy cập đơn của Customer khác trả `404`, không tiết lộ sự tồn tại.
 - Response có `Cache-Control: no-store`.
-- Tên sản phẩm, SKU, giá, người nhận, số điện thoại và địa chỉ là snapshot tại thời điểm checkout.
+- Tên sản phẩm, SKU, giá, người nhận, số điện thoại, địa chỉ và phương thức vận chuyển là snapshot tại thời điểm checkout.
 - Order, Payment, Reservation và Shipment là các state machine độc lập; client không được suy diễn trạng thái này từ trạng thái kia.
 
 ## GET `/api/v1/orders?page=1&pageSize=20`
@@ -33,6 +33,11 @@ Trả lịch sử đơn của Customer hiện tại, mới nhất trước. `pag
       "recipientName": "Nguyễn Văn A",
       "recipientPhone": "0901234567",
       "shippingAddress": "12 Nguyễn Trãi, Quận 1, TP.HCM",
+      "shippingFee": 30000,
+      "shippingMethodCode": "STANDARD",
+      "shippingMethodName": "Giao hàng tiêu chuẩn",
+      "shippingEstimatedMinDays": 2,
+      "shippingEstimatedMaxDays": 4,
       "shipmentId": null,
       "shipmentStatus": null,
       "shippedAt": null,

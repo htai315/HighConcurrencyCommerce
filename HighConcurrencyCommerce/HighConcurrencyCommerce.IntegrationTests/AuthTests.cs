@@ -25,10 +25,14 @@ public sealed class AuthTests(CatalogFixture fixture) : IClassFixture<CatalogFix
         return await client.SendAsync(request);
     }
 
-    private static async Task Register(HttpClient client, string email)
+    private async Task Register(HttpClient client, string email, bool verify = true)
     {
         using var response = await Send(client, "auth/register", new { email, password = Password, confirmPassword = Password, fullName = "Test Customer", role = "ADMIN" });
         Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
+        if (verify)
+        {
+            await fixture.VerifyUserAsync(email.Trim().ToLowerInvariant());
+        }
     }
 
     private static async Task<JsonElement> Login(HttpClient client, string email, string password = Password)
@@ -62,7 +66,7 @@ public sealed class AuthTests(CatalogFixture fixture) : IClassFixture<CatalogFix
         var email = Email();
         using var first = fixture.CreateClient();
         using var second = fixture.CreateClient();
-        await Task.WhenAll(Register(first, email), Register(second, email.ToUpperInvariant()));
+        await Task.WhenAll(Register(first, email, verify: false), Register(second, email.ToUpperInvariant(), verify: false));
         await using var db = await fixture.OpenDatabaseAsync();
         await using var query = new NpgsqlCommand("SELECT count(*) FROM store.user_accounts WHERE lower(email)=@email", db);
         query.Parameters.AddWithValue("email", email);

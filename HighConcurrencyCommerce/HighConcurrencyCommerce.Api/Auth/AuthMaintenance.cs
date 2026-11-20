@@ -4,6 +4,8 @@ using HighConcurrencyCommerce.Application.Auth;
 using HighConcurrencyCommerce.Infrastructure.Auth;
 using HighConcurrencyCommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Npgsql;
 
 namespace HighConcurrencyCommerce.Api.Auth;
@@ -14,16 +16,43 @@ public static class AuthMaintenance
     {
         await using var scope = services.CreateAsyncScope();
         var db = scope.ServiceProvider.GetRequiredService<StoreDbContext>();
+        var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+        var env = scope.ServiceProvider.GetRequiredService<IHostEnvironment>();
+
         if (command == "--migrate-auth")
         {
-            var connection = new NpgsqlConnectionStringBuilder(db.Database.GetConnectionString());
-            if (connection.Host is not ("localhost" or "127.0.0.1" or "::1"))
-                throw new InvalidOperationException("Lệnh migrate-auth chỉ dùng PostgreSQL local. Production cần migration review riêng.");
-            using var stream = typeof(AdminBootstrap).Assembly.GetManifestResourceStream("AuthSchema.sql")
-                ?? throw new InvalidOperationException("Missing AuthSchema.sql");
+            if (env.IsProduction())
+                throw new InvalidOperationException("Lệnh migrate-auth chỉ dùng môi trường Development/Testing. Production cần migration review riêng.");
+            foreach (var schema in new[]
+            {
+                "Database.Migrations.002_auth_sessions.sql",
+                "Database.Migrations.004_google_auth.sql",
+                "Database.Migrations.005_auth_email_recovery.sql",
+                "Database.Migrations.006_internal_staff_invites.sql"
+            })
+            {
+                using var stream = typeof(AdminBootstrap).Assembly.GetManifestResourceStream(schema)
+                    ?? throw new InvalidOperationException($"Missing {schema}");
+                using var reader = new StreamReader(stream);
+                await db.Database.ExecuteSqlRawAsync(await reader.ReadToEndAsync());
+            }
+            Console.WriteLine("Đã áp dụng schema auth local (002, 004, 005 & 006). Không tạo tài khoản.");
+            return;
+        }
+        if (command == "--seed-demo")
+        {
+            var isDemoSeedEnabled = config.GetValue<bool>("DemoSeed:Enabled");
+            var isNonProd = env.IsDevelopment() || env.EnvironmentName is "Testing" or "Local";
+            if (!isDemoSeedEnabled || !isNonProd)
+            {
+                throw new InvalidOperationException(
+                    "Lệnh seed-demo bị từ chối: Yêu cầu đồng thời DemoSeed:Enabled=true VÀ môi trường không phải Production (Development/Testing/Local). Tuyệt đối không chạy trên môi trường thực tế.");
+            }
+            using var stream = typeof(AdminBootstrap).Assembly.GetManifestResourceStream("DemoSeed.sql")
+                ?? throw new InvalidOperationException("Missing DemoSeed.sql");
             using var reader = new StreamReader(stream);
             await db.Database.ExecuteSqlRawAsync(await reader.ReadToEndAsync());
-            Console.WriteLine("Đã áp dụng schema auth local. Không tạo tài khoản.");
+            Console.WriteLine("Đã áp dụng dữ liệu demo (007_demo_seed.sql): 3 tài khoản demo (Admin/Staff/Customer: DemoPass123!@#), danh mục, sản phẩm, thông số so sánh, SKU và tồn kho.");
             return;
         }
         Console.Write("Email Admin: ");

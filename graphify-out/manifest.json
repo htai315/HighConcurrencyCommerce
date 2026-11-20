@@ -241,40 +241,40 @@
     "ast_empty": true
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Auth/AuthMaintenance.cs": {
-    "mtime": 1793337576.507891,
-    "seen": 1793340872.4312067,
-    "ast_hash": "2287897b360247f4a0826af5e9c8ff4b",
-    "semantic_hash": "2287897b360247f4a0826af5e9c8ff4b"
+    "mtime": 1794103130.8961236,
+    "seen": 1794103165.7287562,
+    "ast_hash": "0dd005dd4b329dd8383c29e8056f6d9e",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Auth/AuthProblems.cs": {
-    "mtime": 1793336136.9322922,
-    "seen": 1793340872.4312067,
-    "ast_hash": "92fb4ad2ba7579f7f82627a062e00c7c",
-    "semantic_hash": "92fb4ad2ba7579f7f82627a062e00c7c"
+    "mtime": 1793680179.7233553,
+    "seen": 1793681786.4285815,
+    "ast_hash": "786a4cf69812c05eaa9fef709c9104ca",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Auth/CsrfFilter.cs": {
-    "mtime": 1793336136.9322922,
-    "seen": 1793340872.4312067,
-    "ast_hash": "af78c04c93ff838b024caa829946924d",
-    "semantic_hash": "af78c04c93ff838b024caa829946924d"
+    "mtime": 1794201337.7407365,
+    "seen": 1794202064.591103,
+    "ast_hash": "f6e8c3ee4dba29bc6897f82ea47a09e2",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Auth/SessionAuthentication.cs": {
-    "mtime": 1793365407.1414928,
-    "seen": 1793365656.7772777,
-    "ast_hash": "bfdadee36e951d0107716c28a69e964a",
+    "mtime": 1794066770.9296749,
+    "seen": 1794067218.5365152,
+    "ast_hash": "d21a316ca75ef6b2def912374b93d28f",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/AuthController.cs": {
-    "mtime": 1793336136.9332914,
-    "seen": 1793340872.4312067,
-    "ast_hash": "094ddafbeb8e8877fb288f272cd06021",
-    "semantic_hash": "094ddafbeb8e8877fb288f272cd06021"
+    "mtime": 1794066770.9296749,
+    "seen": 1794067218.53902,
+    "ast_hash": "52570ee94c4b6e3e0e2693703ad3fcda",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/CatalogController.cs": {
-    "mtime": 1793335208.577683,
-    "seen": 1793340872.4312067,
-    "ast_hash": "130b3924f668930c73a3758832586674",
-    "semantic_hash": "130b3924f668930c73a3758832586674"
+    "mtime": 1794120680.2316597,
+    "seen": 1794121644.5576098,
+    "ast_hash": "aa34b24ea40b9a9efdd3057ae66c462d",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/HighConcurrencyCommerce.Api.csproj": {
     "mtime": 1793333938.479996,
@@ -283,9 +283,9 @@
     "semantic_hash": "59805929e385fc8a31f5d1039d45bc64"
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Program.cs": {
-    "mtime": 1793372834.3862445,
-    "seen": 1793373377.1537018,
-    "ast_hash": "8b2f22280a99f70b4a3ee4a9be1286f8",
+    "mtime": 1794235149.4581904,
+    "seen": 1794236166.7523825,
+    "ast_hash": "f257950878c7bbf61dc00f4bedaabc43",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Properties/launchSettings.json": {
@@ -302,16 +302,16 @@
     "ast_empty": true
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/appsettings.json": {
-    "mtime": 1793365424.0243633,
-    "seen": 1793365656.781271,
-    "ast_hash": "e0b532062af176d66dd190c1b2e41d54",
+    "mtime": 1794201836.6879268,
+    "seen": 1794202064.5992017,
+    "ast_hash": "0ec6cb294ac17676364f11480e36e1fe",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Auth/AuthContracts.cs": {
-    "mtime": 1793337576.507891,
-    "seen": 1793340872.4322221,
-    "ast_hash": "e02da802c6fc9c96027f58846e5e1d28",
-    "semantic_hash": "e02da802c6fc9c96027f58846e5e1d28"
+    "mtime": 1794066770.9286745,
+    "seen": 1794067218.5446167,
+    "ast_hash": "43dc0e7e8d1ed5fc0df974018cba48f7",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Auth/StrongPasswordAttribute.cs": {
     "mtime": 1793337576.5067647,
@@ -320,9 +320,9 @@
     "semantic_hash": "bd3d26d50a07ba1b21a7718dd5c27e9e"
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Catalog/CatalogContracts.cs": {
-    "mtime": 1793353670.480264,
-    "seen": 1793354763.2165322,
-    "ast_hash": "2fc68c95b3b52132b6879fa8af3d8d8a",
+    "mtime": 1794117051.3102162,
+    "seen": 1794119147.8278148,
+    "ast_hash": "929504585b281fa284375aed45e0c90a",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/HighConcurrencyCommerce.Application.csproj": {
@@ -344,40 +344,40 @@
     "semantic_hash": "46b0780bd56312ea2d1bab391f179e89"
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Auth/AdminBootstrap.cs": {
-    "mtime": 1793336515.0783813,
-    "seen": 1793340872.4322221,
-    "ast_hash": "2b569757d024b24d4bbf93c7c9736a2e",
-    "semantic_hash": "2b569757d024b24d4bbf93c7c9736a2e"
+    "mtime": 1793673827.9646807,
+    "seen": 1793675257.9542797,
+    "ast_hash": "9e9d51155a724e6f4d95e4e63983f386",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Auth/PasswordService.cs": {
-    "mtime": 1793336136.9302914,
-    "seen": 1793340872.4322221,
-    "ast_hash": "484ca5829a4bc42eab4df3844c2d5b18",
-    "semantic_hash": "484ca5829a4bc42eab4df3844c2d5b18"
+    "mtime": 1793501920.496779,
+    "seen": 1793502461.6267412,
+    "ast_hash": "e6ed5d22550fc0f8fa8e72e5a7c56a89",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Auth/PostgresAuthService.cs": {
-    "mtime": 1793336136.9302914,
-    "seen": 1793340872.4322221,
-    "ast_hash": "ad64d9d209b197f4a44440818e590da9",
-    "semantic_hash": "ad64d9d209b197f4a44440818e590da9"
+    "mtime": 1794066770.9286745,
+    "seen": 1794067218.5476184,
+    "ast_hash": "2fec28113901f9543c1e0205f84e29dc",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Catalog/PostgresCatalogReader.cs": {
-    "mtime": 1793354790.6135085,
-    "seen": 1793355181.5162027,
-    "ast_hash": "87aa57645b59e01ba179f5ac3e6f4bb7",
+    "mtime": 1794120680.2316597,
+    "seen": 1794121644.5691772,
+    "ast_hash": "0591b4678da4ef6e31bba51e6ebf326e",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/HighConcurrencyCommerce.Infrastructure.csproj": {
-    "mtime": 1793336515.0803611,
-    "seen": 1793340872.4332206,
-    "ast_hash": "58594307b5b5c5f39529072fe0b5e45b",
-    "semantic_hash": "58594307b5b5c5f39529072fe0b5e45b"
+    "mtime": 1794234642.6222017,
+    "seen": 1794236166.7944438,
+    "ast_hash": "0ac9e3c19786112fc62cc769c8345087",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/AuthSession.cs": {
-    "mtime": 1793336136.9282913,
-    "seen": 1793340872.4332206,
-    "ast_hash": "c7e371a085036b1c223ba6eda86a7d03",
-    "semantic_hash": "c7e371a085036b1c223ba6eda86a7d03"
+    "mtime": 1794062201.775427,
+    "seen": 1794062662.6776505,
+    "ast_hash": "c54f717904db688d5187b61f63a17c38",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/AuditLog.cs": {
     "mtime": 1793332220.9045434,
@@ -392,10 +392,10 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/Category.cs": {
-    "mtime": 1793332220.9045434,
-    "seen": 1793340872.4332206,
-    "ast_hash": "0cffab91eea7cb140939aab89831f52c",
-    "semantic_hash": "0cffab91eea7cb140939aab89831f52c"
+    "mtime": 1794024715.533609,
+    "seen": 1794025061.2278576,
+    "ast_hash": "5891d309162cd7312ae8d8e84969d2b1",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/CheckoutRequest.cs": {
     "mtime": 1793332220.9045434,
@@ -434,10 +434,10 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/InAppNotification.cs": {
-    "mtime": 1793332220.9065442,
-    "seen": 1793340872.4342206,
-    "ast_hash": "53dbd466ba77b135aa4d3d61c03042ba",
-    "semantic_hash": "53dbd466ba77b135aa4d3d61c03042ba"
+    "mtime": 1794062201.7729113,
+    "seen": 1794062662.6806948,
+    "ast_hash": "ad593d3c4bd6b6ee09e01ad2f800d45f",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/InventoryAdjustmentRequest.cs": {
     "mtime": 1793332220.9065442,
@@ -446,10 +446,10 @@
     "semantic_hash": "1bd64624a3668bb5936239049134afa5"
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/InventoryBalance.cs": {
-    "mtime": 1793332220.9075434,
-    "seen": 1793340872.4342206,
-    "ast_hash": "40d94c29f173465c607c97f8b0bd990f",
-    "semantic_hash": "40d94c29f173465c607c97f8b0bd990f"
+    "mtime": 1793863869.6008925,
+    "seen": 1793864922.679825,
+    "ast_hash": "ce6632fe09aeef0e7d7a811dabb3f858",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/InventoryMovement.cs": {
     "mtime": 1793332220.9075434,
@@ -458,10 +458,10 @@
     "semantic_hash": "3f409f9a59727e6914a8557e6e2cdef9"
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ManualRefund.cs": {
-    "mtime": 1793332220.9075434,
-    "seen": 1793340872.4342206,
-    "ast_hash": "4a0c7fd33207983193582247a68bb592",
-    "semantic_hash": "4a0c7fd33207983193582247a68bb592"
+    "mtime": 1794234656.6461759,
+    "seen": 1794236166.8154588,
+    "ast_hash": "4f448ba347f32ca15475ed4b7f3b0b86",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/OrderCancellationRequest.cs": {
     "mtime": 1793332220.9085424,
@@ -476,28 +476,28 @@
     "semantic_hash": "e376ed333d09ff7f2f54cb0a37869075"
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/PaymentAttempt.cs": {
-    "mtime": 1793332220.9095447,
-    "seen": 1793340872.4352205,
-    "ast_hash": "3df7a76725db0e7d42d0ec84ddeae61a",
-    "semantic_hash": "3df7a76725db0e7d42d0ec84ddeae61a"
+    "mtime": 1794200881.7393436,
+    "seen": 1794202064.609746,
+    "ast_hash": "5c67634d7bfeaba6954de73e27631b6b",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/PaymentReconciliationCase.cs": {
-    "mtime": 1793332220.9095447,
-    "seen": 1793340872.4352205,
-    "ast_hash": "aaadbbf84cbfb1039f5a908235f4471e",
-    "semantic_hash": "aaadbbf84cbfb1039f5a908235f4471e"
+    "mtime": 1794234656.634652,
+    "seen": 1794236166.8164399,
+    "ast_hash": "b8e15639bcee150bc87bdbf0e9d3dad7",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/PaymentTransaction.cs": {
-    "mtime": 1793332220.910545,
-    "seen": 1793340872.4352205,
-    "ast_hash": "1cae2fa01d9a2267c9921ba4838c8ddf",
-    "semantic_hash": "1cae2fa01d9a2267c9921ba4838c8ddf"
+    "mtime": 1794234656.6472504,
+    "seen": 1794236166.8164399,
+    "ast_hash": "75936447d439fa1a6d504962076b7382",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/Product.cs": {
-    "mtime": 1793332220.9135458,
-    "seen": 1793340872.4352205,
-    "ast_hash": "4686a1aa368cc849374b936b71099b95",
-    "semantic_hash": "4686a1aa368cc849374b936b71099b95"
+    "mtime": 1794024715.5326078,
+    "seen": 1794025061.2303874,
+    "ast_hash": "7927ffb213c31b1e009539d5a492bd81",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ProductImage.cs": {
     "mtime": 1793332220.9255438,
@@ -506,10 +506,10 @@
     "semantic_hash": "2ef46a6fd059eab0678f4a5e988cec9a"
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ProductSku.cs": {
-    "mtime": 1793332220.927548,
-    "seen": 1793340872.4352205,
-    "ast_hash": "5bacc846283bab896ba37e65a9fe6da5",
-    "semantic_hash": "5bacc846283bab896ba37e65a9fe6da5"
+    "mtime": 1794024715.533609,
+    "seen": 1794025061.2313862,
+    "ast_hash": "86951d71dcce54813e2e1a33918869d3",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ProviderCallbackEvent.cs": {
     "mtime": 1793332220.9285493,
@@ -524,22 +524,22 @@
     "semantic_hash": "972c186b7fe01d4ce902708aaf0512a5"
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/SalesOrder.cs": {
-    "mtime": 1793332220.9285493,
-    "seen": 1793340872.4352205,
-    "ast_hash": "c4e0b76837361419ecdcf0413d01473f",
-    "semantic_hash": "c4e0b76837361419ecdcf0413d01473f"
+    "mtime": 1793977416.0313618,
+    "seen": 1793977711.7946284,
+    "ast_hash": "b7a7339e08efd2d3d8375c299c03eef4",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/SalesOrderItem.cs": {
-    "mtime": 1793332220.9297514,
-    "seen": 1793340872.4352205,
-    "ast_hash": "9bb393344612aea282517f207691cdcc",
-    "semantic_hash": "9bb393344612aea282517f207691cdcc"
+    "mtime": 1793843823.102301,
+    "seen": 1793844395.968911,
+    "ast_hash": "f46f07cc716890b88dcd1ac19767a80d",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/Shipment.cs": {
-    "mtime": 1793332220.9297514,
-    "seen": 1793340872.4362204,
-    "ast_hash": "df4d46e5f8166a93a9c7baac3bb033ee",
-    "semantic_hash": "df4d46e5f8166a93a9c7baac3bb033ee"
+    "mtime": 1794013298.2967067,
+    "seen": 1794013648.4643388,
+    "ast_hash": "a5b7763d06aa0522b6a53b253bc22e3b",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ShoppingCart.cs": {
     "mtime": 1793332220.9307604,
@@ -560,22 +560,22 @@
     "semantic_hash": "ef91f07597e606f9641a3ebdd463ccdb"
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/UserAccount.cs": {
-    "mtime": 1793351289.024621,
-    "seen": 1793352208.0506814,
-    "ast_hash": "664f3d9189b78e8fa48e6d5108d3311d",
+    "mtime": 1794232237.1829524,
+    "seen": 1794233848.5961108,
+    "ast_hash": "2e48b0b8a8828ffd9a8cb676ca4b2d96",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/StoreDbContext.cs": {
-    "mtime": 1793372884.9373825,
-    "seen": 1793373377.1607618,
-    "ast_hash": "1c24f6b259f89e63364ab53c9badb91b",
+    "mtime": 1794234836.8248787,
+    "seen": 1794236166.825483,
+    "ast_hash": "e49ac6efd8f98d1134fd1dbc1e802615",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/AuthTests.cs": {
-    "mtime": 1793337832.0967193,
-    "seen": 1793340872.4362204,
-    "ast_hash": "fa08c6d4cbc6409cf9fe51ece42f0358",
-    "semantic_hash": "fa08c6d4cbc6409cf9fe51ece42f0358"
+    "mtime": 1793695620.847202,
+    "seen": 1793696465.2273006,
+    "ast_hash": "7a6d4fd7166a42149033e2d7243c8104",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/BootstrapTests.cs": {
     "mtime": 1793337576.507891,
@@ -584,21 +584,21 @@
     "semantic_hash": "5d5df6434181e175383b69a08b3f1d4b"
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CatalogFixture.cs": {
-    "mtime": 1793372884.9353657,
-    "seen": 1793373377.1607618,
-    "ast_hash": "9a82b321a2ff96cd4311d1742497e155",
+    "mtime": 1794234642.6232064,
+    "seen": 1794236166.8463821,
+    "ast_hash": "e8525c9992eaa6b24617118502452a7e",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CatalogTests.cs": {
-    "mtime": 1793335453.8624837,
-    "seen": 1793340872.4362204,
-    "ast_hash": "f8d4a18ebf9d66c55d1a4adff7159101",
-    "semantic_hash": "f8d4a18ebf9d66c55d1a4adff7159101"
+    "mtime": 1794031628.3404,
+    "seen": 1794031923.4462788,
+    "ast_hash": "61ae41f9b51d9942f046b41562e214db",
+    "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/HighConcurrencyCommerce.IntegrationTests.csproj": {
-    "mtime": 1793372884.9353657,
-    "seen": 1793373377.1617618,
-    "ast_hash": "d73f327ab9792a1c53767f3992785e69",
+    "mtime": 1794234642.6232064,
+    "seen": 1794236166.8573964,
+    "ast_hash": "5de6198f6a567c852406f033e530b980",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.slnx": {
@@ -614,33 +614,33 @@
     "semantic_hash": "029f4905006c1fffd96bc863e2d98d3e"
   },
   "frontend/package.json": {
-    "mtime": 1793413813.7659953,
-    "seen": 1793413824.5758755,
-    "ast_hash": "9ece4fdcd713032d82a861236f578e5c",
+    "mtime": 1793695827.4229064,
+    "seen": 1793696465.2318132,
+    "ast_hash": "669e62ac95e296782ef4e25a31ebe676",
     "semantic_hash": ""
   },
   "frontend/scripts/auth-visual-smoke.mjs": {
-    "mtime": 1793412786.526143,
-    "seen": 1793412796.7948577,
-    "ast_hash": "5e5415583500a72c94a1c494007753a0",
+    "mtime": 1793456795.4060352,
+    "seen": 1793456812.4814563,
+    "ast_hash": "5465ab0b1dc781b87a39ac1cde44670e",
     "semantic_hash": ""
   },
   "frontend/src/App.tsx": {
-    "mtime": 1793364822.1587217,
-    "seen": 1793364997.4428136,
-    "ast_hash": "cca3f709769e6d0008481f466f7012ac",
+    "mtime": 1794216999.9434032,
+    "seen": 1794218078.0609741,
+    "ast_hash": "a72ea300c117f9e717ef3c2bbb63d247",
     "semantic_hash": ""
   },
   "frontend/src/components/layout/AppShell.tsx": {
-    "mtime": 1793414486.4911866,
-    "seen": 1793414508.643662,
-    "ast_hash": "25e3c38efbb4b5fc823c3c3cd2b66e6e",
+    "mtime": 1794119175.092871,
+    "seen": 1794121644.5911646,
+    "ast_hash": "096be4ac281a581e519ab1fa4df7aa29",
     "semantic_hash": ""
   },
   "frontend/src/components/layout/AuthLayout.tsx": {
-    "mtime": 1793412773.1946976,
-    "seen": 1793412796.7948577,
-    "ast_hash": "163bc30f93a850beef71bbb541434d40",
+    "mtime": 1793617744.7654407,
+    "seen": 1793617799.1502995,
+    "ast_hash": "ebed5154c9ad34ee9a4f6b6f9f46e18f",
     "semantic_hash": ""
   },
   "frontend/src/components/layout/BadmintonArtwork.tsx": {
@@ -668,9 +668,9 @@
     "semantic_hash": "a3618861244cece08ad2c8aba47ee882"
   },
   "frontend/src/features/auth/auth.api.ts": {
-    "mtime": 1793372932.9827785,
-    "seen": 1793373377.1637619,
-    "ast_hash": "048ca5e27cc378e2b6c19043ee78249e",
+    "mtime": 1794294730.5536993,
+    "seen": 1794295185.3980038,
+    "ast_hash": "0c9e47f44f1e0dd05e0c29bb1b7e8e66",
     "semantic_hash": ""
   },
   "frontend/src/features/auth/password-policy.ts": {
@@ -680,15 +680,15 @@
     "semantic_hash": "8176a925f48839fb8042e05a2679ea4e"
   },
   "frontend/src/features/catalog/ProductCard.tsx": {
-    "mtime": 1793413374.3889813,
-    "seen": 1793413403.0087082,
-    "ast_hash": "2b01e62134fb7c81962bc17a5ca24921",
+    "mtime": 1794104286.6352289,
+    "seen": 1794104473.6239662,
+    "ast_hash": "cebf25e51761cf379ff9d58e62cbd9ec",
     "semantic_hash": ""
   },
   "frontend/src/features/catalog/catalog.api.ts": {
-    "mtime": 1793353670.9179137,
-    "seen": 1793354763.2230546,
-    "ast_hash": "ddfe8563559620c936e2d84a793c4226",
+    "mtime": 1794120724.036595,
+    "seen": 1794121644.5941656,
+    "ast_hash": "ea8be981e56d54436b1351af8aa317b3",
     "semantic_hash": ""
   },
   "frontend/src/lib/api/client.ts": {
@@ -698,81 +698,81 @@
     "semantic_hash": "3ac5b368338e81354bc01818cee6002b"
   },
   "frontend/src/main.tsx": {
-    "mtime": 1793413685.2325833,
-    "seen": 1793413824.5783987,
-    "ast_hash": "cc07dd2fc7d8b747729b67d36196cd54",
+    "mtime": 1793461161.893332,
+    "seen": 1793461836.9145591,
+    "ast_hash": "51e5d1158f295cf697f319145be4b082",
     "semantic_hash": ""
   },
   "frontend/src/pages/AdminDashboardPage.tsx": {
-    "mtime": 1793413685.2420957,
-    "seen": 1793413824.5783987,
-    "ast_hash": "ca43014d2a36d69f1ab727ccfcae2e8d",
+    "mtime": 1794232501.356528,
+    "seen": 1794233848.6720612,
+    "ast_hash": "f9b926d3b350e2eb5d6f63f4e438b789",
     "semantic_hash": ""
   },
   "frontend/src/pages/AuthErrorPage.tsx": {
-    "mtime": 1793418177.214846,
-    "seen": 1793418878.3976908,
-    "ast_hash": "41c37c95546ae80a0750ce22b17b62ce",
+    "mtime": 1794294730.5546966,
+    "seen": 1794295185.406003,
+    "ast_hash": "20d21f5f5ee184ac817ede8dea6ec48d",
     "semantic_hash": ""
   },
   "frontend/src/pages/CartPage.tsx": {
-    "mtime": 1793418602.033062,
-    "seen": 1793418878.3976908,
-    "ast_hash": "8191107f816a1f92b6a808d8b9929b2e",
+    "mtime": 1794217023.8100567,
+    "seen": 1794218078.0710878,
+    "ast_hash": "da698fd2ce30f801d38af7492ab302a7",
     "semantic_hash": ""
   },
   "frontend/src/pages/CatalogErrorPage.tsx": {
-    "mtime": 1793413685.238585,
-    "seen": 1793413824.5783987,
-    "ast_hash": "83dc75e65351b8ec507ead35ad700c1c",
+    "mtime": 1794105577.9952106,
+    "seen": 1794106980.6619627,
+    "ast_hash": "1155cc61d08d95582edfcb7041421dbe",
     "semantic_hash": ""
   },
   "frontend/src/pages/LoginPage.tsx": {
-    "mtime": 1793412773.1946976,
-    "seen": 1793412796.7989662,
-    "ast_hash": "9a0cbc7a31f48b09f50ed3d9ad7cd40c",
+    "mtime": 1793681215.8353212,
+    "seen": 1793681786.4565804,
+    "ast_hash": "1022d44643ebb46a7c538bddf8aad166",
     "semantic_hash": ""
   },
   "frontend/src/pages/NotFoundPage.tsx": {
-    "mtime": 1793413685.2395852,
-    "seen": 1793413824.5793989,
-    "ast_hash": "0bae996f0dc03145654b30dce91619bb",
+    "mtime": 1793461162.217691,
+    "seen": 1793461836.9145591,
+    "ast_hash": "b5f688ad45c0c649098f6e6fa5cc0408",
     "semantic_hash": ""
   },
   "frontend/src/pages/OrdersPage.tsx": {
-    "mtime": 1793413685.2355828,
-    "seen": 1793413824.5793989,
-    "ast_hash": "aeddafa8b8b3e8877d88264977f8e84d",
+    "mtime": 1794217483.9623747,
+    "seen": 1794218078.0720766,
+    "ast_hash": "56d92913186142561fd0c9418b8ba32b",
     "semantic_hash": ""
   },
   "frontend/src/pages/PasswordPage.tsx": {
-    "mtime": 1793413685.2365825,
-    "seen": 1793413824.5793989,
-    "ast_hash": "4fad11d2a188a9b583ae34e794533f62",
+    "mtime": 1794195299.1890109,
+    "seen": 1794195637.6261842,
+    "ast_hash": "f9a36852460d249da4b87b99586d839b",
     "semantic_hash": ""
   },
   "frontend/src/pages/ProductDetailPage.tsx": {
-    "mtime": 1793413685.2335832,
-    "seen": 1793413824.5793989,
-    "ast_hash": "11c91a55640eac74c834da3e1d582aad",
+    "mtime": 1794188982.9508862,
+    "seen": 1794189718.6492164,
+    "ast_hash": "4dd440cb2431905e2141fde7a4733c18",
     "semantic_hash": ""
   },
   "frontend/src/pages/RegisterPage.tsx": {
-    "mtime": 1793412773.195698,
-    "seen": 1793412796.7989662,
-    "ast_hash": "11d61e4768569cfbe71aa960c2ae9d57",
+    "mtime": 1793501921.146959,
+    "seen": 1793502461.6590133,
+    "ast_hash": "28cb2703c5e6257f05cf5f5501edfe05",
     "semantic_hash": ""
   },
   "frontend/src/pages/StaffDashboardPage.tsx": {
-    "mtime": 1793413685.2494771,
-    "seen": 1793413824.5793989,
-    "ast_hash": "62c071ec3e09d56336fffd2cf2e36b83",
+    "mtime": 1794195456.0162842,
+    "seen": 1794195637.6261842,
+    "ast_hash": "28d67e8e12818fc5dbaf47430e310529",
     "semantic_hash": ""
   },
   "frontend/src/pages/StorefrontPage.tsx": {
-    "mtime": 1793413374.3878753,
-    "seen": 1793413403.0117657,
-    "ast_hash": "9b10b66ce1f2d3fd1a2bd6cc657e7852",
+    "mtime": 1794117781.4351363,
+    "seen": 1794119147.8812096,
+    "ast_hash": "d4df6e581ae628161cf23361cad43d56",
     "semantic_hash": ""
   },
   "frontend/src/test/auth-security.test.tsx": {
@@ -782,15 +782,15 @@
     "semantic_hash": "61abb74fd7fc6400a879a715dfb93bac"
   },
   "frontend/src/test/auth.test.tsx": {
-    "mtime": 1793414497.9440975,
-    "seen": 1793414508.6535783,
-    "ast_hash": "05a8e1c1d72b4b28d8968ea8cd2aecb3",
+    "mtime": 1793673830.1656747,
+    "seen": 1793675257.9688058,
+    "ast_hash": "6e4f98389799637c893c2e090bf883b8",
     "semantic_hash": ""
   },
   "frontend/src/test/catalog.test.tsx": {
-    "mtime": 1793413391.7029257,
-    "seen": 1793413403.0127704,
-    "ast_hash": "35fed32d766b1570f6bf858c2fcb070f",
+    "mtime": 1794295217.941558,
+    "seen": 1794295233.9996428,
+    "ast_hash": "bc624b000cc6b799e4ce0b05cd520cf3",
     "semantic_hash": ""
   },
   "frontend/src/test/client.test.ts": {
@@ -806,9 +806,9 @@
     "semantic_hash": "12b132f6648f51548ed0b17e44930419"
   },
   "frontend/src/test/setup.ts": {
-    "mtime": 1793368858.425306,
-    "seen": 1793369057.2852833,
-    "ast_hash": "1fd8fccd9c4c18203e3290edb2246ebb",
+    "mtime": 1794217056.6834886,
+    "seen": 1794218078.0763402,
+    "ast_hash": "6837b60e406038ec065f3a8f754290d2",
     "semantic_hash": ""
   },
   "frontend/tsconfig.app.json": {
@@ -836,10 +836,10 @@
     "semantic_hash": "0b6f56f1111bee198ccaa4a313efdff4"
   },
   "frontend/vitest.config.ts": {
-    "mtime": 1793335291.682022,
-    "seen": 1793340872.4412298,
-    "ast_hash": "8d252e2cfe94bf671311a500af4a379a",
-    "semantic_hash": "8d252e2cfe94bf671311a500af4a379a"
+    "mtime": 1793806472.1667967,
+    "seen": 1793806552.842527,
+    "ast_hash": "c91dd05f03a22a1c0d5a7b234acbb4da",
+    "semantic_hash": ""
   },
   ".github/skills/README.md": {
     "mtime": 1793334625.009895,
@@ -1838,9 +1838,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793373204.016987,
-    "seen": 1793373377.1847613,
-    "ast_hash": "5a6474a0bcf7e3bcd6e26c1146fab2a4",
+    "mtime": 1794236097.6101706,
+    "seen": 1794236167.1074593,
+    "ast_hash": "fc2cc3cc61f8fc6b9875b56b85f882e2",
     "semantic_hash": ""
   },
   "database/README.md": {
@@ -1850,9 +1850,9 @@
     "semantic_hash": ""
   },
   "docs/TASKS.md": {
-    "mtime": 1793373275.8196845,
-    "seen": 1793373377.1847613,
-    "ast_hash": "254ec46934e27041e234862e1553970d",
+    "mtime": 1794295112.9754195,
+    "seen": 1794295185.4270027,
+    "ast_hash": "a1a185415fee858b87bd1072b28118d2",
     "semantic_hash": ""
   },
   "docs/adr/0001-auth-sessions.md": {
@@ -1862,9 +1862,9 @@
     "semantic_hash": ""
   },
   "docs/api/auth.md": {
-    "mtime": 1793337832.0987196,
-    "seen": 1793349506.5295305,
-    "ast_hash": "3014d493d5a26c7394efb0a74987dd4a",
+    "mtime": 1794067187.0780408,
+    "seen": 1794067218.6019955,
+    "ast_hash": "b606ad03a81700444a7b685666280cb9",
     "semantic_hash": ""
   },
   "docs/api/catalog.md": {
@@ -1940,9 +1940,9 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/AccountController.cs": {
-    "mtime": 1793352278.3207383,
-    "seen": 1793353603.1452298,
-    "ast_hash": "98382a2acab3991f345f9b2d21bf64b5",
+    "mtime": 1793502181.2481475,
+    "seen": 1793502461.6169612,
+    "ast_hash": "3bd6ea74cf9d107faa2c3fa581d9b96a",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Account/AccountContracts.cs": {
@@ -1952,15 +1952,15 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Account/PostgresAccountService.cs": {
-    "mtime": 1793351656.299231,
-    "seen": 1793352208.0441787,
-    "ast_hash": "6377685da29fa6d7415c890850c0cbb1",
+    "mtime": 1793594370.8701744,
+    "seen": 1793595315.7963781,
+    "ast_hash": "946aadeda613eefee0bd1cf903719bf3",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/AccountTests.cs": {
-    "mtime": 1793352278.434346,
-    "seen": 1793353603.1502254,
-    "ast_hash": "53ea5a57f6689212d475b5d69b216218",
+    "mtime": 1793810316.155172,
+    "seen": 1793810893.4745743,
+    "ast_hash": "0fab41e966eaf1def68b8700a1e97f7a",
     "semantic_hash": ""
   },
   "frontend/src/features/account/account.api.ts": {
@@ -1970,15 +1970,15 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/AccountPage.tsx": {
-    "mtime": 1793413685.2355828,
-    "seen": 1793413824.5783987,
-    "ast_hash": "15dda7c8ad270690b9d74b5cfd9d7dfa",
+    "mtime": 1793461161.9686089,
+    "seen": 1793461836.9145591,
+    "ast_hash": "ec6a1b82139e640ac3608fbe4a3d0679",
     "semantic_hash": ""
   },
   "frontend/src/test/account.test.tsx": {
-    "mtime": 1793352278.8394196,
-    "seen": 1793353603.1537418,
-    "ast_hash": "6a2fc75cca0fa9307a299b52a49f5eed",
+    "mtime": 1793456548.100374,
+    "seen": 1793456812.487456,
+    "ast_hash": "65a993955b317c69c3ed02248c159b1b",
     "semantic_hash": ""
   },
   "docs/api/account.md": {
@@ -2000,45 +2000,45 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/StaffProductController.cs": {
-    "mtime": 1793353625.703155,
-    "seen": 1793354763.2155323,
-    "ast_hash": "3fa036bda1ffbddf70cd788a2dd261cb",
+    "mtime": 1793945807.3320942,
+    "seen": 1793946718.1199453,
+    "ast_hash": "01a2a7d023f006d0c61e97bbb4324d19",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/ProductManagement/ProductManagementExceptionHandler.cs": {
-    "mtime": 1793353625.8051937,
-    "seen": 1793354763.2155323,
-    "ast_hash": "6095aa77bbe6ca2265127e03a904d655",
+    "mtime": 1793594451.6676288,
+    "seen": 1793595315.793378,
+    "ast_hash": "deb1c0bdfdea9d522a2550b15a3eb24c",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/ProductManagement/ProductManagementContracts.cs": {
-    "mtime": 1793353626.065904,
-    "seen": 1793354763.2165322,
-    "ast_hash": "8fc02182c76582bb5c46c3aae4f2da9c",
+    "mtime": 1793951419.0850227,
+    "seen": 1793952217.0025685,
+    "ast_hash": "eb893c8919ce8b04327f52359f131559",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/ProductManagement/PostgresProductManagementService.cs": {
-    "mtime": 1793355278.4695106,
-    "seen": 1793355546.6534338,
-    "ast_hash": "d18dd280a1cd3e6d55d8f0124af7e889",
+    "mtime": 1793951419.0860257,
+    "seen": 1793952217.0117443,
+    "ast_hash": "75197af4218e5794c4c1dc53b75e3219",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ProductManagementTests.cs": {
-    "mtime": 1793355486.830893,
-    "seen": 1793355546.6534338,
-    "ast_hash": "470dfe2472b40dba23696cbcca8237e1",
+    "mtime": 1793675513.1230223,
+    "seen": 1793677166.2864356,
+    "ast_hash": "9fb8c06be4a46278c3cc721dec031d2e",
     "semantic_hash": ""
   },
   "frontend/src/features/product-management/product-management.api.ts": {
-    "mtime": 1793353671.0407083,
-    "seen": 1793354763.2230546,
-    "ast_hash": "fa26a1b9d7987ee6d44a3a5ba1df7ce1",
+    "mtime": 1793951426.566939,
+    "seen": 1793952217.0239754,
+    "ast_hash": "240b9cb73c5b91ccfc8c9619c9e764a7",
     "semantic_hash": ""
   },
   "frontend/src/test/product-management.test.tsx": {
-    "mtime": 1793353671.3027472,
-    "seen": 1793354763.2250543,
-    "ast_hash": "29dce98294d0fb78e19822ebfa9872f7",
+    "mtime": 1793951683.204784,
+    "seen": 1793952217.0300853,
+    "ast_hash": "81b806f1c20b08b31f8482888f243f65",
     "semantic_hash": ""
   },
   "docs/api/product-management.md": {
@@ -2060,45 +2060,45 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Inventory/InventoryExceptionHandler.cs": {
-    "mtime": 1793357974.9819412,
-    "seen": 1793358312.4981842,
-    "ast_hash": "7db335c87ea94c151e52be88956d8549",
+    "mtime": 1794195126.2610056,
+    "seen": 1794195637.5605533,
+    "ast_hash": "285ccbdb4bbcb1a2d87a8ca927c815cb",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Inventory/InventoryContracts.cs": {
-    "mtime": 1793357974.9800289,
-    "seen": 1793358312.5001879,
-    "ast_hash": "7743d759229ddb9e9fccd7adfb0ecd20",
+    "mtime": 1794195126.2580116,
+    "seen": 1794195637.5685532,
+    "ast_hash": "2a55e6a7b13b999452d640155efe9f81",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Inventory/PostgresInventoryService.cs": {
-    "mtime": 1793358008.469961,
-    "seen": 1793358312.5021913,
-    "ast_hash": "fd4da97c55ab653d1dd361fa02e2ac13",
+    "mtime": 1794195126.2600057,
+    "seen": 1794195637.578568,
+    "ast_hash": "f855dfd892dd60e6880c2a7ccc44bbf5",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/InventoryTests.cs": {
-    "mtime": 1793357796.5231874,
-    "seen": 1793358312.5083225,
-    "ast_hash": "82ecafb6891dac91e726c21e66c04eff",
+    "mtime": 1794195161.6244986,
+    "seen": 1794195637.5991862,
+    "ast_hash": "46881dae59863f61dd754bf741c0c7f4",
     "semantic_hash": ""
   },
   "frontend/src/features/inventory/inventory.api.ts": {
-    "mtime": 1793358110.1109178,
-    "seen": 1793358312.5107625,
-    "ast_hash": "a43e40074e6774d577c878c8ded78fc8",
+    "mtime": 1794195126.2630143,
+    "seen": 1794195637.620185,
+    "ast_hash": "2c052e7563ed4e44d67cf88369c89e28",
     "semantic_hash": ""
   },
   "frontend/src/test/inventory.test.tsx": {
-    "mtime": 1793357796.7101953,
-    "seen": 1793358312.5107625,
-    "ast_hash": "8da6c92f1f9fd232a0b8719135fe4e02",
+    "mtime": 1793864257.4947128,
+    "seen": 1793864922.7038798,
+    "ast_hash": "9ecbf3ba8a1a04dfd13e67d83dfd6dbc",
     "semantic_hash": ""
   },
   "docs/api/inventory.md": {
-    "mtime": 1793357796.6171591,
-    "seen": 1793358312.539025,
-    "ast_hash": "802a57fee923900f28178b05e6618082",
+    "mtime": 1794195509.8091266,
+    "seen": 1794195637.6624987,
+    "ast_hash": "df7f974d54aa55035e462c547dc7ca73",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-10-30-inventory-stock-in.md": {
@@ -2114,21 +2114,21 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Inventory/InventoryAdjustmentContracts.cs": {
-    "mtime": 1793357982.135919,
-    "seen": 1793358312.5001879,
-    "ast_hash": "3bb3ff728dd46592d7911d6415c450c2",
+    "mtime": 1793864050.1474314,
+    "seen": 1793864922.673823,
+    "ast_hash": "ac510ff022fe26e777258ebb186e5e35",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/InventoryAdjustmentTests.cs": {
-    "mtime": 1793358068.3863583,
-    "seen": 1793358312.5083225,
-    "ast_hash": "8690ea4d8a9fd92f7cc0f3df11379c56",
+    "mtime": 1793675512.8754091,
+    "seen": 1793677166.2864356,
+    "ast_hash": "1eda01092eb1f5cb5697e4f91c1c0462",
     "semantic_hash": ""
   },
   "frontend/src/test/inventory-adjustment.test.tsx": {
-    "mtime": 1793358227.646427,
-    "seen": 1793358312.5107625,
-    "ast_hash": "c7a9bcde1a7372ecacc3ca4eb61055f3",
+    "mtime": 1793864257.4937117,
+    "seen": 1793864922.7038798,
+    "ast_hash": "01c05184ec4ff99f4a09fdab70bade6c",
     "semantic_hash": ""
   },
   "docs/api/inventory-adjustments.md": {
@@ -2144,9 +2144,9 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Cart/CartExceptionHandler.cs": {
-    "mtime": 1793373204.0152395,
-    "seen": 1793373377.1507018,
-    "ast_hash": "6f0e5205bde869a07800930a44ed37af",
+    "mtime": 1793611076.7009692,
+    "seen": 1793613878.6428022,
+    "ast_hash": "541d268257926d50e9582a845121c2f7",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/CartController.cs": {
@@ -2156,39 +2156,39 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Cart/CartContracts.cs": {
-    "mtime": 1793372884.9383726,
-    "seen": 1793373377.1547017,
-    "ast_hash": "674b1be367099921e003030dc47e1aa1",
+    "mtime": 1793594471.9425457,
+    "seen": 1793595315.794378,
+    "ast_hash": "1a7024fd98d77311416881586ffd0d83",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Cart/PostgresCartService.cs": {
-    "mtime": 1793373123.29761,
-    "seen": 1793373377.156702,
-    "ast_hash": "d71453fa120526ed31de5d64e7fa4256",
+    "mtime": 1794188982.137675,
+    "seen": 1794189718.5518644,
+    "ast_hash": "be149ad2625b0331236897bd62d66fcd",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CartTests.cs": {
-    "mtime": 1793373103.9910164,
-    "seen": 1793373377.1607618,
-    "ast_hash": "5f5912e436168af5b254aeda94043f4c",
+    "mtime": 1793675512.1130848,
+    "seen": 1793677166.2864356,
+    "ast_hash": "f8b58315570e8f44cf4b8819ec0ea417",
     "semantic_hash": ""
   },
   "frontend/src/features/cart/cart.api.ts": {
-    "mtime": 1793373050.7996154,
-    "seen": 1793373377.1637619,
-    "ast_hash": "1dd8b2c8139d04756aa731e6724653ff",
+    "mtime": 1794216999.9424021,
+    "seen": 1794218078.0635333,
+    "ast_hash": "228fa2482eb688406f5420e0532fb06d",
     "semantic_hash": ""
   },
   "frontend/src/features/cart/guest-cart.ts": {
-    "mtime": 1793372932.981774,
-    "seen": 1793373377.1637619,
-    "ast_hash": "a55c51ac7ecfc9cb50b801cd75105794",
+    "mtime": 1793617481.636598,
+    "seen": 1793617592.3824086,
+    "ast_hash": "891144d44fa2f5d1c9053437f96351d5",
     "semantic_hash": ""
   },
   "frontend/src/test/cart.test.tsx": {
-    "mtime": 1793413847.5517335,
-    "seen": 1793413865.4631221,
-    "ast_hash": "ae773ac468ac2fb8a92c58f42422738d",
+    "mtime": 1794121373.3088083,
+    "seen": 1794121644.6146808,
+    "ast_hash": "90cce4ad9f71d59bc2e47f9c09be1ce6",
     "semantic_hash": ""
   },
   "docs/api/cart.md": {
@@ -2222,39 +2222,39 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Checkout/CheckoutContracts.cs": {
-    "mtime": 1793359560.5864215,
-    "seen": 1793359783.5967557,
-    "ast_hash": "3d6e2a4fd84fa8974456f41fe3c90855",
+    "mtime": 1793981001.0577583,
+    "seen": 1793981104.4027936,
+    "ast_hash": "9cd294549ccd153ae29ad8d4b2abfb28",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Checkout/PostgresCheckoutService.cs": {
-    "mtime": 1793372845.1199002,
-    "seen": 1793373377.156702,
-    "ast_hash": "a4768160b84a6ed3a631f190ecc173c6",
+    "mtime": 1794200881.749266,
+    "seen": 1794202064.6057477,
+    "ast_hash": "a00540324ec28bfae27c47ace7eae22f",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CheckoutTests.cs": {
-    "mtime": 1793360616.8799646,
-    "seen": 1793360906.6354187,
-    "ast_hash": "9148b967f61ea6387b2d71bc99ad6ad0",
+    "mtime": 1793980520.0677612,
+    "seen": 1793981104.4168828,
+    "ast_hash": "99de66570001cfc10b95d47d4840d931",
     "semantic_hash": ""
   },
   "frontend/src/features/checkout/checkout.api.ts": {
-    "mtime": 1793368032.8738823,
-    "seen": 1793369057.2802413,
-    "ast_hash": "9639ce56e5aa722faf383fdf9b7c1f09",
+    "mtime": 1793983137.852638,
+    "seen": 1793983465.9863923,
+    "ast_hash": "1e6685f6a48a0cfdc02fa2216a10e476",
     "semantic_hash": ""
   },
   "frontend/src/test/checkout.test.tsx": {
-    "mtime": 1793359686.0751116,
-    "seen": 1793359783.6067622,
-    "ast_hash": "9fef0789761e2a5445f28bebea777ffb",
+    "mtime": 1794217430.7039883,
+    "seen": 1794218078.0740902,
+    "ast_hash": "ae06e94ad0e4135877ca88198beb8997",
     "semantic_hash": ""
   },
   "docs/api/checkout.md": {
-    "mtime": 1793373204.0174909,
-    "seen": 1793373377.1857612,
-    "ast_hash": "b8fd1129e5583cd3ffcd8d4045a79499",
+    "mtime": 1794217546.0241055,
+    "seen": 1794218078.1013656,
+    "ast_hash": "e1042ac87b4a3616e690f4a5543de3e3",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-10-30-multi-sku-checkout.md": {
@@ -2282,27 +2282,27 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Orders/CodOrderContracts.cs": {
-    "mtime": 1793359893.9228778,
-    "seen": 1793360106.0889547,
-    "ast_hash": "25009deb1e7bd3282dbefa786e3378ec",
+    "mtime": 1793981411.4296253,
+    "seen": 1793981692.0790608,
+    "ast_hash": "04d227136366d87c6842dc848ac1f2c8",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Orders/PostgresCodOrderService.cs": {
-    "mtime": 1793372854.5801961,
-    "seen": 1793373377.156702,
-    "ast_hash": "44a7c4b8f4b1daf8b32f254274955527",
+    "mtime": 1793981411.431625,
+    "seen": 1793981692.0821507,
+    "ast_hash": "c20e338afea46303b8ab467b18da9be3",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CodOrderTests.cs": {
-    "mtime": 1793359942.6328256,
-    "seen": 1793360106.0949547,
-    "ast_hash": "52942df541b5b7546b0028e81ed0e78e",
+    "mtime": 1793981592.3222716,
+    "seen": 1793981692.0916631,
+    "ast_hash": "7349d8a84149e2c253874c4e65c178f8",
     "semantic_hash": ""
   },
   "frontend/src/features/orders/CodOrdersPanel.tsx": {
-    "mtime": 1793360027.2201798,
-    "seen": 1793360106.100464,
-    "ast_hash": "a3b7520b0773e5348fe8676e8c81d03b",
+    "mtime": 1793703804.8502293,
+    "seen": 1793704761.558326,
+    "ast_hash": "d25a38ded044f243ecdbf5c409e89ae5",
     "semantic_hash": ""
   },
   "frontend/src/features/orders/cod-orders.api.ts": {
@@ -2318,9 +2318,9 @@
     "semantic_hash": ""
   },
   "docs/api/cod-orders.md": {
-    "mtime": 1793360845.1177497,
-    "seen": 1793360906.6589525,
-    "ast_hash": "cbf6113e758b9952b2044491094c7b08",
+    "mtime": 1793981651.4243145,
+    "seen": 1793981692.1288774,
+    "ast_hash": "7753e88a60efc893548bfb5b23a890c6",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-10-30-cod-confirmation-expiry.md": {
@@ -2342,39 +2342,39 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Fulfillment/FulfillmentContracts.cs": {
-    "mtime": 1793361097.244324,
-    "seen": 1793361343.5742095,
-    "ast_hash": "29eebe79d6e93e241828ac1efbdf7720",
+    "mtime": 1794015701.8360727,
+    "seen": 1794016263.617197,
+    "ast_hash": "2e84afd46152066756af16e53a525bfc",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Fulfillment/PostgresFulfillmentService.cs": {
-    "mtime": 1793372854.5812044,
-    "seen": 1793373377.156702,
-    "ast_hash": "844c7cd2e5ac4369b9af0455e09dfa4f",
+    "mtime": 1794215447.0712802,
+    "seen": 1794216191.0499184,
+    "ast_hash": "ebbf770151faf2e6597a234de1c7ab6e",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/FulfillmentTests.cs": {
-    "mtime": 1793361530.3232527,
-    "seen": 1793361709.3963258,
-    "ast_hash": "d2a33ca2a841966d5fd10fdfcc807b68",
+    "mtime": 1794015964.4295564,
+    "seen": 1794016263.6322381,
+    "ast_hash": "474e3be2c25e33e739e06d73c50e7f82",
     "semantic_hash": ""
   },
   "frontend/src/features/fulfillment/FulfillmentPanel.tsx": {
-    "mtime": 1793361194.4464731,
-    "seen": 1793361343.583209,
-    "ast_hash": "b517bd96ad3c6499656da2bc26fc7a44",
+    "mtime": 1794217162.9343197,
+    "seen": 1794218078.0660572,
+    "ast_hash": "578061e3dfea4745b0779b3b7ed17a14",
     "semantic_hash": ""
   },
   "frontend/src/features/fulfillment/fulfillment.api.ts": {
-    "mtime": 1793361194.4464731,
-    "seen": 1793361343.583209,
-    "ast_hash": "368886bb375b13d83246ea28435de3f6",
+    "mtime": 1794217162.933231,
+    "seen": 1794218078.0660572,
+    "ast_hash": "0bbfb5174511091c7b41e25a25ebbf21",
     "semantic_hash": ""
   },
   "frontend/src/test/fulfillment.test.tsx": {
-    "mtime": 1793361204.324731,
-    "seen": 1793361343.5862117,
-    "ast_hash": "07663c6c4b8889b05c2166dadf9060b4",
+    "mtime": 1794217281.918483,
+    "seen": 1794218078.0750885,
+    "ast_hash": "c4d5ced94407290671bdbf2e5e73e9fd",
     "semantic_hash": ""
   },
   "docs/adr/0003-defer-payos-complete-cod-first.md": {
@@ -2384,9 +2384,9 @@
     "semantic_hash": ""
   },
   "docs/api/fulfillment.md": {
-    "mtime": 1793361282.049421,
-    "seen": 1793361343.607209,
-    "ast_hash": "0dc605be9fb928cbb8da8b8c81d9395a",
+    "mtime": 1794217546.0251138,
+    "seen": 1794218078.1013656,
+    "ast_hash": "dd4a3cd4ddf74f0ae9d1327938404d5c",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-10-30-cod-fulfillment.md": {
@@ -2402,9 +2402,9 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/NotificationsController.cs": {
-    "mtime": 1793361489.6205573,
-    "seen": 1793361709.3878026,
-    "ast_hash": "13cbb8bc9605339bc35e42acd3704cfc",
+    "mtime": 1793617051.970889,
+    "seen": 1793617592.3459516,
+    "ast_hash": "10b7ab57bc70f79be11e97a596a5e03d",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Notifications/NotificationExceptionHandler.cs": {
@@ -2414,45 +2414,45 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Notifications/NotificationContracts.cs": {
-    "mtime": 1793361489.6064,
-    "seen": 1793361709.3898027,
-    "ast_hash": "1105e79432d0759941d62eafabdd0e96",
+    "mtime": 1794066419.2393844,
+    "seen": 1794067218.546617,
+    "ast_hash": "4af676da68c941489de6ddc23820a736",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Notifications/PostgresNotificationService.cs": {
-    "mtime": 1793361489.6074302,
-    "seen": 1793361709.3913205,
-    "ast_hash": "1211e402e513b106ce0aef5fbf6ba48c",
+    "mtime": 1794066419.240386,
+    "seen": 1794067218.550493,
+    "ast_hash": "646c80e001cfc6e8d449f67c51a640ca",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/NotificationTests.cs": {
-    "mtime": 1793361530.3222532,
-    "seen": 1793361709.3963258,
-    "ast_hash": "94299e9196af9bffb0df019507cd69e8",
+    "mtime": 1794066423.018083,
+    "seen": 1794067218.5635755,
+    "ast_hash": "b201cd55ce351224b0994f4a17e7fb4e",
     "semantic_hash": ""
   },
   "frontend/src/features/notifications/notification.api.ts": {
-    "mtime": 1793361584.4744244,
-    "seen": 1793361709.3983254,
-    "ast_hash": "d391cba047762923b50756c2bfdf3af6",
+    "mtime": 1794066594.3534024,
+    "seen": 1794067218.5737598,
+    "ast_hash": "2b5260c6082f919c08f75dbef31d2dd5",
     "semantic_hash": ""
   },
   "frontend/src/pages/NotificationsPage.tsx": {
-    "mtime": 1793413685.2365825,
-    "seen": 1793413824.5793989,
-    "ast_hash": "6c200dcbb5887604f127d6ce395deecd",
+    "mtime": 1794066594.3534024,
+    "seen": 1794067218.5777588,
+    "ast_hash": "bef0a565da1ae416968eb6b4592e5627",
     "semantic_hash": ""
   },
   "frontend/src/test/notifications.test.tsx": {
-    "mtime": 1793361584.4764252,
-    "seen": 1793361709.4018614,
-    "ast_hash": "968acdfa75d8a022f53783e9460fa2f3",
+    "mtime": 1794066691.303432,
+    "seen": 1794067218.58027,
+    "ast_hash": "d5d1e49a446e6136e449170a44e84467",
     "semantic_hash": ""
   },
   "docs/api/notifications.md": {
-    "mtime": 1793361693.9821846,
-    "seen": 1793361709.4193702,
-    "ast_hash": "1598f17bcfd4c9e04bcae181848dd2cf",
+    "mtime": 1794067178.4449928,
+    "seen": 1794067218.6035776,
+    "ast_hash": "269d57c9841edf9f39eb9c2ec5252846",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-10-30-in-app-notifications.md": {
@@ -2486,51 +2486,51 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Reporting/ReportingContracts.cs": {
-    "mtime": 1793362012.1897826,
-    "seen": 1793362333.6444938,
-    "ast_hash": "921e49e800005621fad42e9470bd28af",
+    "mtime": 1793981411.4306262,
+    "seen": 1793981692.0790608,
+    "ast_hash": "dd13f42908ec26d9c8b8558fa5b87406",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Reporting/PostgresReportingService.cs": {
-    "mtime": 1793362250.5684884,
-    "seen": 1793362333.649494,
-    "ast_hash": "b99c0a9b6a7b3aec3912176eb528c834",
+    "mtime": 1793981411.4337149,
+    "seen": 1793981692.0896633,
+    "ast_hash": "cdbd2f7b4e25c84333b01cef6b513fa3",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ReportingTests.cs": {
-    "mtime": 1793362250.5684884,
-    "seen": 1793362333.6514933,
-    "ast_hash": "15437dbeb93a9612da4960b833339f1a",
+    "mtime": 1793981557.603724,
+    "seen": 1793981692.0932055,
+    "ast_hash": "cc1da29265b920ac7ec5025364a50cf1",
     "semantic_hash": ""
   },
   "frontend/src/features/reporting/AdminReportingPanel.tsx": {
-    "mtime": 1793362186.5208626,
-    "seen": 1793362333.6534932,
-    "ast_hash": "6e013420cab7e7bc6dafeb5e584304fc",
+    "mtime": 1794195456.0152776,
+    "seen": 1794195637.6221843,
+    "ast_hash": "82e2cce4a15dc6c7ee7547f9208de71a",
     "semantic_hash": ""
   },
   "frontend/src/features/reporting/StaffTaskSummaryPanel.tsx": {
-    "mtime": 1793362186.5198677,
-    "seen": 1793362333.6534932,
-    "ast_hash": "e5c283d1754c9187a4a3ea2a1b766363",
+    "mtime": 1793848218.7708807,
+    "seen": 1793848290.5144289,
+    "ast_hash": "5e7be6340aea51e4a86116c6f13bcc04",
     "semantic_hash": ""
   },
   "frontend/src/features/reporting/reporting.api.ts": {
-    "mtime": 1793362186.5082545,
-    "seen": 1793362333.6534932,
-    "ast_hash": "89743db08821397df96d375e44f2158c",
+    "mtime": 1793848218.7698815,
+    "seen": 1793848290.5144289,
+    "ast_hash": "bee516c3f38d1e8964c91de8fd5fe0d8",
     "semantic_hash": ""
   },
   "frontend/src/test/reporting.test.tsx": {
-    "mtime": 1793362234.9591298,
-    "seen": 1793362333.6564946,
-    "ast_hash": "4750a136dce46c3000c4713eb5a7c5c5",
+    "mtime": 1793848240.1903567,
+    "seen": 1793848290.5204294,
+    "ast_hash": "6851d475c61c312acc5ba1f38f83b1fd",
     "semantic_hash": ""
   },
   "docs/api/reporting.md": {
-    "mtime": 1793362322.2082524,
-    "seen": 1793362333.674493,
-    "ast_hash": "f0f4616e7f0cebac3fa69158eb80a633",
+    "mtime": 1793981651.4253206,
+    "seen": 1793981692.129885,
+    "ast_hash": "e78a602d104e1ee0f2cd714a2adeac6d",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-10-30-reporting-staff-tasks-audit.md": {
@@ -2540,9 +2540,9 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ConcurrencyAcceptanceTests.cs": {
-    "mtime": 1793362558.1144347,
-    "seen": 1793362640.4097567,
-    "ast_hash": "0f9519b5a038115e5a0b684f58a55af4",
+    "mtime": 1793980539.1255393,
+    "seen": 1793981104.4168828,
+    "ast_hash": "c041f04560c883b8aa9ee77b884dbc7a",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-10-30-concurrency-acceptance.md": {
@@ -2552,51 +2552,51 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/CustomerOrdersController.cs": {
-    "mtime": 1793364676.5246549,
-    "seen": 1793364997.4328132,
-    "ast_hash": "c617d74bee4c796139891455e488d66d",
+    "mtime": 1794016644.723318,
+    "seen": 1794017034.6013374,
+    "ast_hash": "10d3c0683a3d41acdbc0377353266539",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/CustomerOrders/CustomerOrderExceptionHandler.cs": {
-    "mtime": 1793364676.5246549,
-    "seen": 1793364997.4328132,
-    "ast_hash": "765bc5c1f2a6a0fce4298314179aa9e1",
+    "mtime": 1793600591.38332,
+    "seen": 1793605670.7458756,
+    "ast_hash": "97213917ddfbb1786e2612a9034d4918",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/CustomerOrders/CustomerOrderContracts.cs": {
-    "mtime": 1793364676.522666,
-    "seen": 1793364997.4348135,
-    "ast_hash": "d621a9d6a78e10f700e0d4864e2508b7",
+    "mtime": 1794016622.3482673,
+    "seen": 1794017034.607297,
+    "ast_hash": "8b13404f288e40fd362270a56870ec5b",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/CustomerOrders/PostgresCustomerOrderService.cs": {
-    "mtime": 1793372854.5812044,
-    "seen": 1793373377.156702,
-    "ast_hash": "242eb289ad5fa5bc0acfa31b05880d1d",
+    "mtime": 1794217162.9322217,
+    "seen": 1794218078.0368426,
+    "ast_hash": "a3a36b6715aed7b3ae15a88046a46eed",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CustomerOrderTests.cs": {
-    "mtime": 1793365020.5303543,
-    "seen": 1793365073.840769,
-    "ast_hash": "c91626ca2f01378b03b156610d9efbdb",
+    "mtime": 1793981547.4507122,
+    "seen": 1793981692.0916631,
+    "ast_hash": "3a21e082df54d4d74699a6c38b861bc2",
     "semantic_hash": ""
   },
   "frontend/src/features/orders/orders.api.ts": {
-    "mtime": 1793364822.1577282,
-    "seen": 1793364997.444813,
-    "ast_hash": "507bcde19ed6c1dfa335db14600c5f8f",
+    "mtime": 1794217162.9322217,
+    "seen": 1794218078.0670567,
+    "ast_hash": "9ea4d2c76dd79285ea945ec07ceff1e1",
     "semantic_hash": ""
   },
   "frontend/src/test/customer-orders.test.tsx": {
-    "mtime": 1793364862.2928905,
-    "seen": 1793364997.447813,
-    "ast_hash": "78f8398c13cc08ea59cebd0ef3bff03d",
+    "mtime": 1793983334.4512951,
+    "seen": 1793983465.9924445,
+    "ast_hash": "ef9a3534bf1817a6d56f457a6c454fbc",
     "semantic_hash": ""
   },
   "docs/api/customer-orders.md": {
-    "mtime": 1793365020.5303543,
-    "seen": 1793365073.8647695,
-    "ast_hash": "a0fa2b8022de1f8f69ee665bf4bcc0d7",
+    "mtime": 1793981651.4243145,
+    "seen": 1793981692.1288774,
+    "ast_hash": "a4670c6f8428215338e7c019d37648f9",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-10-30-customer-order-center.md": {
@@ -2630,9 +2630,9 @@
     "semantic_hash": ""
   },
   "compose.yaml": {
-    "mtime": 1793372884.9363713,
-    "seen": 1793373377.1617618,
-    "ast_hash": "d9324d3df3beee73cb39f75093576c16",
+    "mtime": 1794294849.661571,
+    "seen": 1794295185.3920026,
+    "ast_hash": "d099b5df3e4fc5c825518d626a0e2502",
     "semantic_hash": ""
   },
   "ops/Backup-Postgres.ps1": {
@@ -2654,9 +2654,9 @@
     "semantic_hash": ""
   },
   "docs/operations/deployment.md": {
-    "mtime": 1793365613.6530988,
-    "seen": 1793365656.8163643,
-    "ast_hash": "23c68cf7fe7721ddbdbaba109442530c",
+    "mtime": 1794100045.9881966,
+    "seen": 1794101403.2726464,
+    "ast_hash": "f1d63a20dac885a5606275f0cd00def6",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/AdminFlashSaleController.cs": {
@@ -2684,21 +2684,21 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/FlashSale/PostgresFlashSaleService.cs": {
-    "mtime": 1793372915.87676,
-    "seen": 1793373377.156702,
-    "ast_hash": "df952455d913a95ce88cc79494d329f4",
+    "mtime": 1793611076.8454597,
+    "seen": 1793613878.648801,
+    "ast_hash": "e87838d4585c779d92176d62afbaae65",
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/FlashSaleCampaignTests.cs": {
-    "mtime": 1793373275.81869,
-    "seen": 1793373377.1617618,
-    "ast_hash": "d9f52cc265c92192322bc312f61fb25f",
+    "mtime": 1793862813.8755362,
+    "seen": 1793863154.351224,
+    "ast_hash": "25650672d9c2cb49525a552f80820da8",
     "semantic_hash": ""
   },
   "frontend/src/features/flash-sale/AdminFlashSalePanel.tsx": {
-    "mtime": 1793414013.2904804,
-    "seen": 1793414023.244445,
-    "ast_hash": "0c1a9339ffac851a797c68e7fa5d6e82",
+    "mtime": 1793456683.7750065,
+    "seen": 1793456812.4844623,
+    "ast_hash": "79bdc35cb85ec9cc54567383cf9b5df0",
     "semantic_hash": ""
   },
   "frontend/src/features/flash-sale/flash-sale.api.ts": {
@@ -2708,9 +2708,9 @@
     "semantic_hash": ""
   },
   "frontend/src/test/flash-sale.test.tsx": {
-    "mtime": 1793373081.9759862,
-    "seen": 1793373377.1667614,
-    "ast_hash": "68adc2867171315f756c9f40a2af2161",
+    "mtime": 1793983280.181169,
+    "seen": 1793983465.9924445,
+    "ast_hash": "45e128eedefb502ea31edff14216d33b",
     "semantic_hash": ""
   },
   "docs/api/flash-sale.md": {
@@ -2726,9 +2726,9 @@
     "semantic_hash": ""
   },
   "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/FlashSaleCheckoutTests.cs": {
-    "mtime": 1793373008.046747,
-    "seen": 1793373377.1617618,
-    "ast_hash": "ea79721b0212772ddfee1f9713b2ac83",
+    "mtime": 1793980539.12785,
+    "seen": 1793981104.4178762,
+    "ast_hash": "46928ca89060add065899a292443c5af",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-10-30-flash-sale-checkout-allocation.md": {
@@ -2738,8 +2738,8 @@
     "semantic_hash": ""
   },
   "frontend/src/features/flash-sale/FlashSaleShowcase.tsx": {
-    "mtime": 1793418606.5509126,
-    "seen": 1793418878.3946183,
+    "mtime": 1793418947.4524927,
+    "seen": 1793444652.514336,
     "ast_hash": "047227ef78eeec1efe15da8b245717e9",
     "semantic_hash": ""
   },
@@ -2762,21 +2762,15 @@
     "semantic_hash": ""
   },
   "frontend/scripts/storefront-visual-smoke.mjs": {
-    "mtime": 1793414776.607687,
-    "seen": 1793414785.9638574,
-    "ast_hash": "f9730dc78e31160f721be5141e5627f5",
+    "mtime": 1794038466.6805582,
+    "seen": 1794038535.8174183,
+    "ast_hash": "3a87eac452b2823f25588a03f6efff2d",
     "semantic_hash": ""
   },
   "docs/design/frontend-design-system.md": {
     "mtime": 1793414776.6088612,
     "seen": 1793414785.9898903,
     "ast_hash": "c8c40b9288fb8f6904a1f834db899562",
-    "semantic_hash": ""
-  },
-  "frontend/src/assets/badminton-hero-v2.png": {
-    "mtime": 1793375682.5729463,
-    "seen": 1793376064.9955554,
-    "ast_hash": "0accee942d20510d7aff4a8d40cdc26e",
     "semantic_hash": ""
   },
   "frontend/src/features/auth/AuthInput.tsx": {
@@ -2786,15 +2780,15 @@
     "semantic_hash": ""
   },
   "frontend/scripts/commerce-visual-smoke.mjs": {
-    "mtime": 1793414497.9450994,
-    "seen": 1793414508.6421573,
-    "ast_hash": "05c16a4d7ecef056768504a07ee01873",
+    "mtime": 1794038466.6805582,
+    "seen": 1794038535.8174183,
+    "ast_hash": "60d2762dafa994a4418d75962db25772",
     "semantic_hash": ""
   },
   "frontend/src/components/layout/AccountNavigation.tsx": {
-    "mtime": 1793413766.7536716,
-    "seen": 1793413824.5758755,
-    "ast_hash": "2a4c1af679c5ca806da66ac788e35cc9",
+    "mtime": 1793847379.6846385,
+    "seen": 1793847896.745333,
+    "ast_hash": "0764b971a111cfc351e419bb46650855",
     "semantic_hash": ""
   },
   "frontend/src/components/layout/PageHeading.tsx": {
@@ -2804,9 +2798,9 @@
     "semantic_hash": ""
   },
   "frontend/src/components/layout/SiteHeader.tsx": {
-    "mtime": 1793414776.60668,
-    "seen": 1793414785.9638574,
-    "ast_hash": "527573dccb8e11f9295b86c9d255f981",
+    "mtime": 1794195456.0119183,
+    "seen": 1794195637.6131773,
+    "ast_hash": "733bebb910831aaf489bbe5ef59a8e72",
     "semantic_hash": ""
   },
   "data/imports/lining-demo/giay-cau-long-li-ning-nam-aytt001-1.json": {
@@ -3299,6 +3293,2196 @@
     "mtime": 1793415623.865382,
     "seen": 1793415636.3533044,
     "ast_hash": "ccfd2e2ae4192ebe40b79a42fa5c85eb",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/layout/StatusBadge.tsx": {
+    "mtime": 1793461161.7993467,
+    "seen": 1793461836.9110343,
+    "ast_hash": "c4a812e59c8ce3895eae8ff9001cd151",
+    "semantic_hash": ""
+  },
+  "docs/design/2026-10-31-ui-audit-renovation-plan.md": {
+    "mtime": 1793456875.3208091,
+    "seen": 1793460213.2098787,
+    "ast_hash": "f903033798d0bad6e90a3cf034de1d84",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/layout/useWorkspaceSection.ts": {
+    "mtime": 1793454859.5297863,
+    "seen": 1793454982.0316405,
+    "ast_hash": "24bea2bc2cc4670fd2fb6e15812d9c98",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/reporting/AuditDetail.tsx": {
+    "mtime": 1793455944.806063,
+    "seen": 1793455956.5457811,
+    "ast_hash": "e241e8dbc1610ed430a97131f154433e",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/layout/ConfirmDialog.tsx": {
+    "mtime": 1793456530.7879598,
+    "seen": 1793456812.4824545,
+    "ast_hash": "2705e46b827e6fec3db7fe40a8ffdb9c",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Auth/ChallengeCookie.cs": {
+    "mtime": 1793501732.906607,
+    "seen": 1793502461.615961,
+    "ast_hash": "ec56ca183d4647f387b9a1bf6ac8630f",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Auth/GoogleAuthOptions.cs": {
+    "mtime": 1793501733.4326227,
+    "seen": 1793502461.6267412,
+    "ast_hash": "d4d3427c0ecc370e35da713bf09a27c5",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Auth/GoogleTokenVerifier.cs": {
+    "mtime": 1793501920.4463573,
+    "seen": 1793502461.6267412,
+    "ast_hash": "00692ea6e716b579427b5bc49dcb9f76",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/AuthChallenge.cs": {
+    "mtime": 1793501733.89325,
+    "seen": 1793502461.629916,
+    "ast_hash": "d0150f5039f630a2e93e38d3a98f6620",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ExternalIdentity.cs": {
+    "mtime": 1793501733.973208,
+    "seen": 1793502461.6310554,
+    "ast_hash": "0b1fe0de69bcc6c4131ba11288f6074f",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/GoogleAuthTests.cs": {
+    "mtime": 1793673829.4076705,
+    "seen": 1793675257.9602892,
+    "ast_hash": "6dcb00a6a754e84a9c317d11eaf64099",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/auth/GoogleSignInButton.tsx": {
+    "mtime": 1793702797.2701,
+    "seen": 1793702876.936596,
+    "ast_hash": "1e4570f43d7b62b1b02c711de30866bc",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/google-auth.test.tsx": {
+    "mtime": 1793502363.8815613,
+    "seen": 1793502461.6620135,
+    "ast_hash": "8c57a520533abc68291ddc70f639f951",
+    "semantic_hash": ""
+  },
+  "docs/adr/0002-google-authentication.md": {
+    "mtime": 1793502449.128219,
+    "seen": 1793502461.692012,
+    "ast_hash": "4e8838d8969eaef58be0d18035c58c1a",
+    "semantic_hash": ""
+  },
+  "docs/design/2026-11-01-google-sign-in-plan.md": {
+    "mtime": 1793499309.826406,
+    "seen": 1793501694.2262468,
+    "ast_hash": "c569d9c036041e6ed87308a45b2ac2de",
+    "semantic_hash": ""
+  },
+  "frontend/scripts/google-auth-regression-smoke.mjs": {
+    "mtime": 1793502400.6500647,
+    "seen": 1793502461.6450145,
+    "ast_hash": "c02cd255501388874e6b86f7f014864f",
+    "semantic_hash": ""
+  },
+  "docs/reviews/2026-11-02-functional-bug-audit.md": {
+    "mtime": 1793593104.527206,
+    "seen": 1793595315.8333826,
+    "ast_hash": "3bb2f435629673437459931b2cf6e277",
+    "semantic_hash": ""
+  },
+  "frontend/src/assets/badminton-hero-v2.webp": {
+    "mtime": 1793617730.2820685,
+    "seen": 1793617799.1919196,
+    "ast_hash": "1b39c7ac1d331d02f682e5ad69e52c37",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-03-password-reset-email-verification.md": {
+    "mtime": 1793671295.532204,
+    "seen": 1793671322.741968,
+    "ast_hash": "1362db9e2f3bea678a53c6d9e4e21d67",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/AuthRecoveryController.cs": {
+    "mtime": 1793673812.5458305,
+    "seen": 1793675257.9487562,
+    "ast_hash": "d03badba16f53a113ca8a18dc4a13845",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Auth/AuthRecoveryContracts.cs": {
+    "mtime": 1793680067.752287,
+    "seen": 1793681786.43259,
+    "ast_hash": "e9f4d7bbef67824a88bc7b23a107bb11",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Auth/AuthEmailDeliveryWorker.cs": {
+    "mtime": 1793680090.6469152,
+    "seen": 1793681786.4345868,
+    "ast_hash": "3ac754532fa9fdc6ad6e65450b2b6116",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Auth/AuthEmailOptions.cs": {
+    "mtime": 1793673813.370476,
+    "seen": 1793675257.9542797,
+    "ast_hash": "abddddb142f1d3db78716351c38c0f38",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Auth/PostgresAuthRecoveryService.cs": {
+    "mtime": 1793689366.2830634,
+    "seen": 1793696465.2213004,
+    "ast_hash": "4d938c3f2063b50c0984399a42434dc5",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Auth/SmtpAuthEmailSender.cs": {
+    "mtime": 1793680081.9266245,
+    "seen": 1793681786.4355795,
+    "ast_hash": "6330b77edbbbdb8000242b91aa932eba",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/AuthRecoveryPersistence.cs": {
+    "mtime": 1793674364.3076913,
+    "seen": 1793675257.9552796,
+    "ast_hash": "b9f6abd4eb878d77c070da234b701fcd",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/AuthActionToken.cs": {
+    "mtime": 1793673814.257032,
+    "seen": 1793675257.956279,
+    "ast_hash": "8950a33b3c0356dc45788aaab8d2e65c",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/AuthEmailOutbox.cs": {
+    "mtime": 1793674329.6411035,
+    "seen": 1793675257.956279,
+    "ast_hash": "f5ba8054f1f16236da54c46a315c637a",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/AuthRecoveryTests.cs": {
+    "mtime": 1793688975.5725696,
+    "seen": 1793689334.94594,
+    "ast_hash": "e8813964bc6a870f1095bae66ab599e9",
+    "semantic_hash": ""
+  },
+  "frontend/src/pages/ForgotPasswordPage.tsx": {
+    "mtime": 1793673829.853166,
+    "seen": 1793675257.9678056,
+    "ast_hash": "61094391d185c4f66039ca079543079e",
+    "semantic_hash": ""
+  },
+  "frontend/src/pages/ResetPasswordPage.tsx": {
+    "mtime": 1793673829.9874547,
+    "seen": 1793675257.9678056,
+    "ast_hash": "2d8414917a1712728563b2dceaf69c41",
+    "semantic_hash": ""
+  },
+  "frontend/src/pages/VerifyEmailPage.tsx": {
+    "mtime": 1793675513.6077726,
+    "seen": 1793677166.2954357,
+    "ast_hash": "e3c9a8de170ba538709810f353d6bca1",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/auth-recovery.test.tsx": {
+    "mtime": 1793681876.9413707,
+    "seen": 1793684951.725097,
+    "ast_hash": "0c4855bf6365c786049b55be151b7299",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-03-internal-account-staff-management.md": {
+    "mtime": 1793679598.084737,
+    "seen": 1793679613.8641403,
+    "ast_hash": "8163a7959ca4879ea0cab14e145f783d",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/AdminAccountsController.cs": {
+    "mtime": 1793687312.145293,
+    "seen": 1793688516.8697364,
+    "ast_hash": "33921434a3003f5709bb7cda95ffea59",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/StaffInvitationController.cs": {
+    "mtime": 1793684755.5988767,
+    "seen": 1793684951.703098,
+    "ast_hash": "bee8e3da426494c2e2f76697fe7d4c9e",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/AdminAccounts/AdminAccountContracts.cs": {
+    "mtime": 1793684469.4478946,
+    "seen": 1793684951.7050977,
+    "ast_hash": "74912c51d46220a5b732e040adab1d63",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/AdminAccounts/PostgresAdminAccountService.cs": {
+    "mtime": 1793689366.213314,
+    "seen": 1793696465.2202966,
+    "ast_hash": "1ce94c5724595d1510d7a198e58c6e23",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/AdminAccountTests.cs": {
+    "mtime": 1793688557.4301002,
+    "seen": 1793689334.94594,
+    "ast_hash": "a481be02e69ff8fe5533efc1108be7e3",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/admin-accounts/AdminAccountsPanel.tsx": {
+    "mtime": 1793702357.6285176,
+    "seen": 1793702876.936596,
+    "ast_hash": "a933a9c08e78865d3667be4d9bea050a",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/admin-accounts/admin-accounts.api.ts": {
+    "mtime": 1794294953.8684697,
+    "seen": 1794295185.3980038,
+    "ast_hash": "3a064083cbfe927b219599a61a12618b",
+    "semantic_hash": ""
+  },
+  "frontend/src/pages/StaffInvitationPage.tsx": {
+    "mtime": 1793681814.0639813,
+    "seen": 1793684951.725097,
+    "ast_hash": "5eae8a121fd376025efbf61d118d9082",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/admin-accounts.test.tsx": {
+    "mtime": 1794294893.3907773,
+    "seen": 1794295185.4070027,
+    "ast_hash": "dafbca9ef63533a2a7dba0f97140f178",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/staff-invitation.test.tsx": {
+    "mtime": 1793681876.9748702,
+    "seen": 1793684951.7270975,
+    "ast_hash": "397f8c4dfe604ff9968e03035e4baa79",
+    "semantic_hash": ""
+  },
+  ".github/workflows/ci.yml": {
+    "mtime": 1794119177.936345,
+    "seen": 1794121644.5546107,
+    "ast_hash": "086adc0c2f895ff8a5c46d925018f2db",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/DemoSeedAcceptanceTests.cs": {
+    "mtime": 1794103073.023334,
+    "seen": 1794103165.761091,
+    "ast_hash": "9022c652796d33f5b5c107452f80813a",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/01-auth-lifecycle.spec.ts": {
+    "mtime": 1793706057.9597454,
+    "seen": 1793706076.3986669,
+    "ast_hash": "2ba495630c81a6597d5ff7d66599c964",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/02-staff-invitation.spec.ts": {
+    "mtime": 1793705760.085627,
+    "seen": 1793705934.6905463,
+    "ast_hash": "b2af13267aed37087d5269b4bea695ed",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/03-commerce-fulfillment.spec.ts": {
+    "mtime": 1794021933.0508914,
+    "seen": 1794023057.4977674,
+    "ast_hash": "960f9ff8694c2b212c4d60e2f0aa6e29",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/helpers/mailpit.ts": {
+    "mtime": 1794071470.8049772,
+    "seen": 1794098659.576328,
+    "ast_hash": "6db73755fdda2796d07deb97ba95bf55",
+    "semantic_hash": ""
+  },
+  "frontend/playwright.config.ts": {
+    "mtime": 1793702798.0856476,
+    "seen": 1793702876.9339652,
+    "ast_hash": "d8af21c307f294acc2c43df80c15694a",
+    "semantic_hash": ""
+  },
+  "scripts/demo-up.ps1": {
+    "mtime": 1793862233.4181864,
+    "seen": 1793862716.364808,
+    "ast_hash": "17db1ef7975384ec5ba2651dac1a800a",
+    "semantic_hash": ""
+  },
+  "scripts/demo-up.sh": {
+    "mtime": 1793862233.4192586,
+    "seen": 1793862716.364808,
+    "ast_hash": "f499b62ac17e7e254addef0f01469f43",
+    "semantic_hash": ""
+  },
+  "docs/operations/e2e-testing-guide.md": {
+    "mtime": 1794119026.8885617,
+    "seen": 1794119147.9152098,
+    "ast_hash": "a14300d083d1d29fdebcf1f4fd7733e7",
+    "semantic_hash": ""
+  },
+  "docs/operations/release-checklist.md": {
+    "mtime": 1794295112.978418,
+    "seen": 1794295185.4320045,
+    "ast_hash": "e0e7d064b82713e84443c4193611f1a8",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-03-e2e-testing-and-release-gate.md": {
+    "mtime": 1793696248.7884474,
+    "seen": 1793696465.2902308,
+    "ast_hash": "27220e9739635bc6ad1ed7a11737eb2d",
+    "semantic_hash": ""
+  },
+  "compose.demo.yaml": {
+    "mtime": 1793862233.4181864,
+    "seen": 1793862716.347954,
+    "ast_hash": "c3580f751876f096e853d9d3c7a0ba64",
+    "semantic_hash": ""
+  },
+  "frontend/playwright-report/index.html": {
+    "mtime": 1794294201.5399892,
+    "seen": 1794295185.4370024,
+    "ast_hash": "7be9afc0e842b1d1d52707769a30d977",
+    "semantic_hash": ""
+  },
+  "frontend/test-results/.last-run.json": {
+    "mtime": 1794124117.030041,
+    "seen": 1794124191.2729907,
+    "ast_hash": "f196824657d8858bc7fa44eecbba38b1",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-04-product-reviews-ratings.md": {
+    "mtime": 1793782822.8248515,
+    "seen": 1793782843.7250106,
+    "ast_hash": "ca99821bf453760324414b1da22623d4",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ProductReview.cs": {
+    "mtime": 1793783255.8952408,
+    "seen": 1793783983.576274,
+    "ast_hash": "d7ae99d0ef48c0258d18975018b96ad2",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Reviews/ProductReviewExceptionHandler.cs": {
+    "mtime": 1793783878.6351748,
+    "seen": 1793783983.5692754,
+    "ast_hash": "00cdbfa8b5b5f197f3f303ba030ef231",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Reviews/ReviewContracts.cs": {
+    "mtime": 1793798643.6464248,
+    "seen": 1793798861.3954177,
+    "ast_hash": "f13f022edab4efed31885479f6b174f0",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Reviews/PostgresProductReviewService.cs": {
+    "mtime": 1794191213.7703173,
+    "seen": 1794191772.0510561,
+    "ast_hash": "f8826281cc57e66827ff8b22bac2e801",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ProductReviewTests.cs": {
+    "mtime": 1793810316.2074032,
+    "seen": 1793810893.4770968,
+    "ast_hash": "f6d69fdf5b7591b905183a9319e1809b",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/CatalogReviewsController.cs": {
+    "mtime": 1793788865.8658462,
+    "seen": 1793788953.3146977,
+    "ast_hash": "5d876a6f408669fa0164079a345b95b3",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/CustomerReviewsController.cs": {
+    "mtime": 1794294730.5516982,
+    "seen": 1794295185.3650148,
+    "ast_hash": "3acd6dc563001dc1d503e6a308aa0bad",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/ReviewModerationController.cs": {
+    "mtime": 1794294730.5526984,
+    "seen": 1794295185.3660038,
+    "ast_hash": "added574aba9d9c89ee60d92992e467b",
+    "semantic_hash": ""
+  },
+  "docs/api/reviews.md": {
+    "mtime": 1793798826.31504,
+    "seen": 1793798861.4644678,
+    "ast_hash": "59e721293b76c31be0fc45916619aceb",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/04-product-reviews.spec.ts": {
+    "mtime": 1794021933.0508914,
+    "seen": 1794023057.4977674,
+    "ast_hash": "07d691b5eb7560a0afe5f8540ee2d0db",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/reviews/RatingStars.tsx": {
+    "mtime": 1793790425.3791258,
+    "seen": 1793798861.4286747,
+    "ast_hash": "6e2b5c4c9d185c0d1087968875bea02d",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/reviews/RatingSummary.tsx": {
+    "mtime": 1793790425.4691255,
+    "seen": 1793798861.4286747,
+    "ast_hash": "4806439a30bcdc8602a4cc1f9be74025",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/reviews/ReviewCard.tsx": {
+    "mtime": 1793790425.5286305,
+    "seen": 1793798861.4286747,
+    "ast_hash": "04a85b355c693562269c51d2979c7c84",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/reviews/ReviewForm.tsx": {
+    "mtime": 1794195456.0172849,
+    "seen": 1794195637.623184,
+    "ast_hash": "474dd9fc3718365235039699651e117c",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/reviews/ReviewList.tsx": {
+    "mtime": 1793790425.7616117,
+    "seen": 1793798861.4286747,
+    "ast_hash": "57e1d2190789ad0129229a43f4e40eda",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/reviews/ReviewModerationPanel.tsx": {
+    "mtime": 1794195289.9413147,
+    "seen": 1794195637.623184,
+    "ast_hash": "0d976fde38069048a175876311a070dc",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/reviews/reviews.api.ts": {
+    "mtime": 1793798643.6464248,
+    "seen": 1793798861.4286747,
+    "ast_hash": "3e378cdf61297906e1e8af26aa937a7d",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/reviews.test.tsx": {
+    "mtime": 1793798833.813491,
+    "seen": 1793798861.4353378,
+    "ast_hash": "54ab976f2a3fde090468b307ae90800a",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/CustomerWishlistItem.cs": {
+    "mtime": 1794062201.7729113,
+    "seen": 1794062662.6796753,
+    "ast_hash": "6ec00fa1eab3d6c222253ead67f88a9b",
+    "semantic_hash": ""
+  },
+  "docs/reviews/2026-11-04-t36-fixes.md": {
+    "mtime": 1793799105.3965766,
+    "seen": 1793801436.145357,
+    "ast_hash": "407116213c1fe791c5ddf4e66456ae48",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-04-wishlist.md": {
+    "mtime": 1793800962.509295,
+    "seen": 1793801436.1478753,
+    "ast_hash": "20a2a682067ad7389cc030a8b171a9fe",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/WishlistController.cs": {
+    "mtime": 1794062951.98592,
+    "seen": 1794063580.6632018,
+    "ast_hash": "497262595a718384908b3cd1ade1b6f2",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Wishlist/WishlistExceptionHandler.cs": {
+    "mtime": 1794063009.500665,
+    "seen": 1794063580.6657827,
+    "ast_hash": "56c9946162e2c2f565529e264e027e78",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Wishlist/WishlistContracts.cs": {
+    "mtime": 1794063009.4996648,
+    "seen": 1794063580.668782,
+    "ast_hash": "fdfbc5ff70573f853c61afb35a4869bd",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Wishlist/PostgresWishlistService.cs": {
+    "mtime": 1794062964.1003597,
+    "seen": 1794063580.6804082,
+    "ast_hash": "792f41c579fbe958d5dea6891ad32528",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/WishlistTests.cs": {
+    "mtime": 1793810316.352913,
+    "seen": 1793810893.4770968,
+    "ast_hash": "d18c44ca3306a266920be3c8e77988a5",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/05-wishlist.spec.ts": {
+    "mtime": 1793806618.3252907,
+    "seen": 1793806648.7846313,
+    "ast_hash": "e0bdeecd2c9389061f34b3956943895b",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/wishlist/SkuSelectModal.tsx": {
+    "mtime": 1794195456.0172849,
+    "seen": 1794195637.623184,
+    "ast_hash": "991e994671a94239a6d7ff76eddb167b",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/wishlist/WishlistButton.tsx": {
+    "mtime": 1793805291.1548972,
+    "seen": 1793806552.8385324,
+    "ast_hash": "d8c4de7c19a0b3603aa5fa992ea22ae7",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/wishlist/WishlistContext.tsx": {
+    "mtime": 1794066770.9306796,
+    "seen": 1794067218.5757592,
+    "ast_hash": "3e4c473ca646122044d6c0043544933a",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/wishlist/useWishlist.ts": {
+    "mtime": 1793805291.2939062,
+    "seen": 1793806552.8385324,
+    "ast_hash": "bc31d142e9432325d5b41d444f7661af",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/wishlist/wishlist-context.ts": {
+    "mtime": 1794066770.9306796,
+    "seen": 1794067218.5767589,
+    "ast_hash": "8e3de6290222bacfeed4322aa7415fca",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/wishlist/wishlist.api.ts": {
+    "mtime": 1794066445.3104906,
+    "seen": 1794067218.5767589,
+    "ast_hash": "abfb7cda2278b89a13eb1b8065d3aa7c",
+    "semantic_hash": ""
+  },
+  "frontend/src/pages/WishlistPage.tsx": {
+    "mtime": 1794066570.5432591,
+    "seen": 1794067218.5777588,
+    "ast_hash": "61a3164fe0cce1c1623cdce28d04cd4b",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/wishlist.test.tsx": {
+    "mtime": 1794066827.692747,
+    "seen": 1794067218.58027,
+    "ast_hash": "2ed4a8f5bc68b088a03948063ef8c727",
+    "semantic_hash": ""
+  },
+  "docs/api/wishlist.md": {
+    "mtime": 1793806077.3787603,
+    "seen": 1793806552.8648803,
+    "ast_hash": "02f9ee713ca17f4faebbfceab0b286b3",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/Voucher.cs": {
+    "mtime": 1793841185.5584593,
+    "seen": 1793842224.639304,
+    "ast_hash": "15b9fbfb624759ac66c4803a2eadb693",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/VoucherRedemption.cs": {
+    "mtime": 1793809849.2338376,
+    "seen": 1793810171.2006178,
+    "ast_hash": "e3ec5f8e2635f0c7ab40ed41cc39be0a",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/VoucherTests.cs": {
+    "mtime": 1793980539.1305885,
+    "seen": 1793981104.4188828,
+    "ast_hash": "94024ddd8441fc463534016bf232cda8",
+    "semantic_hash": ""
+  },
+  "docs/adr/0005-voucher-allocation-and-release.md": {
+    "mtime": 1793809851.58888,
+    "seen": 1793810171.2674246,
+    "ast_hash": "f6fa15071475b07ca7863132cd6bfdb8",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-04-basic-vouchers.md": {
+    "mtime": 1793808015.9131093,
+    "seen": 1793810171.2763462,
+    "ast_hash": "3f1fdee01071502d237f86ff6cecd94f",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/AdminVouchersController.cs": {
+    "mtime": 1793810706.89584,
+    "seen": 1793810893.460011,
+    "ast_hash": "be45f0917e0379f5fa1b1f496f2f5743",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Vouchers/VoucherExceptionHandler.cs": {
+    "mtime": 1793810706.996864,
+    "seen": 1793810893.4645278,
+    "ast_hash": "0a390d2f1d06524e6a45b91e8827e6fe",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Vouchers/VoucherContracts.cs": {
+    "mtime": 1793841212.3300865,
+    "seen": 1793842224.6293063,
+    "ast_hash": "4fc68505e574cfeaab7f8cf3cf5450bf",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Vouchers/PostgresVoucherAdminService.cs": {
+    "mtime": 1793842525.793148,
+    "seen": 1793843096.486676,
+    "ast_hash": "57e4862dbb7bb83d3090dc98701e3944",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/CustomerVouchersController.cs": {
+    "mtime": 1793811164.9869957,
+    "seen": 1793811414.7210429,
+    "ast_hash": "f4759d7858cf757ce2146b0a044b49d7",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Vouchers/PostgresVoucherCustomerService.cs": {
+    "mtime": 1793811606.6385615,
+    "seen": 1793815496.4692533,
+    "ast_hash": "1ac431ba2d8f887ab5814f74662d30d8",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Vouchers/IVoucherLifecycleManager.cs": {
+    "mtime": 1793812986.148849,
+    "seen": 1793815496.461367,
+    "ast_hash": "6ec55e453d9647d138e8680f3e81a0a8",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Vouchers/PostgresVoucherLifecycleManager.cs": {
+    "mtime": 1793813007.3648233,
+    "seen": 1793815496.4692533,
+    "ast_hash": "c31e9c97ab21c172838f7b1dddd8bf9b",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/06-vouchers.spec.ts": {
+    "mtime": 1794021933.0508914,
+    "seen": 1794023057.4977674,
+    "ast_hash": "302c64254ec12c1229e62ecaad3be5e7",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/vouchers/AdminVouchersPanel.tsx": {
+    "mtime": 1794195321.6842327,
+    "seen": 1794195637.623184,
+    "ast_hash": "deed54e46847191490a42cb9945da746",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/vouchers/voucher.api.ts": {
+    "mtime": 1793841284.8513105,
+    "seen": 1793842224.6558948,
+    "ast_hash": "e04ae834e8d4e4b3ddd02fedd6a5f1f9",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/voucher.test.tsx": {
+    "mtime": 1794066827.691746,
+    "seen": 1794067218.58027,
+    "ast_hash": "eb29df702610c1f58364199e7bad7008",
+    "semantic_hash": ""
+  },
+  "docs/api/vouchers.md": {
+    "mtime": 1793842526.1252055,
+    "seen": 1793843096.5353897,
+    "ast_hash": "8278a6da122e7ff5437ed07e117d584f",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/OrderReturnRequest.cs": {
+    "mtime": 1793894663.4720008,
+    "seen": 1793895789.3066978,
+    "ast_hash": "19e279397b93a414a00d88802906a377",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/OrderReturnRequestLine.cs": {
+    "mtime": 1793894663.4735181,
+    "seen": 1793895789.3066978,
+    "ast_hash": "cc6fab9f43ad3f3140a0b8a212cf1276",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CodReturnMigrationTests.cs": {
+    "mtime": 1793844764.513276,
+    "seen": 1793847324.4016523,
+    "ast_hash": "a69d499ebf63380f31f50d2f3ae353f3",
+    "semantic_hash": ""
+  },
+  "docs/adr/0006-cod-returns-and-manual-refunds.md": {
+    "mtime": 1793844425.084341,
+    "seen": 1793847324.4366608,
+    "ast_hash": "5a5e91598c5d8c73f594e9df0a3ddf12",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-05-cod-returns-manual-refunds.md": {
+    "mtime": 1793843332.7149656,
+    "seen": 1793844396.01757,
+    "ast_hash": "a6a7ba327e6c4e00e7651c27324b8887",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/AdminReturnsController.cs": {
+    "mtime": 1793845852.3679543,
+    "seen": 1793847324.3866527,
+    "ast_hash": "3a49bd1ee7a2767d501ece6b12cf8a00",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/CustomerReturnsController.cs": {
+    "mtime": 1793845963.095539,
+    "seen": 1793847324.3876524,
+    "ast_hash": "38e0be099a13ad6d0f765e6ea545c86e",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/StaffReturnsController.cs": {
+    "mtime": 1793864067.8947463,
+    "seen": 1793864922.6698065,
+    "ast_hash": "926f68aa777ac589335fc1a58aefd997",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Returns/OrderReturnExceptionHandler.cs": {
+    "mtime": 1793847875.0092633,
+    "seen": 1793847896.7283332,
+    "ast_hash": "28bfb2eadd96d50f3f636620829bb488",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Returns/OrderReturnContracts.cs": {
+    "mtime": 1794015701.8360727,
+    "seen": 1794016263.6181965,
+    "ast_hash": "e706aafd503b1cf211f0e3face3956c5",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Returns/RefundAllocationCalculator.cs": {
+    "mtime": 1793981411.431625,
+    "seen": 1793981692.0790608,
+    "ast_hash": "0e546a3192a1a2a379ae40dc4714fd75",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Returns/PostgresOrderReturnAdminService.cs": {
+    "mtime": 1793981431.4845433,
+    "seen": 1793981692.0896633,
+    "ast_hash": "2d68e006d2b77e63814a6ac699290a7b",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Returns/PostgresOrderReturnCustomerService.cs": {
+    "mtime": 1793981431.4845433,
+    "seen": 1793981692.0896633,
+    "ast_hash": "c07393f198fa225c5b120ad3f2c5d128",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Returns/PostgresOrderReturnStaffService.cs": {
+    "mtime": 1793981431.486049,
+    "seen": 1793981692.0896633,
+    "ast_hash": "f7374a8edd72e682a81461fd51b6f23a",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/OrderReturnLifecycleTests.cs": {
+    "mtime": 1794191166.018829,
+    "seen": 1794191772.079067,
+    "ast_hash": "15cd60560c677225154b8aa909aa0052",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/RefundAllocationCalculatorTests.cs": {
+    "mtime": 1793981547.4497223,
+    "seen": 1793981692.0932055,
+    "ast_hash": "9232699d1d1ed497fbce3fa3bccc7713",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/07-cod-returns-refunds.spec.ts": {
+    "mtime": 1794021933.0519004,
+    "seen": 1794023057.4977674,
+    "ast_hash": "a2f6f06b5630d1c8b6f46898be6a4432",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/returns/AdminReturnsPanel.tsx": {
+    "mtime": 1794195272.850272,
+    "seen": 1794195637.6221843,
+    "ast_hash": "a1df5d98a31cc280f077e809fadf28f6",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/returns/CreateReturnModal.tsx": {
+    "mtime": 1794195310.9704237,
+    "seen": 1794195637.6221843,
+    "ast_hash": "c71dd82076de5ae06bb0bf25d39e79a0",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/returns/StaffReturnsPanel.tsx": {
+    "mtime": 1794195369.9538627,
+    "seen": 1794195637.6221843,
+    "ast_hash": "a56d299713146f03d3e42a84d33424aa",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/returns/returns.api.ts": {
+    "mtime": 1793983280.181169,
+    "seen": 1793983465.987392,
+    "ast_hash": "7538c76a85e879471b6ad607e1004f91",
+    "semantic_hash": ""
+  },
+  "frontend/src/pages/CustomerReturnsPage.tsx": {
+    "mtime": 1793926026.6639621,
+    "seen": 1793926759.3357387,
+    "ast_hash": "f62f6cc9d269ba834bc86d7128aea5c7",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/returns.test.tsx": {
+    "mtime": 1793983334.45231,
+    "seen": 1793983465.9934442,
+    "ast_hash": "8913e7ef5c841d8562a67cecc6904ab7",
+    "semantic_hash": ""
+  },
+  "docs/api/returns.md": {
+    "mtime": 1793981651.4253206,
+    "seen": 1793981692.129885,
+    "ast_hash": "28b71b1dc7dfa45b78d5e2b75d03929b",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Migrations/DatabaseMigration.cs": {
+    "mtime": 1793862180.7097247,
+    "seen": 1793862716.338415,
+    "ast_hash": "34468c7c850ca8ff0a977bef567bade0",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Migrations/DatabaseMigrationRunner.cs": {
+    "mtime": 1793862180.7118356,
+    "seen": 1793862716.338415,
+    "ast_hash": "ff92331e63360dea6c8439cd4a20a65d",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Migrations/EmbeddedDatabaseMigrations.cs": {
+    "mtime": 1794234642.6222017,
+    "seen": 1794236166.796452,
+    "ast_hash": "bd77368142b8c9b65d2940e4965f470c",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/DatabaseMigrationTests.cs": {
+    "mtime": 1794235309.770957,
+    "seen": 1794236166.8543785,
+    "ast_hash": "074803ba13f3763edf97628d0eca39e6",
+    "semantic_hash": ""
+  },
+  "docs/adr/0007-versioned-database-migration-runner.md": {
+    "mtime": 1793862506.5449946,
+    "seen": 1793862716.3844824,
+    "ast_hash": "9c9e728cfda14a7e5cb0fa8a6e6dd6ee",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-05-versioned-database-migrations.md": {
+    "mtime": 1793862506.5471299,
+    "seen": 1793862716.390529,
+    "ast_hash": "f1a1cc0325204f121f095e1e2a36858d",
+    "semantic_hash": ""
+  },
+  "docs/adr/0008-returned-goods-inspection-and-quarantine.md": {
+    "mtime": 1793864469.5594964,
+    "seen": 1793864922.7263248,
+    "ast_hash": "600a7acf14ead0ff0a3997fc653d56da",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-05-return-quality-inspection.md": {
+    "mtime": 1793864469.5604973,
+    "seen": 1793864922.7329392,
+    "ast_hash": "32a8e147334a743f77d60571fe22c395",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-05-direct-product-exchange.md": {
+    "mtime": 1793893653.1806593,
+    "seen": 1793893675.777445,
+    "ast_hash": "75f97f1ee89df0bed482074899496f83",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/StaffExchangeShipmentsController.cs": {
+    "mtime": 1793895016.9657724,
+    "seen": 1793895789.2955647,
+    "ast_hash": "5f31ef53a3204e6df3722b6778ace2b9",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ExchangeDeliveryAttempt.cs": {
+    "mtime": 1793894663.4720008,
+    "seen": 1793895789.3046927,
+    "ast_hash": "4def76767e3a0057289b45a3fedb9395",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ExchangeShipment.cs": {
+    "mtime": 1794013298.2977054,
+    "seen": 1794013648.461339,
+    "ast_hash": "22685716f0ba9d1d227dcd11966634fc",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ExchangeStockAllocation.cs": {
+    "mtime": 1793894663.4709847,
+    "seen": 1793895789.3046927,
+    "ast_hash": "90bf2bf5ed961fb58200b5fbf6263f55",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/OrderExchangeLine.cs": {
+    "mtime": 1793894663.4588542,
+    "seen": 1793895789.3066978,
+    "ast_hash": "9a6288cb3adbb61882bf9505d63731cd",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Returns/ExchangeAllocationExpiryWorker.cs": {
+    "mtime": 1793895222.7989354,
+    "seen": 1793895789.3086941,
+    "ast_hash": "c4c24374f45a2d52fc443400f4dafe3d",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Returns/PostgresExchangeFulfillmentService.cs": {
+    "mtime": 1794015802.389743,
+    "seen": 1794016263.628728,
+    "ast_hash": "662a63e353d9fa771261d563b1cbbc27",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/returns/ExchangeFulfillmentPanel.tsx": {
+    "mtime": 1793895281.70555,
+    "seen": 1793895789.3198025,
+    "ast_hash": "260b4df1075d3d319b8e0b2c4761367a",
+    "semantic_hash": ""
+  },
+  "docs/adr/0009-direct-product-exchange-and-replacement-shipment.md": {
+    "mtime": 1793894599.1542163,
+    "seen": 1793895789.3500755,
+    "ast_hash": "f8e4c1eb190e764074198ad5b2895207",
+    "semantic_hash": ""
+  },
+  "docs/api/exchanges.md": {
+    "mtime": 1793926726.123175,
+    "seen": 1793926759.3597496,
+    "ast_hash": "038488450a324d5e5a0c7d91c887d495",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/08-direct-product-exchange.spec.ts": {
+    "mtime": 1794098515.1309142,
+    "seen": 1794098659.5753276,
+    "ast_hash": "b10658259d1010d9604d6ac17e8c05e4",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-06-direct-exchange-hardening.md": {
+    "mtime": 1793925760.749543,
+    "seen": 1793926759.3647804,
+    "ast_hash": "b528c39734715f1d409a1cade9ee7048",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Categories/CategoryManagementExceptionHandler.cs": {
+    "mtime": 1793927190.247161,
+    "seen": 1793927976.117094,
+    "ast_hash": "89ab9e880c0d710145b7a5f981a447cc",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/AdminCategoriesController.cs": {
+    "mtime": 1793927190.2451458,
+    "seen": 1793927976.117094,
+    "ast_hash": "b5c6bc416945701e9fbec75b287c2cee",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/StaffCategoriesController.cs": {
+    "mtime": 1793927534.7256134,
+    "seen": 1793927976.1190944,
+    "ast_hash": "2d8d3c9139d324e23cd604ea07581098",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Categories/CategoryManagementContracts.cs": {
+    "mtime": 1793927190.2426143,
+    "seen": 1793927976.1240945,
+    "ast_hash": "d137eb035f0ba289633785b6db7c5609",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Categories/PostgresCategoryManagementService.cs": {
+    "mtime": 1793927556.6444886,
+    "seen": 1793927976.1271813,
+    "ast_hash": "a40d83664002468da295519f5d555356",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CategoryManagementTests.cs": {
+    "mtime": 1793927233.9333065,
+    "seen": 1793927976.1351855,
+    "ast_hash": "c36a90333fbef811b922027080b712f7",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/09-category-management.spec.ts": {
+    "mtime": 1793927588.8865514,
+    "seen": 1793927976.1406913,
+    "ast_hash": "d4774c9aa40762c0991605b415d9bfe5",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/categories/AdminCategoriesPanel.tsx": {
+    "mtime": 1793927784.3891153,
+    "seen": 1793927976.14432,
+    "ast_hash": "bffb7f59ade9a2284a08cfe1f89a2f4d",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/categories/category-management.api.ts": {
+    "mtime": 1793927603.4368668,
+    "seen": 1793927976.14432,
+    "ast_hash": "952c16640dc2e96c2e448ccc5780defb",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/category-management.test.tsx": {
+    "mtime": 1793927841.867548,
+    "seen": 1793927976.1498272,
+    "ast_hash": "4cf7b85af3662345ed9b754bb1297d93",
+    "semantic_hash": ""
+  },
+  "docs/api/categories.md": {
+    "mtime": 1793927588.8975935,
+    "seen": 1793927976.1714444,
+    "ast_hash": "740a9e4ce61b7b163b8408b48463a9e8",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-06-category-management.md": {
+    "mtime": 1793927190.2298262,
+    "seen": 1793927976.176083,
+    "ast_hash": "9f5bc6bbe05dcb4fc8e1da534824f668",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Brands/BrandManagementExceptionHandler.cs": {
+    "mtime": 1793943612.580289,
+    "seen": 1793945029.175152,
+    "ast_hash": "046447b80e43247f793ff560f963a41b",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/AdminBrandsController.cs": {
+    "mtime": 1793943612.5792897,
+    "seen": 1793945029.1766605,
+    "ast_hash": "581957c7ea11a076d92d751e3f6b7db1",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/StaffBrandsController.cs": {
+    "mtime": 1793944969.2117143,
+    "seen": 1793945029.1796715,
+    "ast_hash": "d27102b5be05ba3d8c265c1cfd73f0ec",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Brands/BrandManagementContracts.cs": {
+    "mtime": 1793943612.5772989,
+    "seen": 1793945029.1832058,
+    "ast_hash": "7741668d0de492759f24fc95aa30b3e9",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Brands/PostgresBrandManagementService.cs": {
+    "mtime": 1793943612.5782976,
+    "seen": 1793945029.1887388,
+    "ast_hash": "594ffe77b01bd075191ed6b2e40dd030",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/Brand.cs": {
+    "mtime": 1794024715.533609,
+    "seen": 1794025061.2278576,
+    "ast_hash": "776f1db3db610cda7eb4955adc5d02c2",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ProductSpecification.cs": {
+    "mtime": 1793943540.0258443,
+    "seen": 1793945029.1952834,
+    "ast_hash": "b3b0bce2d74e23c677a72743ae8ed17e",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/BrandProductSpecificationTests.cs": {
+    "mtime": 1793943872.6516156,
+    "seen": 1793945029.1978009,
+    "ast_hash": "67217c24d2cf2f2aa37caa721e564c96",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/brands/AdminBrandsPanel.tsx": {
+    "mtime": 1794195456.0129185,
+    "seen": 1794195637.6161878,
+    "ast_hash": "9a8de53fec4215caf889cebfbfa68184",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/brands/brand-management.api.ts": {
+    "mtime": 1793943999.6344006,
+    "seen": 1793945029.209867,
+    "ast_hash": "676f642d1c350be926af00677613f3d5",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/brand-specification.test.tsx": {
+    "mtime": 1793944489.7544954,
+    "seen": 1793945029.2174606,
+    "ast_hash": "d08dca32d3ae7f4fed4272482afba9cc",
+    "semantic_hash": ""
+  },
+  "docs/api/brands-product-specifications.md": {
+    "mtime": 1793944969.2127204,
+    "seen": 1793945029.2476645,
+    "ast_hash": "6345eee7042d8e85b6ebf767319bb79c",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-06-brand-and-product-specifications.md": {
+    "mtime": 1793943540.0233364,
+    "seen": 1793945029.2698169,
+    "ast_hash": "10e9ea8e0e4424cf6eeab60353b15f8c",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/ProductMediaController.cs": {
+    "mtime": 1793945807.3336015,
+    "seen": 1793946718.1189458,
+    "ast_hash": "24090d072d92726258eb1210000389eb",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/ProductManagement/LocalProductMediaStorage.cs": {
+    "mtime": 1793945751.7265694,
+    "seen": 1793946718.1348295,
+    "ast_hash": "7ea1ba63e42e1cfa6989c5bd937263bd",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/ProductManagement/ProductMediaOptions.cs": {
+    "mtime": 1793945751.725558,
+    "seen": 1793946718.1348295,
+    "ast_hash": "28bb6eb0f2756bd7ef3f232f50bce2dc",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ProductMediaUploadTests.cs": {
+    "mtime": 1793945997.7771578,
+    "seen": 1793946718.1383445,
+    "ast_hash": "266eaf2f3165f6be39429243c24ee2eb",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/10-product-media-upload.spec.ts": {
+    "mtime": 1793946215.3842013,
+    "seen": 1793946718.1428578,
+    "ast_hash": "f1fc3d4028611480e8a654c0e7186e45",
+    "semantic_hash": ""
+  },
+  "docs/api/product-media.md": {
+    "mtime": 1793946545.905299,
+    "seen": 1793946718.176717,
+    "ast_hash": "164d310927100f33b11c04e3873775d5",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-06-product-media-upload.md": {
+    "mtime": 1793945695.9489858,
+    "seen": 1793946718.181237,
+    "ast_hash": "8f230fedf999f6e983e1a422366e530b",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/AdminProductRevisionsController.cs": {
+    "mtime": 1793953753.247336,
+    "seen": 1793976063.9650311,
+    "ast_hash": "dd55cdaba5aad8248009d3e9da142060",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/StaffProductRevisionsController.cs": {
+    "mtime": 1793948027.2692478,
+    "seen": 1793949247.8663366,
+    "ast_hash": "8dff5b9b895d6e00da2fe5495adc9484",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/ProductRevisions/ProductRevisionExceptionHandler.cs": {
+    "mtime": 1793948027.2681918,
+    "seen": 1793949247.8694198,
+    "ast_hash": "e4ee7c3567b54230ea684d6cfae1114f",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/ProductRevisions/ProductRevisionContracts.cs": {
+    "mtime": 1793953753.2458317,
+    "seen": 1793976063.9735453,
+    "ast_hash": "0c9efde66563c39848f2e3667fd524ea",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ProductRevision.cs": {
+    "mtime": 1793947855.449277,
+    "seen": 1793949247.8871646,
+    "ast_hash": "d58a95a80091e92254cf31d1c2887151",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ProductRevisionImage.cs": {
+    "mtime": 1793947855.460949,
+    "seen": 1793949247.8871646,
+    "ast_hash": "28af568333b6277b2f44a58d66600843",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ProductRevisionSpecification.cs": {
+    "mtime": 1793947855.460949,
+    "seen": 1793949247.8871646,
+    "ast_hash": "b6c1a1474083d834ed695123ea7a290a",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/ProductRevisions/PostgresProductRevisionService.cs": {
+    "mtime": 1793975916.931767,
+    "seen": 1793976063.9830568,
+    "ast_hash": "45d5c66e85d798bdaca40ca2fd55f705",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ProductRevisionTests.cs": {
+    "mtime": 1793975916.9327686,
+    "seen": 1793976063.9870567,
+    "ast_hash": "6d02d0b2ce2ea34a827246357b9765b8",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/11-product-revisions.spec.ts": {
+    "mtime": 1793948993.9737656,
+    "seen": 1793949247.8988202,
+    "ast_hash": "2464546455510fde905a348fc18ed833",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/product-revisions/AdminProductRevisionsPanel.tsx": {
+    "mtime": 1793975937.6966715,
+    "seen": 1793976063.9960873,
+    "ast_hash": "97b74194aac81168d9c9e2a7850cb2ae",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/product-revisions/StaffProductRevisionPanel.tsx": {
+    "mtime": 1794195494.276255,
+    "seen": 1794195637.621184,
+    "ast_hash": "9c18321f7ee23c44fb26a724337b12cd",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/product-revisions/product-revisions.api.ts": {
+    "mtime": 1793975156.3739822,
+    "seen": 1793976063.9960873,
+    "ast_hash": "10cb1c1f5c1c204bea857c5966ad82e5",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/product-revisions.test.tsx": {
+    "mtime": 1794195369.9517906,
+    "seen": 1794195637.630184,
+    "ast_hash": "8151823ca9e9c8d7e2ed3c9ac13777c0",
+    "semantic_hash": ""
+  },
+  "docs/adr/0010-product-revision-workflow.md": {
+    "mtime": 1793947811.1123934,
+    "seen": 1793949247.9374878,
+    "ast_hash": "f0fa24fd106852fbb42d4b4dc47efb79",
+    "semantic_hash": ""
+  },
+  "docs/api/product-revisions.md": {
+    "mtime": 1793975554.578231,
+    "seen": 1793976064.026777,
+    "ast_hash": "d997575f46f35a21f040dc8b4963dc3c",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-06-product-revision-workflow.md": {
+    "mtime": 1793953474.0860667,
+    "seen": 1793953501.218375,
+    "ast_hash": "68e345d4d7e446416a8d4e7a2de7baec",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-06-product-lifecycle-management.md": {
+    "mtime": 1793952178.4141674,
+    "seen": 1793952217.0553079,
+    "ast_hash": "aca4833992e0fce28decaf4021e4db08",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/AdminProductLifecycleController.cs": {
+    "mtime": 1793951294.634931,
+    "seen": 1793952216.9954507,
+    "ast_hash": "0e2e05ef98295aba5a741c71281b434d",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/ProductLifecycle/ProductLifecycleExceptionHandler.cs": {
+    "mtime": 1793951294.6339116,
+    "seen": 1793952216.9995692,
+    "ast_hash": "4ecdb597edbe165c14b4297f9a7e67fe",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/ProductLifecycle/ProductLifecycleContracts.cs": {
+    "mtime": 1793951294.6324048,
+    "seen": 1793952217.0025685,
+    "ast_hash": "6ccdea33af60c146b373fee1cc2304b2",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/ProductLifecycle/PostgresProductLifecycleService.cs": {
+    "mtime": 1793951294.6339116,
+    "seen": 1793952217.0117443,
+    "ast_hash": "5db90defcde2fef38a2af60468bef01d",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ProductLifecycleTests.cs": {
+    "mtime": 1793980539.1290028,
+    "seen": 1793981104.4178762,
+    "ast_hash": "c971a2ff8e6c41191d223798ea3cfaca",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/12-product-lifecycle.spec.ts": {
+    "mtime": 1793951772.7491143,
+    "seen": 1793952217.0199697,
+    "ast_hash": "b53023e6885f5929ff5ae2396d521a82",
+    "semantic_hash": ""
+  },
+  "docs/adr/0011-product-lifecycle-management.md": {
+    "mtime": 1793951221.432422,
+    "seen": 1793952217.049787,
+    "ast_hash": "0ed26031aea4709af3c8815b746e5881",
+    "semantic_hash": ""
+  },
+  "docs/api/product-lifecycle.md": {
+    "mtime": 1793952178.4135647,
+    "seen": 1793952217.051308,
+    "ast_hash": "6dc0a7c76aaf27c7b72e32600be8d54d",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-06-product-revision-hardening.md": {
+    "mtime": 1793976533.7006032,
+    "seen": 1793976555.3560805,
+    "ast_hash": "e8d5b7353aea2ac9e23e6199f382ec47",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ProductMediaCleanupJob.cs": {
+    "mtime": 1793953702.3326924,
+    "seen": 1793976063.9810526,
+    "ast_hash": "531ebddf3dd54cf675d52e8d8d0ec250",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/ProductRevisions/NoOpProductRevisionApprovalCheckpoint.cs": {
+    "mtime": 1793953753.2458317,
+    "seen": 1793976063.9830568,
+    "ast_hash": "daea2178ec3b0fc00d7cd6bde6f213b5",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/ProductRevisions/PostgresProductRevisionReviewReader.cs": {
+    "mtime": 1793975953.7213736,
+    "seen": 1793976063.9830568,
+    "ast_hash": "79799c3af306cc1d9e5d819a2fa52aff",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/ProductRevisions/ProductMediaCleanupWorker.cs": {
+    "mtime": 1793953817.8654292,
+    "seen": 1793976063.9830568,
+    "ast_hash": "aee3d7c6c4faed67b85d3d85128c4bc8",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/13-product-revision-hardening.spec.ts": {
+    "mtime": 1793976454.8552556,
+    "seen": 1793976555.3186202,
+    "ast_hash": "07fe76ee7320e8912ecb2dd83b079f46",
+    "semantic_hash": ""
+  },
+  "docs/adr/0012-product-revision-review-and-media-cleanup.md": {
+    "mtime": 1793975554.5772245,
+    "seen": 1793976064.024792,
+    "ast_hash": "1185d873928a18aad496b4a67c63c50c",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-06-shipping-methods-fees.md": {
+    "mtime": 1793976875.503138,
+    "seen": 1793976898.5109143,
+    "ast_hash": "4575e6d5570c5d5bb7030713a670cec2",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ShippingMethod.cs": {
+    "mtime": 1793977416.0302625,
+    "seen": 1793977711.7946284,
+    "ast_hash": "e20e2c226f77b5b0883f996978c3bc80",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ShippingMethodProvinceRate.cs": {
+    "mtime": 1793977416.0302625,
+    "seen": 1793977711.7946284,
+    "ast_hash": "1aecfec28d4ba987b5176c6daaab41f8",
+    "semantic_hash": ""
+  },
+  "docs/adr/0013-shipping-methods-and-fee-snapshots.md": {
+    "mtime": 1793977644.5922544,
+    "seen": 1793977711.8396182,
+    "ast_hash": "857c2cf6ff0252996a25c49d4ae16c83",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Shipping/ProvinceKeyNormalizer.cs": {
+    "mtime": 1793978108.144847,
+    "seen": 1793978289.8850756,
+    "ast_hash": "224be3c00382db633965c0e878d189aa",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Shipping/ShippingContracts.cs": {
+    "mtime": 1793978763.7043023,
+    "seen": 1793979004.2332625,
+    "ast_hash": "c9ede52a26d3b54382a5f730aeb18114",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Shipping/ShippingFeeCalculator.cs": {
+    "mtime": 1793978108.144847,
+    "seen": 1793978289.8850756,
+    "ast_hash": "9eeae4ce008e803309d0ee95d85b01df",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Shipping/PostgresShippingQuoteService.cs": {
+    "mtime": 1793979592.1029344,
+    "seen": 1793979658.7763789,
+    "ast_hash": "a8cf68167c1931663176a608cbaa2406",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ShippingFeeCalculatorTests.cs": {
+    "mtime": 1793978217.22341,
+    "seen": 1793978289.9007328,
+    "ast_hash": "fea74ddaff2c1cc43e905b5d3a91bf8b",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ShippingQuoteServiceTests.cs": {
+    "mtime": 1793980496.0684206,
+    "seen": 1793981104.4188828,
+    "ast_hash": "1b04a6ac3ba72fcaec6fd20f89ff5a92",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/AdminShippingMethodsController.cs": {
+    "mtime": 1793978862.7762113,
+    "seen": 1793979004.2242355,
+    "ast_hash": "8ac71146d175d9820a8418ff21e6375e",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Shipping/ShippingExceptionHandler.cs": {
+    "mtime": 1793978792.076865,
+    "seen": 1793979004.2302527,
+    "ast_hash": "56e484a3dbc6787be369b4b4963483c3",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Shipping/PostgresShippingAdminService.cs": {
+    "mtime": 1793978798.0610752,
+    "seen": 1793979004.2454607,
+    "ast_hash": "bbea5268ccecb22564bf0b05c8a93b09",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ShippingAdminTests.cs": {
+    "mtime": 1793978964.0340018,
+    "seen": 1793979004.2504888,
+    "ast_hash": "f1977649ca27ad307f63f4f6081e2cec",
+    "semantic_hash": ""
+  },
+  "docs/api/shipping.md": {
+    "mtime": 1793985361.7783754,
+    "seen": 1793985417.8864698,
+    "ast_hash": "46689be3623f1291069c154fad2bf890",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/ShippingQuotesController.cs": {
+    "mtime": 1793979446.1673713,
+    "seen": 1793979658.757269,
+    "ast_hash": "25b39fa2d032488eeae0f31233b09add",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ShippingQuoteApiTests.cs": {
+    "mtime": 1793980496.0684206,
+    "seen": 1793981104.4188828,
+    "ast_hash": "6e3e17dd613ac8094ee4778e0777b76c",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ShippingCheckoutTestDefaults.cs": {
+    "mtime": 1793980520.0677612,
+    "seen": 1793981104.4188828,
+    "ast_hash": "d85ace76deb0f71c35140bbd792a96e0",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ShippingCheckoutTests.cs": {
+    "mtime": 1793980979.266517,
+    "seen": 1793981104.4188828,
+    "ast_hash": "ec0f9358d4ce5eb590b5e5960846c5dc",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/shipping/shipping.api.ts": {
+    "mtime": 1793983137.851646,
+    "seen": 1793983465.9889038,
+    "ast_hash": "f1a3d0a305cb57d78ddb2c72f97a879d",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/shipping/AdminShippingPanel.tsx": {
+    "mtime": 1793984246.6478543,
+    "seen": 1793984346.228923,
+    "ast_hash": "c39d8ba8c87c4ec548df5ab1842e551c",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/shipping/admin-shipping.api.ts": {
+    "mtime": 1793984020.20576,
+    "seen": 1793984346.228923,
+    "ast_hash": "70c2d223b19ffcb91609d56ced716e4d",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/admin-shipping.test.tsx": {
+    "mtime": 1793984358.6036448,
+    "seen": 1793984372.0280266,
+    "ast_hash": "8f6672920aa473a96dc014e4c2e9eae9",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/14-shipping-methods-fees.spec.ts": {
+    "mtime": 1794021933.052901,
+    "seen": 1794023057.499278,
+    "ast_hash": "61350e51f97b27ca30ab0066fbddf7f7",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-07-carrier-consignments-tracking.md": {
+    "mtime": 1794022731.2838106,
+    "seen": 1794023057.5414896,
+    "ast_hash": "acd6df201c4cd06d0f8c791dbc2ee941",
+    "semantic_hash": ""
+  },
+  "docs/adr/0014-carrier-consignments-and-tracking-boundary.md": {
+    "mtime": 1794011754.3021872,
+    "seen": 1794012080.7303395,
+    "ast_hash": "f6f114093dba3d157cbb20e985305431",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/CarrierTracking/CarrierTrackingContracts.cs": {
+    "mtime": 1794014664.1825547,
+    "seen": 1794015262.671617,
+    "ast_hash": "43d8b8773b38b0b994a8854383b34476",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/CarrierTracking/CarrierLabelOptions.cs": {
+    "mtime": 1794013243.1346292,
+    "seen": 1794013648.458339,
+    "ast_hash": "5d8c6c720986994be146147b9ba4bd2e",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/CarrierTracking/LocalCarrierLabelStorage.cs": {
+    "mtime": 1794013423.458461,
+    "seen": 1794013648.458339,
+    "ast_hash": "030b04fdf66f1a77e28c114d246878bd",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/Carrier.cs": {
+    "mtime": 1794013243.12063,
+    "seen": 1794013648.4603393,
+    "ast_hash": "ae9132425e3ac5ed3c4d82caca1ab15e",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/CarrierConsignment.cs": {
+    "mtime": 1794013243.1216185,
+    "seen": 1794013648.4603393,
+    "ast_hash": "3b940abc076e7c1b67564190942e3153",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/CarrierTrackingEvent.cs": {
+    "mtime": 1794013243.1216185,
+    "seen": 1794013648.4603393,
+    "ast_hash": "2941b6853b3b3902698a6382edb6e6df",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CarrierLabelStorageTests.cs": {
+    "mtime": 1794013423.459532,
+    "seen": 1794013648.4673388,
+    "ast_hash": "cd31cee482a81e74406e4976ee7699f8",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/CarrierTracking/CarrierTrackingExceptionHandler.cs": {
+    "mtime": 1794014145.6331902,
+    "seen": 1794014493.9745357,
+    "ast_hash": "d05684db2eb8bcd6aa93c1a3b37046a1",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/AdminCarriersController.cs": {
+    "mtime": 1794014145.6331902,
+    "seen": 1794014493.975536,
+    "ast_hash": "7f5722aa7cfa42e5feb8abf3bf87372a",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/CarrierTracking/PostgresCarrierAdminService.cs": {
+    "mtime": 1794014145.6321898,
+    "seen": 1794014493.988052,
+    "ast_hash": "0a6bc0dd08edc53a6eba5be7e08a820e",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CarrierAdminTests.cs": {
+    "mtime": 1794014219.998377,
+    "seen": 1794014494.0028005,
+    "ast_hash": "d8ea43767c53038d8f91963c1947286a",
+    "semantic_hash": ""
+  },
+  "docs/api/carrier-tracking.md": {
+    "mtime": 1794022731.2848115,
+    "seen": 1794023057.5349736,
+    "ast_hash": "be49f3672a8642949709197e289ab4c2",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/StaffCarrierConsignmentsController.cs": {
+    "mtime": 1794020175.5278306,
+    "seen": 1794021150.8566267,
+    "ast_hash": "77aadc76bccbef43fede32de72ae3952",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/CarrierTracking/PostgresCarrierConsignmentService.cs": {
+    "mtime": 1794016667.75645,
+    "seen": 1794017034.6128006,
+    "ast_hash": "ba8b63b0df033074b7423da488fbe3db",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CarrierConsignmentTests.cs": {
+    "mtime": 1794020175.5278306,
+    "seen": 1794021150.8786788,
+    "ast_hash": "b0ef793f24b8e7531cb6993d0d2b90ec",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/CarrierTracking/PostgresCustomerCarrierTrackingService.cs": {
+    "mtime": 1794016644.7212722,
+    "seen": 1794017034.6128006,
+    "ast_hash": "2faf30ee22441f1bdfbe105f903425b0",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/carrier-tracking/AdminCarriersPanel.tsx": {
+    "mtime": 1794195456.01392,
+    "seen": 1794195637.6161878,
+    "ast_hash": "cb2fc8a337f7f6cac5882c8d6979df06",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/carrier-tracking/CustomerTrackingPanel.tsx": {
+    "mtime": 1794021462.5608013,
+    "seen": 1794023057.5022924,
+    "ast_hash": "ec230125469900b60d99e199730a9096",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/carrier-tracking/StaffCarrierTrackingPanel.tsx": {
+    "mtime": 1794195456.01392,
+    "seen": 1794195637.6161878,
+    "ast_hash": "5519147445e63bacd2a1e84a504e63ee",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/carrier-tracking/carrier-tracking.api.ts": {
+    "mtime": 1794020230.3886068,
+    "seen": 1794021150.8907404,
+    "ast_hash": "77ce255a828c7691b39ff0bec70007a8",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/carrier-tracking.test.tsx": {
+    "mtime": 1794020822.3509834,
+    "seen": 1794021150.8987598,
+    "ast_hash": "743996babb82e60253d88a6815aadea2",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/15-carrier-consignments-tracking.spec.ts": {
+    "mtime": 1794022653.3681824,
+    "seen": 1794023057.499278,
+    "ast_hash": "82b3a8d84e8ac212ffaafe341b840138",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-07-advanced-product-search-discovery.md": {
+    "mtime": 1794061106.2952979,
+    "seen": 1794061438.9282322,
+    "ast_hash": "aed4fb81c9b4b49b7fcf3ca8d5ed4c5c",
+    "semantic_hash": ""
+  },
+  "docs/adr/0015-postgresql-native-catalog-search.md": {
+    "mtime": 1794024715.5306573,
+    "seen": 1794025061.2746801,
+    "ast_hash": "f9ad36eacd7774be7aa2156a4c808b3e",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CatalogContractTests.cs": {
+    "mtime": 1794031579.9332597,
+    "seen": 1794031923.4452736,
+    "ast_hash": "c8842936b1d7ed9ec81560b00a039db0",
+    "semantic_hash": ""
+  },
+  "docs/api/catalog-search.md": {
+    "mtime": 1794039628.011549,
+    "seen": 1794039955.2010262,
+    "ast_hash": "9af0efb705f47883f8b9ea56b7ef284d",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CatalogSearchTests.cs": {
+    "mtime": 1794033723.4874845,
+    "seen": 1794034067.830812,
+    "ast_hash": "d376c871573f359c315415ddc706ca02",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CatalogFacetTests.cs": {
+    "mtime": 1794032965.823835,
+    "seen": 1794033259.0660014,
+    "ast_hash": "bd2e48bcd41117024906cff1f3e0ce01",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CatalogSuggestionRateLimitTests.cs": {
+    "mtime": 1794033723.4874845,
+    "seen": 1794034067.830812,
+    "ast_hash": "a6d8f1ba4cf843d6a754bd8aebb0de7e",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/catalog/CatalogSearchBox.tsx": {
+    "mtime": 1794037149.5135572,
+    "seen": 1794037263.6861296,
+    "ast_hash": "eba414bb363ea1ff18782ad6f86c533e",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/catalog/catalog-search.ts": {
+    "mtime": 1794038367.556214,
+    "seen": 1794038535.8214183,
+    "ast_hash": "b54834b821a975a3de5da759e29c934d",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/catalog-search-box.test.tsx": {
+    "mtime": 1794038367.5572119,
+    "seen": 1794038535.8300443,
+    "ast_hash": "51604ae787d0f62949557ab48b5f9d45",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CatalogSearchTimeoutTests.cs": {
+    "mtime": 1794039495.0196116,
+    "seen": 1794039955.1580255,
+    "ast_hash": "70979d4316a0e1ea9731d58188cae379",
+    "semantic_hash": ""
+  },
+  "tools/HighConcurrencyCommerce.CatalogBenchmark/HighConcurrencyCommerce.CatalogBenchmark.csproj": {
+    "mtime": 1794039139.8840387,
+    "seen": 1794039955.1800244,
+    "ast_hash": "35f3f3c8cb2cde8a5eb51712f9fc6730",
+    "semantic_hash": ""
+  },
+  "tools/HighConcurrencyCommerce.CatalogBenchmark/Program.cs": {
+    "mtime": 1794039568.666856,
+    "seen": 1794039955.1800244,
+    "ast_hash": "a7937e338565edc05e8d04c9d6774f63",
+    "semantic_hash": ""
+  },
+  "docs/performance/catalog-search-benchmark-latest.md": {
+    "mtime": 1794039910.0823295,
+    "seen": 1794039955.2040243,
+    "ast_hash": "bfe8213e684022ecf20426037a52bd39",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/16-advanced-product-search.spec.ts": {
+    "mtime": 1794060569.500357,
+    "seen": 1794061438.8902311,
+    "ast_hash": "ba25897128ade46c4b5988ab7399c036",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/CommerceEmailOutbox.cs": {
+    "mtime": 1794062201.7739186,
+    "seen": 1794062662.6796753,
+    "ast_hash": "aa470b709fd8e4f643e9db48febd36f5",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/Models/ProductAlertRefreshQueue.cs": {
+    "mtime": 1794062201.7739186,
+    "seen": 1794062662.6822095,
+    "ast_hash": "1b3cfacca44c83d74312889c80bb0688",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Persistence/WishlistProductAlertPersistence.cs": {
+    "mtime": 1794062338.2184675,
+    "seen": 1794062662.6857715,
+    "ast_hash": "cb67519e122aec6f1efb069bea97b306",
+    "semantic_hash": ""
+  },
+  "docs/adr/0016-wishlist-product-alert-outbox.md": {
+    "mtime": 1794062128.4269428,
+    "seen": 1794062662.7489161,
+    "ast_hash": "7b173f39201be00081ec7b08274efd91",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-07-wishlist-product-alerts.md": {
+    "mtime": 1794101334.98158,
+    "seen": 1794101403.2793276,
+    "ast_hash": "058cf1536a5ce1fcb1eb3524e272a8ef",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Wishlist/WishlistAlertContracts.cs": {
+    "mtime": 1794062951.9838834,
+    "seen": 1794063580.668782,
+    "ast_hash": "edb300a4b20bc6ebdcbe3c5aea402919",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Wishlist/PostgresWishlistAlertService.cs": {
+    "mtime": 1794063009.4996648,
+    "seen": 1794063580.6804082,
+    "ast_hash": "c955c356e7296be51798679e7f8ab21f",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/WishlistAlertTests.cs": {
+    "mtime": 1794069068.1401868,
+    "seen": 1794069106.3880098,
+    "ast_hash": "87c563c1acc58b3e29cd59fa0cd78106",
+    "semantic_hash": ""
+  },
+  "docs/api/wishlist-alerts.md": {
+    "mtime": 1794100045.9871442,
+    "seen": 1794101403.271137,
+    "ast_hash": "d1c494f4dc873990d8c983f0502a7e33",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Wishlist/ProductAlertEvaluationWorker.cs": {
+    "mtime": 1794068801.653848,
+    "seen": 1794069106.3830094,
+    "ast_hash": "63b358609ff1814b44cf9c21e7fb511b",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ProductAlertEvaluationTests.cs": {
+    "mtime": 1794068758.2891643,
+    "seen": 1794069106.3870096,
+    "ast_hash": "0c8813647668ae81b9bc0b26093d7491",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Wishlist/CommerceEmailDeliveryWorker.cs": {
+    "mtime": 1794068801.653848,
+    "seen": 1794069106.3830094,
+    "ast_hash": "f21f6bccfe1839e77a766e182c17c65d",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Wishlist/SmtpCommerceEmailSender.cs": {
+    "mtime": 1794065324.3014772,
+    "seen": 1794065788.0879576,
+    "ast_hash": "f470dd1af1bbf77c18c2cfb5d2cee538",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/CommerceEmailDeliveryTests.cs": {
+    "mtime": 1794068769.5737615,
+    "seen": 1794069106.38501,
+    "ast_hash": "78f8e2368717d02138b34b165de57922",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/wishlist/WishlistAlertDialog.tsx": {
+    "mtime": 1794066775.193594,
+    "seen": 1794067218.5757592,
+    "ast_hash": "e472fae6225d70d90961949366cd98cb",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/wishlist-alerts.test.tsx": {
+    "mtime": 1794294936.4682088,
+    "seen": 1794295185.4100027,
+    "ast_hash": "904df9f738d6c388c0536f8449fd2635",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/17-wishlist-product-alerts.spec.ts": {
+    "mtime": 1794098403.046139,
+    "seen": 1794098659.576328,
+    "ast_hash": "4508e071c9cc855dae2620cbb8c45e23",
+    "semantic_hash": ""
+  },
+  "docs/operations/wishlist-product-alerts.md": {
+    "mtime": 1794100045.9901981,
+    "seen": 1794101403.2726464,
+    "ast_hash": "43e0f048d869a658d8e735d5d16df226",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-08-product-comparison.md": {
+    "mtime": 1794107372.3729928,
+    "seen": 1794107462.5575042,
+    "ast_hash": "ddc77c9033f0cdca4c5667122e36d64e",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ProductComparisonContractTests.cs": {
+    "mtime": 1794102057.816391,
+    "seen": 1794102109.734972,
+    "ast_hash": "da7e855c758ea5d241582c18f3287477",
+    "semantic_hash": ""
+  },
+  "docs/api/product-comparison.md": {
+    "mtime": 1794107372.3769774,
+    "seen": 1794107462.544074,
+    "ast_hash": "f71ea7eae28d3a09252d11fabc37878e",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Catalog/CatalogExceptionHandler.cs": {
+    "mtime": 1794102323.4265745,
+    "seen": 1794102885.2342274,
+    "ast_hash": "51ef8060b8cb361d3cc03a118c4898b5",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ProductComparisonTests.cs": {
+    "mtime": 1794105469.3239853,
+    "seen": 1794106980.6300333,
+    "ast_hash": "4c049e2ab607141f17261631af9cabe9",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/comparison/CompareButton.tsx": {
+    "mtime": 1794104272.99368,
+    "seen": 1794104473.6239662,
+    "ast_hash": "00a253ecafc4ed3ac04609fed9f1ffb6",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/comparison/ComparisonContext.tsx": {
+    "mtime": 1794104833.7365258,
+    "seen": 1794105081.6644056,
+    "ast_hash": "c9efc7cc839e39e1d61a8a28bc16a290",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/comparison/ComparisonTray.tsx": {
+    "mtime": 1794105493.7242289,
+    "seen": 1794106980.6509533,
+    "ast_hash": "5678e59240bc1db5c8e4ba1db7038a0a",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/comparison/comparison-context.ts": {
+    "mtime": 1794104833.735021,
+    "seen": 1794105081.6644056,
+    "ast_hash": "3aaf5ebe351849430d90f8463df8af90",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/comparison/comparison-storage.ts": {
+    "mtime": 1794107201.4015527,
+    "seen": 1794107462.474484,
+    "ast_hash": "aab23b395672893fda5185baaafff58e",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/comparison/useComparison.ts": {
+    "mtime": 1794104272.9911568,
+    "seen": 1794104473.6239662,
+    "ast_hash": "ce93c6e7a620d2940c641f306e202403",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/product-comparison.test.tsx": {
+    "mtime": 1794126449.8102913,
+    "seen": 1794189718.6567583,
+    "ast_hash": "da434282d6d13b94fd54265ac279101d",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/comparison/comparison.api.ts": {
+    "mtime": 1794105577.9952106,
+    "seen": 1794106980.6516714,
+    "ast_hash": "d43247ec6cefa8c9916555e9c987c192",
+    "semantic_hash": ""
+  },
+  "frontend/src/pages/ComparePage.tsx": {
+    "mtime": 1794126393.8086977,
+    "seen": 1794189718.6472168,
+    "ast_hash": "c36db8be97b1c2dd8b6d372dfd977278",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/xunit.runner.json": {
+    "mtime": 1794106248.1126502,
+    "seen": 1794106980.6321661,
+    "ast_hash": "68a90c226487dafd5a4dc7fad05f9b75",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/18-product-comparison.spec.ts": {
+    "mtime": 1794124061.5166855,
+    "seen": 1794124191.2579267,
+    "ast_hash": "9a74469b1d31947c7451f22fcd0b261f",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-08-related-products-recently-viewed.md": {
+    "mtime": 1794108965.117537,
+    "seen": 1794109003.8748627,
+    "ast_hash": "b875b63c91af843f1f7a783fca07b0a0",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ProductDiscoveryContractTests.cs": {
+    "mtime": 1794117854.1810684,
+    "seen": 1794119147.85621,
+    "ast_hash": "12a4c028f9e7d237260285cd4f0ab62b",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/ProductSummaryBatchTests.cs": {
+    "mtime": 1794117854.3182964,
+    "seen": 1794119147.857204,
+    "ast_hash": "9975dc1d2df0dc3847a23251cf18168d",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/RelatedProductsTests.cs": {
+    "mtime": 1794120758.5229616,
+    "seen": 1794121644.5851648,
+    "ast_hash": "5d989aeeb4ab2e88686cafd1dacb971d",
+    "semantic_hash": ""
+  },
+  "frontend/e2e/19-related-recent-products.spec.ts": {
+    "mtime": 1794123868.2555113,
+    "seen": 1794124191.2579267,
+    "ast_hash": "fd5fcb5ed9cd1dffdf4f0315bc7d869e",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/catalog/RelatedProductsSection.tsx": {
+    "mtime": 1794118271.052601,
+    "seen": 1794119147.870211,
+    "ast_hash": "0f42218e740f092fb91e019eca69d4a8",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/recent-products/RecentProductsContext.tsx": {
+    "mtime": 1794117857.2244754,
+    "seen": 1794119147.87421,
+    "ast_hash": "8bf684860bfebb2a41552b27cf9c062b",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/recent-products/RecentlyViewedSection.tsx": {
+    "mtime": 1794120680.2333899,
+    "seen": 1794121644.6036894,
+    "ast_hash": "42e4767fcb00ba5f513401bbacb20ce2",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/recent-products/recent-products-context.ts": {
+    "mtime": 1794119176.8499055,
+    "seen": 1794121644.6036894,
+    "ast_hash": "b7500904dcb68d5b79cb60b4f9af3e24",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/recent-products/recent-products-storage.ts": {
+    "mtime": 1794120680.2333899,
+    "seen": 1794121644.6036894,
+    "ast_hash": "7decc05b329e8890b1f282bdd6eff96d",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/recent-products/useRecentProducts.ts": {
+    "mtime": 1794117860.2479937,
+    "seen": 1794119147.87421,
+    "ast_hash": "b39e6dad37f7ea9f0a0f5bb3e7291810",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/product-discovery.test.tsx": {
+    "mtime": 1794120761.9069877,
+    "seen": 1794121644.616681,
+    "ast_hash": "c5b7abd2d8304ee19b37cca0dd266243",
+    "semantic_hash": ""
+  },
+  "docs/api/product-discovery.md": {
+    "mtime": 1794119174.6067667,
+    "seen": 1794121644.6476855,
+    "ast_hash": "450bb67f5b9d9b9d982888b978ed7e4b",
+    "semantic_hash": ""
+  },
+  "frontend/src/hooks/useModalFocusTrap.ts": {
+    "mtime": 1794195349.7446833,
+    "seen": 1794195637.6241841,
+    "ast_hash": "99ed949521eb8fa02c2ee35f765393a4",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/PayOsPaymentsController.cs": {
+    "mtime": 1794294730.5516982,
+    "seen": 1794295185.3650148,
+    "ast_hash": "f8d05a2766c98c4890583a81e6058f29",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/PayOsWebhookController.cs": {
+    "mtime": 1794294730.5507016,
+    "seen": 1794295185.3650148,
+    "ast_hash": "68e2e3cf6496784a09a41fc19b106910",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Payments/PayOsPaymentExceptionHandler.cs": {
+    "mtime": 1794232347.2108047,
+    "seen": 1794233848.5451105,
+    "ast_hash": "693d401cd6376d3d1505453b79812eee",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Payments/PayOsContracts.cs": {
+    "mtime": 1794215263.604565,
+    "seen": 1794216191.045932,
+    "ast_hash": "6209b47691f8177e4fe3d2e52a7a5e93",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Payments/PayOsGateway.cs": {
+    "mtime": 1794201432.4467518,
+    "seen": 1794202064.6067474,
+    "ast_hash": "afebdbad46e975d56f36eb814aefe01f",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Payments/PayOsOptions.cs": {
+    "mtime": 1794201836.6859105,
+    "seen": 1794202064.6067474,
+    "ast_hash": "53c827ed230c98df4f94858cf9da7621",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Payments/PostgresPayOsPaymentService.cs": {
+    "mtime": 1794201836.6869018,
+    "seen": 1794202064.6067474,
+    "ast_hash": "b78049abca0c459d8ff1fc8b1070ec55",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Payments/PostgresPayOsWebhookService.cs": {
+    "mtime": 1794215700.010639,
+    "seen": 1794216191.0514927,
+    "ast_hash": "dc7550bca5887374cb9396483d4fdaf8",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/PayOsPaymentTests.cs": {
+    "mtime": 1794295019.0288696,
+    "seen": 1794295185.3900032,
+    "ast_hash": "0fb5b6c1b69d98ba78958aa4632bd80f",
+    "semantic_hash": ""
+  },
+  "docs/provider-fixtures/payos/create-query-cancel-2026-11-09.sanitized.json": {
+    "mtime": 1794200520.686296,
+    "seen": 1794202064.63304,
+    "ast_hash": "1ac98c2b17b76f4b1ecde3a0e7281c01",
+    "semantic_hash": ""
+  },
+  "docs/adr/0017-enable-payos-with-verified-provider-contract.md": {
+    "mtime": 1794200520.6872888,
+    "seen": 1794202064.669299,
+    "ast_hash": "1811f0396f57a1c8f9cab3295e52b3fb",
+    "semantic_hash": ""
+  },
+  "docs/api/payos.md": {
+    "mtime": 1794235198.9071362,
+    "seen": 1794236167.128453,
+    "ast_hash": "301fcdcd7b58c769a34e2f9c848078ae",
+    "semantic_hash": ""
+  },
+  "docs/provider-fixtures/payos/README.md": {
+    "mtime": 1794200520.686296,
+    "seen": 1794202064.6722987,
+    "ast_hash": "32e013d6c3f9457c4195693c5932fd3c",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-11-09-payos-integration.md": {
+    "mtime": 1794235198.9091365,
+    "seen": 1794236167.1733713,
+    "ast_hash": "c318f6bb7fc60f90859702ea499ec0f5",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Payments/PayOsExpiryWorker.cs": {
+    "mtime": 1794215263.617674,
+    "seen": 1794216191.04085,
+    "ast_hash": "81a00b0b3625aa0699401684aecc3b37",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Payments/PostgresPayOsLifecycleService.cs": {
+    "mtime": 1794215314.4075024,
+    "seen": 1794216191.0499184,
+    "ast_hash": "a8f2614d93d5ddca6844dd78705e76ae",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Payments/PostgresPayOsPaymentTransitionService.cs": {
+    "mtime": 1794235139.7628171,
+    "seen": 1794236166.7993875,
+    "ast_hash": "81f4709943492803d27b33ad54d83bc0",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/PaymentProvidersController.cs": {
+    "mtime": 1794216999.929865,
+    "seen": 1794218078.025111,
+    "ast_hash": "f8f90400c7768bb5f3c8782b9f1c7080",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/payments/payos.api.ts": {
+    "mtime": 1794294730.5546966,
+    "seen": 1794295185.4020035,
+    "ast_hash": "dd25ef1fae24610a207c8af5f7c49743",
+    "semantic_hash": ""
+  },
+  "frontend/src/pages/PayOsReturnPage.tsx": {
+    "mtime": 1794294730.5546966,
+    "seen": 1794295185.406003,
+    "ast_hash": "d6dab7f66e00e49eb4b386565d710f2e",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/payos.test.tsx": {
+    "mtime": 1794294802.7869205,
+    "seen": 1794295185.4090025,
+    "ast_hash": "3455417bdaa956bbd6e99f58d4b978bd",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Api/Controllers/AdminPayOsReconciliationController.cs": {
+    "mtime": 1794232347.209128,
+    "seen": 1794233848.5253856,
+    "ast_hash": "bcd218b62d2bc4c29a8b03a0ac7e7f97",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Application/Payments/PayOsReconciliationContracts.cs": {
+    "mtime": 1794232200.9797163,
+    "seen": 1794233848.5588834,
+    "ast_hash": "ee8543738ffcf13f6310bc492572a553",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Payments/PostgresPayOsReconciliationService.cs": {
+    "mtime": 1794235139.7618124,
+    "seen": 1794236166.7993875,
+    "ast_hash": "b536969dac81b651f6ba05f191441a26",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.IntegrationTests/PayOsReconciliationTests.cs": {
+    "mtime": 1794235101.034212,
+    "seen": 1794236166.8614683,
+    "ast_hash": "8ace6aae195e08628ffb377250ffbbe3",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/payments/AdminPayOsReconciliationPanel.tsx": {
+    "mtime": 1794235042.5704844,
+    "seen": 1794236166.939522,
+    "ast_hash": "9181396a3e3362d9744242048aeff03c",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/payments/reconciliation.api.ts": {
+    "mtime": 1794232486.5598624,
+    "seen": 1794233848.6589227,
+    "ast_hash": "724b01aba590e9eaeb17f09cd16c1b08",
+    "semantic_hash": ""
+  },
+  "frontend/src/test/payos-reconciliation.test.tsx": {
+    "mtime": 1794235042.5718045,
+    "seen": 1794236166.979456,
+    "ast_hash": "383aa10c0e5d9feb90a24bbd7973a7df",
+    "semantic_hash": ""
+  },
+  "docs/operations/payos.md": {
+    "mtime": 1794235198.9071362,
+    "seen": 1794236167.140397,
+    "ast_hash": "902e184bca0553b0398ec5e153d276d2",
+    "semantic_hash": ""
+  },
+  "HighConcurrencyCommerce/HighConcurrencyCommerce.Infrastructure/Payments/PayOsReconciliationMetrics.cs": {
+    "mtime": 1794235126.2768023,
+    "seen": 1794236166.7974474,
+    "ast_hash": "cb1a2176ca4933b4ae1c9444b964137c",
     "semantic_hash": ""
   },
   "frontend/package-lock.json": {

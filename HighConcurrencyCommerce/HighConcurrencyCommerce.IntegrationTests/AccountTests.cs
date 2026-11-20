@@ -31,6 +31,7 @@ public sealed class AccountTests(CatalogFixture fixture) : IClassFixture<Catalog
         var email = customEmail ?? Email();
         using var reg = await Send(client, "auth/register", new { email, password = Password, confirmPassword = Password, fullName = "Test Customer" });
         Assert.Equal(HttpStatusCode.Accepted, reg.StatusCode);
+        await fixture.VerifyUserAsync(email);
         using var login = await Send(client, "auth/login", new { email, password = Password });
         Assert.Equal(HttpStatusCode.OK, login.StatusCode);
         return client;
@@ -52,7 +53,7 @@ public sealed class AccountTests(CatalogFixture fixture) : IClassFixture<Catalog
             var hasher = new Microsoft.AspNetCore.Identity.PasswordHasher<object>();
             var hash = hasher.HashPassword(new object(), Password);
             await using var insertCmd = new NpgsqlCommand(
-                "INSERT INTO store.user_accounts (id, role_id, email, password_hash, full_name, account_status) VALUES (gen_random_uuid(), @roleId, @email, @hash, 'Staff User', 'ACTIVE')", db);
+                "INSERT INTO store.user_accounts (id, role_id, email, password_hash, full_name, account_status, email_verified_at) VALUES (gen_random_uuid(), @roleId, @email, @hash, 'Staff User', 'ACTIVE', now())", db);
             insertCmd.Parameters.AddWithValue("roleId", roleId);
             insertCmd.Parameters.AddWithValue("email", staffEmail);
             insertCmd.Parameters.AddWithValue("hash", hash);
@@ -284,10 +285,10 @@ public sealed class AccountTests(CatalogFixture fixture) : IClassFixture<Catalog
         await using var orderCmd = new NpgsqlCommand(
             @"INSERT INTO store.sales_orders 
               (id, customer_id, shipping_address_id, order_number, payment_method, order_status, 
-               shipping_address_snapshot, total_amount, deadline_at)
+               shipping_address_snapshot, total_amount, subtotal_amount, voucher_discount_amount, deadline_at)
               VALUES 
               (gen_random_uuid(), @customerId, @addrId, @orderNo, 'COD', 'PENDING_COD_CONFIRMATION',
-               '{}'::jsonb, 130000, now() + interval '24 hours')", db);
+               '{}'::jsonb, 130000, 130000, 0, now() + interval '24 hours')", db);
         orderCmd.Parameters.AddWithValue("customerId", userId);
         orderCmd.Parameters.AddWithValue("addrId", addrId);
         orderCmd.Parameters.AddWithValue("orderNo", "ORD-" + Guid.NewGuid().ToString("N")[..8]);

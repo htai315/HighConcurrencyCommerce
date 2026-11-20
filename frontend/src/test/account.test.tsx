@@ -175,6 +175,7 @@ test('thêm địa chỉ mới gửi đầy đủ trường và CSRF', async () 
   const user = userEvent.setup()
   open('/account')
 
+  await user.click(await screen.findByText('Thêm địa chỉ giao hàng', { selector: 'summary' }))
   await user.type(await screen.findByLabelText('Tên người nhận *'), 'Người Nhận 2')
   await user.type(screen.getByLabelText('Số điện thoại *'), '0988776655')
   await user.type(screen.getByLabelText(/Địa chỉ chi tiết/i), '999 Đường Cầu Lông')
@@ -211,6 +212,7 @@ test('xóa địa chỉ đang gắn với đơn hàng hiển thị lỗi 409 con
 
   const deleteButton = await screen.findByRole('button', { name: 'Xóa' })
   await user.click(deleteButton)
+  await user.click(screen.getByRole('button', { name: 'Xác nhận xóa' }))
 
   expect(await screen.findByRole('alert')).toHaveTextContent('Địa chỉ này đã được sử dụng trong đơn hàng, không thể xóa.')
 })

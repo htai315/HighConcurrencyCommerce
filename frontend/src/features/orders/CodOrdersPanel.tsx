@@ -3,7 +3,7 @@ import { formatPrice } from '../catalog/catalog.api'
 import { confirmCodOrder, getPendingCodOrders } from './cod-orders.api'
 import type { CodOrder } from './cod-orders.api'
 
-export function CodOrdersPanel() {
+export function CodOrdersPanel({ onConfirmed }: { onConfirmed?: (order: CodOrder) => void } = {}) {
   const [orders, setOrders] = useState<CodOrder[]>([])
   const [loading, setLoading] = useState(true)
   const [confirming, setConfirming] = useState<string | null>(null)
@@ -31,6 +31,7 @@ export function CodOrdersPanel() {
       await confirmCodOrder(order.orderId)
       setOrders(current => current.filter(item => item.orderId !== order.orderId))
       setNotice({ type: 'success', text: `Đã xác nhận ${order.orderNumber}; tồn giữ đã chuyển sang phân bổ.` })
+      onConfirmed?.(order)
     } catch {
       setNotice({ type: 'error', text: 'Không thể xác nhận. Đơn có thể đã hết hạn hoặc được xử lý bởi Staff khác.' })
       await refresh()
